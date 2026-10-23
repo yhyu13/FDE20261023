@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 训练营现场问题（Day1 必问清单）
+    url: https://github.com/yhyu13/FDE训练营/blob/main/README.md
+    about: 六题通用的现场必问清单——拿到答案前，不要按假设写代码。

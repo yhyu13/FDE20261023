@@ -1,0 +1,36 @@
+#!/bin/sh
+# 提交信息格式闸。
+#
+# 规则：`<type>: <一句话>`，type ∈ feat | fix | spec | test | refactor | docs | chore
+#
+# 为什么拦：提交信息是这个仓库唯一的历史文档。格式一乱，
+# 半年后 `git log --oneline` 就没法用了——而那正是唯一能回答
+# "当时为什么这么改"的地方。
+
+set -u
+
+msg_file="$1"
+if [ -z "$msg_file" ] || [ ! -f "$msg_file" ]; then
+  exit 0
+fi
+
+# 只看第一行（跳过注释行）
+first=$(grep -v '^#' "$msg_file" | grep -v '^[[:space:]]*$' | head -n 1)
+
+if [ -z "$first" ]; then
+  exit 0
+fi
+
+case "$first" in
+  feat:*|fix:*|spec:*|test:*|refactor:*|docs:*|chore:*)
+    ;;
+  *)
+    echo "[提交信息] 首行不符合 '<type>: <一句话>'："
+    echo "    $first"
+    echo "    type ∈ feat | fix | spec | test | refactor | docs | chore"
+    echo "    例： spec: 用三层拆解生成 001 维修协同助手 spec"
+    exit 1
+    ;;
+esac
+
+exit 0

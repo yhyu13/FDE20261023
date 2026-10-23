@@ -19,6 +19,15 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# uv
+uv.lock 是要入库的（锁依赖），但缓存不入
+.uv_cache/
 
 # Node
 node_modules/

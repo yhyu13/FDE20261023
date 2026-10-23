@@ -113,21 +113,47 @@
 ```
 FDE训练营/
 ├── README.md                    # 本文件：真题原片 + 企业背景 + 三层速查 + 日程
+├── AGENTS.md                    # 工程流程契约（SDD·TDD·issue/PR·worktree 四件套）
 ├── overview.html                # 单页总览（路演用；仅字体走 CDN，其余全内联）
+├── pyproject.toml               # uv + pytest + ruff
 ├── docs/
 │   ├── 拆解规范.md               # 三层结构定义 + 章节模板 + 举一反三规则 + 来源分级 + 企业背景速查
-│   └── 训练营背景.md             # 主办方与训练营模式（专项检索成文）
-├── assets/
-│   ├── 六道题-寻找问题.jpg        # 真题原片（现场大屏）
-│   ├── GPS2026-FDE训练营-现场.jpg # 训练营现场实拍（日程来源）
-│   └── overview-preview.png       # overview.html 首屏预览
-└── problems/
-    ├── 01-申沃客车-现场报修协同.md
-    ├── 02-申沃客车-智能驾驶内容工厂.md
-    ├── 03-蓝莓研究所-种植档案.md
-    ├── 04-山南勘测-分包报价比选.md
-    ├── 05-山南勘测-现场照片隐患速查.md
-    └── 06-广源人力-护理培训排课.md
+│   ├── 训练营背景.md             # 主办方与训练营模式（专项检索成文）
+│   └── 工作流.md                 # 四件套一页图 + 命令速查
+├── problems/                    # 真源：六道题的三层拆解（冻结）
+│   ├── 01-申沃客车-现场报修协同.md
+│   ├── 02-申沃客车-智能驾驶内容工厂.md
+│   ├── 03-蓝莓研究所-种植档案.md
+│   ├── 04-山南勘测-分包报价比选.md
+│   ├── 05-山南勘测-现场照片隐患速查.md
+│   └── 06-广源人力-护理培训排课.md
+├── specs/                       # spec-kit 产物（每题一个 feature 目录）
+│   ├── 001-repair-copilot/      ← 由 problems/01 自动生成
+│   ├── 002-content-factory/
+│   ├── 003-farm-archive/
+│   ├── 004-quote-compare/
+│   ├── 005-photo-hazard/
+│   └── 006-training-schedule/
+├── src/fde/                     # 实现（每行都有一条先失败过的测试）
+│   ├── specseed.py              # 题解 → spec.md 的搬运与渲染
+│   ├── gates.py                 # 闸的判定逻辑
+│   └── worktree.py              # 工作树命名与路径推导
+├── tests/                       # 测试（名字以 FR-xxx 开头，与 spec 对账）
+│   ├── test_specseed.py
+│   ├── test_gates.py
+│   └── test_worktree.py
+├── tools/
+│   ├── seed_spec.py             # 把三层拆解灌进 spec.md
+│   ├── run_all_gates.py         # 跑全套闸（看退出码）
+│   └── new_worktree.py          # 开工作树
+├── .githooks/                   # 预提交闸 + 提交信息闸（core.hooksPath 已设）
+├── .github/                     # issue 模板 + PR 模板 + CI
+├── .specify/                    # spec-kit 1.1.4（含 memory/constitution.md 宪法）
+├── .mavis/commands/             # /speckit.* 十���命令
+└── assets/
+    ├── 六道题-寻找问题.jpg        # 真题原片（现场大屏）
+    ├── GPS2026-FDE训练营-现场.jpg # 训练营现场实拍（日程来源）
+    └── overview-preview.png       # overview.html 首屏预览
 ```
 
 **每篇题解固定八章**：企业背景与选题校准 → 场景 → 三层拆解树 → 项目定义与范围 → 专项技术点 → OKR → 解决方案与架构 → 举一反三 → 风险兜底与 Day1 必问。
@@ -137,6 +163,38 @@ FDE训练营/
 - **看板**：Logseq / Obsidian 直接打开 `problems/` 下的 Markdown，章节标题天然成为大纲。
 - **路演**：浏览器打开 `overview.html`（双击即可；联网时加载 Outfit / DM Serif / JetBrains Mono 字体，断网自动回退系统字体，版面不受影响）。
 - **协作**：每题一个文件，互不冲突，可并行分工。
+
+---
+
+## 五之二、工程流程：spec-kit SDD · TDD · issue/PR · worktree
+
+> 详细规则看 [`AGENTS.md`](./AGENTS.md)，宪法看 [`.specify/memory/constitution.md`](./.specify/memory/constitution.md)，一页图看 [`docs/工作流.md`](./docs/工作流.md)。
+
+四件套已经装好，**不靠记性，靠闸**：
+
+```powershell
+# 从题解生成 spec（拆解已经冻结，不用从零写）
+uv run --group dev python tools/seed_spec.py -Number 1 -ShortName repair-copilot
+
+# 开一棵工作树（并行就开树，不在同棵树上打架）
+uv run --group dev python tools/new_worktree.py -Feature 1 -ShortName repair-copilot
+uv run --group dev python tools/new_worktree.py --List
+
+# 跑全套闸（看退出码，不看输出文本）
+uv run --group dev python tools/run_all_gates.py
+```
+
+| 件 | 状态 |
+|----|------|
+| **spec-kit** | 1.1.4 已 init：`.specify/` + `.mavis/commands/` 十个 `/speckit.*` 命令 |
+| **SDD** | 六道题各一个 feature 目录，`spec.md` 已从题解自动生成（L2/L3/OKR 已灌好） |
+| **TDD** | `uv run pytest`，24 个测试；**每行实现都有先失败过的测试** |
+| **闸** | `spec` / `fr-trace` / `test` / `lint` 四条，**OK / FAIL / SKIP 三态**——SKIP 明写"不等于全部通过"，空跑转红 |
+| **issue/PR** | 两套 issue 模板 + PR 模板（必填：动了哪条 AC、测试证据、闸结果、**没做什么**）+ CI |
+| **worktree** | `tools/new_worktree.py`，目录约定 `<repo>-wt-<slug>`，分支名与 spec-kit 的 `specs/NNN-slug/` 对齐 |
+
+> **spec 里标 ⚠️ 的三段必须由团队在 Day1 现场补**：用户故事的行为、验收场景（Given/When/Then）、实体定义。
+> **AI 猜出来的验收场景不算验收标准。**
 
 ---
 

@@ -1,0 +1,51 @@
+#!/bin/sh
+# 预提交闸。机械拦截，不靠记性。
+#
+# 触发范围：暂存区里**磁盘上还存在**的路径。
+# 刻意用 `--diff-filter=d` 排除删除——若删除也算触发，`git rm` 会让闸去扫
+# 一个已经不存在的东西，而"扫不到文件"在闸里表现为**恒绿**：
+# 闸在报告里写下"已审"，而它一个字节都没查。
+#
+# 看退出码，不看输出文本。
+
+set -u
+
+staged=$(git diff --cached --name-only --diff-filter=d)
+
+if [ -z "$staged" ]; then
+  exit 0
+fi
+
+# ---- 闸 1：不该入库的大件 ----
+junk=$(printf '%s\n' "$staged" | grep -E '(^|/)(node_modules|build|dist|\.venv|__pycache__|\.pytest_cache)/' || true)
+if [ -n "$junk" ]; then
+  echo "[闸1] 暂存区里有不该入库的路径："
+  printf '%s\n' "$junk" | sed 's/^/    /'
+  echo "    删掉它们（git restore --staged <path>），并确认它们进了 .gitignore。"
+  exit 1
+fi
+
+# ---- 闸 2：改了实现/规格却没动测试（只警告，不挡） ----
+if printf '%s\n' "$staged" | grep -qE '^(src/|specs/)'; then
+  if ! printf '%s\n' "$staged" | grep -qE '^tests/'; then
+    echo "[闸2] 警告：改了 src/ 或 specs/ 但没改 tests/。"
+    echo "      TDD 铁律要求每条生产代码都有一条先失败过的测试。"
+  fi
+fi
+
+# ---- 闸 3：改了实现就必须 pytest 绿 ----
+if printf '%s\n' "$staged" | grep -qE '^src/'; then
+  if command -v uv >/dev/null 2>&1; then
+    echo "[闸3] 跑了 pytest……"
+    if ! uv run --group dev pytest -q; then
+      echo "[闸3] pytest 不绿，拦下。"
+      echo "     如果确实要绕过，请在提交信息里写清为什么（AGENTS.md §12 第 4 条）。"
+      exit 1
+    fi
+  else
+    echo "[闸3] 跳过：找不到 uv，pytest 没跑。"
+    echo "     **没跑不等于通过**——手动跑一遍：uv run --group dev pytest"
+  fi
+fi
+
+exit 0

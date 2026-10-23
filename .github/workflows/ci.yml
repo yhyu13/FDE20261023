@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: 闸
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 装 uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: 装依赖
+        run: uv sync --group dev
+
+      - name: ruff
+        run: uv run --group dev ruff check .
+
+      - name: pytest
+        run: uv run --group dev pytest
+
+      - name: 全套闸
+        env:
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+        run: uv run --group dev python tools/run_all_gates.py
