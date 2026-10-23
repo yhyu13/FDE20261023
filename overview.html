@@ -971,6 +971,16 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
       <span class="tag">标牌 OCR</span><span class="tag">混合检索</span><span class="tag">不符合项闭环</span><span class="tag grey">置信度分流</span>
     </div>
 
+    <figure style="margin:16px 0 0">
+      <img class="shot" src="assets/山南勘测-题05-需求细节.jpg" alt="题05 需求细节：山南勘测 · 上百张现场照片，隐患藏在哪一张？">
+      <figcaption>命题方需求详情页 · 官方业务问题三行：① 工序/部位/问题难检索 ② 孔号/标牌/风险线索要逐张翻找 ③ 新人难以快速识别潜在隐患</figcaption>
+    </figure>
+    <div class="note" style="margin:14px 0 0">
+      <b>由这一页纠出的硬伤：</b>山南是<b>岩土工程勘察单位</b>，隐患判定要引<b>自然资源条线</b>（地质勘查/测绘）的标准，
+      <b>不是</b>《房屋市政工程生产安全重大事故隐患判定标准》。<b>引错标准 = 结论在评审时直接无效。</b>
+      画面里是一台<b>地质钻机</b>在作业，照片卡带三种标注：橙框圈住标牌「<b>ZK-03</b>」、虚线圈出风险线索、橙色三角表示隐患。
+    </div>
+
     <div style="height:16px"></div>
     <div class="card" style="margin-bottom:16px">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
@@ -978,100 +988,81 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
         <div class="tree-l1"><span class="lv">L1</span><p>上百张现场照片，隐患藏在哪一张？</p></div>
         <ul class="tree-l2">
           <li>
-            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">照片只是文件，没有对象</span></div>
-            <p class="l2why">根因：没有"项目 → 部位 → 工序 → 照片"的对象链；EXIF 只躺在本地文件里，导入后无法归集；文件名无语义</p>
+            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">照片没有对象链，工序/部位/问题三个维度落不进照片</span></div>
+            <p class="l2why">根因：业务问题 ①</p>
             <ul class="tree-l3">
+              <li><b>照片资产化管线（去重 → 废片 → EXIF → 归集）</b>：pHash 汉明距离去重并保留最清晰一张；Laplacian 方差 + 亮度分布筛废片（归"待清理"，不直接删）；EXIF 抽时间 / GPS / 设备
+                <span class="reuse"><em>同族复用</em> · 与行业无关：巡检、仓储、零售、工地质检、文物普查通用</span></li>
+              <li><b>项目—勘探点—工序对象链（Ontology 三步法）</b>：Objects（Project → Site → Borehole/ExplorationPoint → Process → Photo → Shot）→ Links（照片 ↔ 勘探点 ↔ 工序 ↔ 隐患类别 ↔ 记录）→ Actions+Write-back（挂载 / 标记 / 整改回写）
+                <span class="reuse"><em>同族复用</em> · 通用"影像资产对象化"模型：设备履历影像、检测批次影像、案件现场照</span></li>
+              <li><b>勘探点编号主数据 + 唯一性校验</b>：勘探点/测试点/观测点统一编号模式与主数据；同一场地内重复编号直接告警（按同类标准"编号不得重复"）
+                <span class="reuse"><em>同族复用</em> · 通用"编号唯一性"做法：设备位号、批次号、单据号、车辆牌号</span></li>
             </ul>
           </li>
           <li>
-            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">照片里的文字与工程编号查不了</span></div>
-            <p class="l2why">根因：标牌、验收牌、仪器铭牌、钻孔编号、标高点号、管位牌、样品编号全在像素里，没有被抽成可检索字段</p>
+            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">孔号、标牌、风险线索只能逐张翻找</span></div>
+            <p class="l2why">根因：业务问题 ②</p>
             <ul class="tree-l3">
+              <li><b>孔号 / 标牌 / 岩芯照片 OCR 管线</b>：文字检测 + 识别；透视与反光预处理；输出文本 + bbox + 置信度；对孔号做格式校验 + 与点位台账映射，映射不到挂"待归集"
+                <span class="reuse"><em>同族复用</em> · 设备铭牌、资产标签、集装箱铅封、仓储货位编号通用</span></li>
+              <li><b>照片合规前置检查（可机械判定）</b>：按归档口径逐条核：① 像素尺寸 ≥ 2500×2000 且未剪辑；② 是否带钻孔编号；③ 是否带标尺或参照物；④ 编号是否在点位台账里。不合规 → 进不了归档链，只能回现场补拍
+                <span class="reuse"><em>同族复用</em> · 任何"原始证据/影像归档"场景：试验影像、检测影像、验收影像</span></li>
+              <li><b>OCR 文本入索引 + 混合检索</b>：OCR 文本、隐患标签、时间、项目 / 勘探点 / 工序全部同索引；向量召回与结构化过滤可叠加
+                <span class="reuse"><em>同族复用</em> · 通用"把图里的字变成可检索字段"：票据、图纸、公示栏</span></li>
             </ul>
           </li>
           <li>
-            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">风险源与不符合项没有对象链</span></div>
-            <p class="l2why">根因：发现 → 整改通知 → 复查 靠微信群和文件夹，闭环断；同一处隐患重复上报也查不出来</p>
+            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">隐患判定没有权威口径，新人接不上</span></div>
+            <p class="l2why">根因：业务问题 ③</p>
             <ul class="tree-l3">
+              <li><b>按判定条目逐类提问的 VLM 范式</b>：依据甲方现行安全检查表 + 自然资源领域判定条目，一条判定标准一次专项提问（"这张图里钻探机台配电是否实现一机一闸一漏电？""作业人员是否按要求佩戴安全帽并穿戴反光背心？""道路内作业是否设置了明显安全警示标识？"），输出 JSON {条目号, 是否存在, 置信度, 描述, bbox}
+                <span class="reuse"><em>同族复用</em> · 任何"有既定检查项体系"的场景：EHS 检查、ISO 内审、设备点检、监理旁站</span></li>
+              <li><b>新人判据卡（把老手的"看"变成可交接的规则）</b>：每条判定条目配：① 判据（一句话，说清"什么算隐患"）；② 看图要点（该看画面哪个位置）；③ 依据出处（条目号 + 原文）；④ 1–2 张正例/反例图。新人按卡片自查，老手按卡片复核
+                <span class="reuse"><em>同族复用</em> · 通用"隐性经验显性化"：老师傅工艺判据、老中医经验方、质检眼力、带徒教材</span></li>
+              <li><b>风险分级映射表 + 评测集（分条目出指标）</b>：隐患类别 → 风险等级 → 整改要求，分级口径来自甲方既有制度，不由模型定级；用甲方真实照片人工标注建集，按条目分别出召回 / 精确率与混淆样本图
+                <span class="reuse"><em>同族复用</em> · 所有"小样本视觉任务"的通用评测范式</span></li>
             </ul>
           </li>
           <li>
-            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">隐患类别与风险分级没有权威口径</span></div>
-            <p class="l2why">根因：国标判定标准与甲方检查表没有被拆成可逐条判定的条目，模型只能自由发挥，结论既不可用也不可追责</p>
+            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">风险源与不符合项没有对象链，归档与整改闭环是断的</span></div>
+            <p class="l2why">根因：业务目标"归档 + 不符合项速查"</p>
             <ul class="tree-l3">
+              <li><b>不符合项对象链与闭环台账</b>：Photo → DetectedHazard → Nonconformity → Rectification → RecheckPhoto；每步带责任人、期限、状态
+                <span class="reuse"><em>同族复用</em> · 质量 / 安全 / 合规类问题闭环通用</span></li>
+              <li><b>前后对照视图 + 归档台账导出</b>：同一不符合项的隐患照与复查照并排（部位 / 时间 / 说明）；导出安全台账与归档索引（编号、类别、等级、责任人、期限、状态、照片索引）
+                <span class="reuse"><em>同族复用</em> · 复查比对、索赔取证、创优工程资料归档通用</span></li>
+              <li><b>外业数据备份与介质防护提醒</b>：归档链自带"原始件只读副本 + 校验哈希 + 异地/云备份位"，导出时提示"硬盘未做防震/防水/防尘"这条行业风险
+                <span class="reuse"><em>同族复用</em> · 通用"原始数据保全"：测绘原始数据、试验原始数据、影像原始文件</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">横贯</span>
+<span class="t">人工复核队列 + 否认样本回流</span></div>
+            <p class="l2why">跨 L2 的横贯机制</p>
+            <ul class="tree-l3">
+              <li><b>人工复核队列 + 否认样本回流</b>：置信度分档；确认 / 否认；否认样本回流成 few-shot 与评测集；不自动开整改通知
+                <span class="reuse"><em>同族复用</em> · 任何 CV 落地都要用的置信度管理范式</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">横贯</span>
+<span class="t">引用白名单与范围声明</span></div>
+            <p class="l2why">跨 L2 的横贯机制</p>
+            <ul class="tree-l3">
+              <li><b>引用白名单与范围声明</b>：模型只能引用甲方检查表与适用判定条目；不得引用公开通用经验库或公开数据集冒充现场依据；对外输出必须写明所依据的条目号
+                <span class="reuse"><em>同族复用</em> · 审计与合规场景的通用"来源可追"约束</span></li>
             </ul>
           </li>
         </ul>
       </div>
-      <p class="count">L2-1 → 3 条，L2-2 → 3 条，L2-3 → 2 条，L2-4 → 3 条，横贯 → 2 条。L3 是 13 条机制，不是 13 个 L2。 L2 保持 4 条不变，这是深度控制。</p>
+      <p class="count">L2 = 4 条能力缺口 · L3 = 14 条机制 · KR 9 条</p>
     </div>
 
 
-    <div class="grid2">
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：照片全是 IMG_2037.jpg</h3>
-        <p>每次进场几百张：进度、设备、隐蔽工程、标识牌、验收牌。找一张要往后拖几百下；标牌上的"3 号井段 已验收 2026-08-11"想按文字查完全没门；安全员要找"临边防护缺失"只能肉眼过。</p>
-        <ul class="ticks">
-          <li><b>翻不到</b>：无去重、无分类、命名无语义</li>
-          <li><b>隐患查不出</b>：照片只被"看"，没被"检查"</li>
-          <li><b>文字查不了</b>：标牌文字只在像素里</li>
-          <li><b>闭环断</b>：照片与"不符合项"对象没有绑定</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：照片归档与隐患速查系统</h3>
-        <dl class="kv">
-          <dt>依据</dt><dd>甲方安全检查表（隐患类别从这来，模型只能按它判）</dd>
-          <dt>交付</dt><dd>自动归档 · 隐患识别 · 文字识别 · 自然语言速查 · 不符合项闭环</dd>
-          <dt>范围</dt><dd>1 个项目 · 5 类高频隐患 · 标牌/铭牌/验收牌 OCR</dd>
-          <dt>砍掉</dt><dd>不做手写单据全解析 · 不做以图搜图 · 不做移动原生 App</dd>
-          <dt>红线</dt><dd>不自动开整改通知（误报会变成安全记录事故）</dd>
-        </dl>
-      </div>
-    </div>
+<figure style=margin:16px
 
     <div style="height:16px"></div>
-    <div class="card" style="margin-bottom:16px">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一张照片的一生</h3>
-      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
-        <svg viewBox="0 0 900 200" role="img" aria-label="题05 架构：照片批量导入后经去重与EXIF归集，再经逐类隐患识别与OCR写入对象层，通过混合检索返回候选，进入人工复核队列与不符合项闭环">
-          <g>
-            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="13" y="30">IMPORT</text>
-            <text class="flow-t" x="13" y="52">批量导入</text>
-            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="198" y="30">CLEAN</text>
-            <text class="flow-t" x="198" y="52">去重 + EXIF 归集</text>
-            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="383" y="30">DETECT</text>
-            <text class="flow-t" x="383" y="52">逐类隐患 + OCR</text>
-            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="568" y="30">SEARCH</text>
-            <text class="flow-t" x="568" y="52">混合检索</text>
-            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="753" y="30">CLOSE</text>
-            <text class="flow-t" x="753" y="52">不符合项闭环</text>
-          </g>
-          <g class="flow-arrow" marker-end="url(#ar)">
-            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
-            <path d="M555,68 L555,96 L80,96 L80,68"/>
-          </g>
-          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
-          <text class="flow-t" x="16" y="121">中低置信 → 人工复核队列（确认/否认）→ 否认样本回流做 few-shot 与评测集</text>
-          <text class="flow-lbl" x="16" y="140">按隐患类别逐个问（"这张图里临边防护栏杆是否连续完整？"），不要一次问"有没有问题"。</text>
-          <g>
-            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
-            <text class="flow-t" x="13" y="187">最大风险</text>
-            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
-            <text class="flow-t" x="463" y="187">护栏</text>
-          </g>
-          <text class="flow-lbl" x="105" y="187">拿公开 PPE 数据集训通用模型，现场根本不是那个场景</text>
-          <text class="flow-lbl" x="505" y="187">召回与精确率必须成对看</text>
-        </svg>
-      </div>
-    </div>
-
-    <div class="grid2">
+        <div class="grid2">
       <div class="card">
         <h3>OKR</h3>
         <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让上百张现场照片在几秒内变成可检索的隐患线索，让安全整改从"翻相册"变成"搜一句话"。</p>
