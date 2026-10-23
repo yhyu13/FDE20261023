@@ -44,6 +44,9 @@ python tools/video/make_html.py --Script "problems\01-申沃客车-现场报修�
 python tools/video/contact_sheet.py --Video "build\01\讲解视频.mp4" --Out "build\01\拼版.png"
 ```
 
+> 六条片子的**归档拼版在 [`../docs/拼版/`](../docs/拼版/)**（4.4 MB，已入库）——
+> 那是"逐张看过图"的证据。`build/` 下的中间产物不入库也不保留，管线可重新生成。
+
 ## 交付前跑了两轮自动校验
 
 | 轮 | 检查 | 判据 |
