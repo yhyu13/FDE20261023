@@ -10,7 +10,7 @@
 
 import pytest
 
-from fde.specseed import parse_problem, render_spec
+from fde.specseed import find_problem_file, parse_problem, render_spec
 
 SAMPLE = """# 题 01 · 申沃客车 | 现场报修了，为什么还要从头查起？
 
@@ -123,6 +123,32 @@ def test_render_records_the_feature_branch(problem):
     assert "001-repair-copilot" in out
 
 
+def test_table_separator_row_is_not_an_entity():
+    """表格分隔行（全是横线）不能被当成实体——它会变成一个叫 `---------` 的假实体。"""
+    md = """## 四、专项技术点（三层技术栈）
+
+| L1 技术域 | L2 组件 | L3 实现要点 |
+|-----------|---------|-----------|
+| **数据接入** | 素材接入层 | 说明 |
+| | 检索索引 | 说明 |
+"""
+    p = parse_problem(md)
+    assert "---------" not in p.components
+    assert "素材接入层" in p.components
+
+
+def test_render_has_no_pseudo_entity():
+    md = """## 四、专项技术点（三层技术栈）
+
+| L1 技术域 | L2 组件 | L3 实现要点 |
+|-----------|---------|-----------|
+| **数据接入** | 素材接入层 | 说明 |
+"""
+    p = parse_problem(md)
+    out = render_spec(p, feature_num=1, slug="x", title="t")
+    assert "**---------**" not in out
+
+
 def test_okr_section_survives_a_subheading():
     """`## 五、OKR` 下面还有 `### O` 小节——小节不能把表格截断掉。
 
@@ -164,3 +190,17 @@ def test_cross_cutting_mechanism_is_not_dropped():
     out = render_spec(p, feature_num=1, slug="repair-copilot", title="x")
     assert "确认闭环 + 闭环即评测" in out
     assert "合同审核" in out
+
+
+def test_problem_file_lookup_ignores_the_script_file(tmp_path):
+    """讲解稿和题解同题号，`-讲解稿` 在字典序里排在 `.md` 前面。
+
+    取错文件的后果很隐蔽：讲解稿里没有 L1 业务问题，`seed_spec` 直接报错退出，
+    spec 停在旧版本；而人只看"spec 存在"，看不出它已经过期。
+    """
+    script = tmp_path / "02-某某企业-某某场景-讲解稿.md"
+    problem_file = tmp_path / "02-某某企业-某某场景.md"
+    script.write_text("# 讲解稿", encoding="utf-8")
+    problem_file.write_text("# 题解", encoding="utf-8")
+
+    assert find_problem_file(tmp_path, 2) == problem_file

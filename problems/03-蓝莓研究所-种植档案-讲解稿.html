@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>题 03 · 蓝莓研究所 | 蓝莓种植的每一步，能不能都有据可查？</title>
+<style>
+:root{
+  --bg:#0e1316; --card:#141b1f; --line:rgba(255,255,255,.10);
+  --ink:#eae8e1; --ink2:#c3cbc7; --muted:#7f8c87; --accent:#6fbf9d; --warn:#d99a72;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1100px 620px at 10% -8%, rgba(111,191,157,.13), transparent 62%),
+    radial-gradient(900px 560px at 104% 106%, rgba(199,123,63,.11), transparent 58%),
+    linear-gradient(165deg,#12181b 0%,#0b0f12 100%);
+  color:var(--ink); font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;
+  font-size:15.5px; line-height:1.72; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.wrap{padding:0 40px}}
+header{padding:64px 0 34px;border-bottom:1px solid var(--line)}
+.kicker{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;letter-spacing:.18em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:16px}
+h1{font-size:clamp(27px,4.4vw,42px);line-height:1.24;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
+.lede{font-size:16.5px;color:var(--ink2);max-width:62ch}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.chip{font-family:"JetBrains Mono",Consolas,monospace;font-size:11.5px;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+nav{position:sticky;top:0;z-index:10;background:rgba(14,19,22,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);margin-bottom:12px}
+.navin{max-width:1000px;margin:0 auto;padding:10px 24px;display:flex;gap:6px;flex-wrap:wrap}
+@media(min-width:768px){.navin{padding:10px 40px}}
+nav a{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;color:var(--muted);
+  text-decoration:none;padding:4px 9px;border-radius:6px;border:1px solid transparent;transition:all .18s}
+nav a:hover{color:var(--accent);border-color:rgba(111,191,157,.3);background:rgba(111,191,157,.08)}
+section.scene{padding:40px 0;border-bottom:1px solid var(--line)}
+.scene-h{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+.no{font-family:"JetBrains Mono",Consolas,monospace;font-size:13px;color:var(--accent);
+  border:1px solid rgba(111,191,157,.3);border-radius:6px;padding:2px 9px;flex:none}
+h2{font-size:25px;line-height:1.32;font-weight:700}
+ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+li{position:relative;padding-left:20px;font-size:15px;color:var(--ink2)}
+li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);opacity:.6}
+.narr{background:var(--card);border:1px solid var(--line);border-left:2px solid var(--accent);
+  border-radius:0 12px 12px 0;padding:16px 20px;font-size:15.5px;color:var(--ink2)}
+.narr b{color:var(--ink);font-weight:600}
+.check{padding:40px 0 60px}
+.check h2{font-size:21px;margin-bottom:14px}
+.check ol{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.check ol li{counter-increment:s;padding-left:38px}
+.check ol li::before{content:counter(s);position:absolute;left:0;top:0;width:24px;height:24px;
+  border-radius:50%;background:rgba(111,191,157,.14);color:var(--accent);
+  font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;
+  display:flex;align-items:center;justify-content:center}
+footer{padding:26px 0 50px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
+footer .mono{font-family:"JetBrains Mono",Consolas,monospace;font-size:11.5px}
+</style></head><body>
+<header><div class="wrap">
+  <div class="kicker">FDE 训练营 · 讲解稿</div>
+  <h1>题 03 · 蓝莓研究所 | 蓝莓种植的每一步，能不能都有据可查？</h1>
+  <p class="lede">把标准条款变成可勾选的作业项，让每条农事都能倒查到那一次操作。</p>
+  <div class="meta">
+    <span class="chip">7 个场景</span>
+    <span class="chip">旁白 1294 字</span>
+    <span class="chip">1920x1080 同源画面</span>
+  </div>
+</div></header>
+<nav><div class="navin"><a href="#s1">01</a><a href="#s2">02</a><a href="#s3">03</a><a href="#s4">04</a><a href="#s5">05</a><a href="#s6">06</a><a href="#s7">07</a><a href="#check">怎么看</a></div></nav>
+<div class="wrap">
+<section class="scene" id="s1"><div class="scene-h"><span class="no">01</span><h2>记录记错了东西</h2></div><ul><li>记录停在纸本、微信群、Excel</li><li>这家单位是推广方，不只是农场</li><li>真正要留痕的是技术指导与培训</li></ul><p class="narr"><b>旁白</b>　记录不是没有，是记的不是能对照标准的东西。纸本田间记录本下雨就丢，微信群里发一张照片说今天打的这个药，没有地块、没有剂量、没有日期，Excel 一个技术员一份，列名都不一样。记录到地块加日期加一句话，没有对象，所以既判不了符不符合规范，也倒查不了品质波动的原因。还要记住这家单位不是农场，是技术推广方，它的产品是标准、品种、技术和培训，服务的地远远超过自己那几百亩。</p></section><section class="scene" id="s2"><div class="scene-h"><span class="no">02</span><h2>条款变成作业项</h2></div><ul><li>条款原文入库，模型不改写</li><li>条款拆成有触发条件的作业项</li><li>采前 N 天禁用某类药剂</li></ul><p class="narr"><b>旁白</b>　标准已经有了，《蓝莓栽培技术规范》2023 年 10 月过了技术审查，从品种选择、建园、定植、土肥水管理、修剪、病虫鸟害防治一直到采收都写到了。缺的是接口层，标准是文本，作业是散落的田间记录，中间没有可勾选、可判定的连接。我们把条款拆成有对象、有触发条件、有判定依据的作业项，比如采前多少天之内不得使用某类药剂。条款原文必须入库，模型不得改写条款文字，改写了就没法追责。</p></section><section class="scene" id="s3"><div class="scene-h"><span class="no">03</span><h2>拍照说一句</h2></div><ul><li>拍照加一句口述</li><li>农工只做确认，不写文档</li><li>低置信字段高亮，等人点头</li></ul><p class="narr"><b>旁白</b>　农工在地里拍一张现场照，再拍一张包装标签照，语音说一句三号地块 B 区今天打的什么药、稀释多少倍。语音转写之后由模型抽成农事类型、对象、时间和剂量，生成草稿，农工只做确认或者改，剂量和日期这类没把握的字段高亮，等人点头。原始照片和语音都留档，抽取结果只用来预填，不直接用来判定合不合规。所有记录挂到对象上：基地、地块、行、株，默认粒度是行，株级按需指定。</p></section><section class="scene" id="s4"><div class="scene-h"><span class="no">04</span><h2>切片按语义单元切</h2></div><ul><li>按语义单元切，不按固定长度</li><li>一片 = 一个作业项 + 前后邻居</li><li>建切片、对象、条款关系索引</li></ul><p class="narr"><b>旁白</b>　命题方点名的第一个毛病是切片关联度不够，根因是按固定长度切，条款和作业记录会被切散，检索回来半条规则没法用。改成按语义单元切：一片就是一个作业项，带条款号、条款原文、判定依据和适用对象，再把它的上一个作业项和下一个作业项一起带上，保留时序关系。切完建一张切片、对象、条款的关系索引，检索命中一片，就能顺着关系找到它管的那块地和那条标准。</p></section><section class="scene" id="s5"><div class="scene-h"><span class="no">05</span><h2>召回靠三路并起来</h2></div><ul><li>结构化过滤先砍掉不相关</li><li>向量 + BM25 + 过滤三路并集</li><li>召回不到阈值就说没有依据</li></ul><p class="narr"><b>旁白</b>　第二个毛病是召回准确率不达标，根因是只用向量检索，登记证号、条款号、药名这些关键词向量本来就不敏感。改成三路并起来：结构化过滤先按作物、生育期、地块、行、条款号砍掉不相关的，向量找表述相近的，BM25 匹配登记证号和条款号，再交叉重排。命中一条就把同一对象上的相邻切片扩出来，时序才完整。召回低于阈值就回一句没有依据，不硬凑条数。准不准用人工标的 100 条评测集量，标的口径由农艺师给。</p></section><section class="scene" id="s6"><div class="scene-h"><span class="no">06</span><h2>录入就断不合规的</h2></div><ul><li>禁限用、安全间隔期、剂量上限</li><li>规则来自清单和农艺师</li><li>不合规当场阻断并留痕</li></ul><p class="narr"><b>旁白</b>　投入品是不可核的黑箱，信息只在包装标签照片里，登记证号、成分、剂量、禁限用属性没有落成能比对的字段。所以录入这一刻就要过合规引擎：这个药在本作物禁不禁用，离采收过了安全间隔期没有，剂量超没超上限。不通过当场阻断，并且指出依据的是哪一条。规则只来自官方清单和农艺师，模型不许生成规则，也不许合理推断农药能不能用。护栏是不合规投入品入库存量为零，阻断记录就是这条护栏的数据来源。</p></section><section class="scene" id="s7"><div class="scene-h"><span class="no">07</span><h2>批次反查与交付留痕</h2></div><ul><li>采收批次反向展开出档案</li><li>对照表三列：符合、不符合、无记录</li><li>指导与培训也要有交付记录</li></ul><p class="narr"><b>旁白</b>　档案的价值在出证。抽一个采收批次，反向展开采前这段时间的全部作业和投入品，导出一份追溯档案：时间线、操作表、投入品清单、照片索引，同时给一张标准符合性对照表，三列是符合、不符合、无记录，无记录必须单列成缺项，不许默认通过。还有一块是技术指导与培训的交付记录，交付给谁、给了什么、覆盖多少面积、结果如何，也要挂到对象上。基地规模、农工用的是什么设备、投入品合规规则是否成文，这几样要 Day1 现场问。</p></section>
+<section class="check" id="check"><h2>怎么看</h2><ul><li>这篇稿子里的机制都能在 <code>problems/03-蓝莓研究所-种植档案.md</code> 的 L3 表里找到对应行，和题解对不上，先按题解改稿子。</li><li>场景 4 和场景 5 是命题方点名的 RAG 缺陷，这两场对应题解里的结构化层与检索层，评测集标的 100 条和准确率目标值都在题解里，核对时看那张 L3 表。</li><li>追溯档案对外交给谁、投入品合规规则是否成文、基地和农工的真实情况，题解标了待 Day1 现场确认，问农艺师和基地负责人，答案出来之前不要在稿子里填数。</li></ul></section>
+</div>
+<footer><div class="wrap">
+  <div class="mono">FDE 训练营 · 六道真题拆解 · 配套讲解视频与本页同源</div>
+  <div style="margin-top:6px">这一页和讲解视频用的是同一份场景数据（`tools/video/pipeline.py` 的解析结果），改稿子要重跑一次视频。</div>
+</div></footer>
+</body></html>

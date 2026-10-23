@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>题 02 · 申沃客车 | 申沃的智能驾驶，下一站开向哪里？</title>
+<style>
+:root{
+  --bg:#0e1316; --card:#141b1f; --line:rgba(255,255,255,.10);
+  --ink:#eae8e1; --ink2:#c3cbc7; --muted:#7f8c87; --accent:#6fbf9d; --warn:#d99a72;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1100px 620px at 10% -8%, rgba(111,191,157,.13), transparent 62%),
+    radial-gradient(900px 560px at 104% 106%, rgba(199,123,63,.11), transparent 58%),
+    linear-gradient(165deg,#12181b 0%,#0b0f12 100%);
+  color:var(--ink); font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;
+  font-size:15.5px; line-height:1.72; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.wrap{padding:0 40px}}
+header{padding:64px 0 34px;border-bottom:1px solid var(--line)}
+.kicker{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;letter-spacing:.18em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:16px}
+h1{font-size:clamp(27px,4.4vw,42px);line-height:1.24;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
+.lede{font-size:16.5px;color:var(--ink2);max-width:62ch}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.chip{font-family:"JetBrains Mono",Consolas,monospace;font-size:11.5px;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+nav{position:sticky;top:0;z-index:10;background:rgba(14,19,22,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);margin-bottom:12px}
+.navin{max-width:1000px;margin:0 auto;padding:10px 24px;display:flex;gap:6px;flex-wrap:wrap}
+@media(min-width:768px){.navin{padding:10px 40px}}
+nav a{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;color:var(--muted);
+  text-decoration:none;padding:4px 9px;border-radius:6px;border:1px solid transparent;transition:all .18s}
+nav a:hover{color:var(--accent);border-color:rgba(111,191,157,.3);background:rgba(111,191,157,.08)}
+section.scene{padding:40px 0;border-bottom:1px solid var(--line)}
+.scene-h{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+.no{font-family:"JetBrains Mono",Consolas,monospace;font-size:13px;color:var(--accent);
+  border:1px solid rgba(111,191,157,.3);border-radius:6px;padding:2px 9px;flex:none}
+h2{font-size:25px;line-height:1.32;font-weight:700}
+ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+li{position:relative;padding-left:20px;font-size:15px;color:var(--ink2)}
+li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);opacity:.6}
+.narr{background:var(--card);border:1px solid var(--line);border-left:2px solid var(--accent);
+  border-radius:0 12px 12px 0;padding:16px 20px;font-size:15.5px;color:var(--ink2)}
+.narr b{color:var(--ink);font-weight:600}
+.check{padding:40px 0 60px}
+.check h2{font-size:21px;margin-bottom:14px}
+.check ol{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.check ol li{counter-increment:s;padding-left:38px}
+.check ol li::before{content:counter(s);position:absolute;left:0;top:0;width:24px;height:24px;
+  border-radius:50%;background:rgba(111,191,157,.14);color:var(--accent);
+  font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;
+  display:flex;align-items:center;justify-content:center}
+footer{padding:26px 0 50px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
+footer .mono{font-family:"JetBrains Mono",Consolas,monospace;font-size:11.5px}
+</style></head><body>
+<header><div class="wrap">
+  <div class="kicker">FDE 训练营 · 讲解稿</div>
+  <h1>题 02 · 申沃客车 | 申沃的智能驾驶，下一站开向哪里？</h1>
+  <p class="lede">把散在硬盘里的素材和参数，变成能查、能审、能算效果的内容流水线。</p>
+  <div class="meta">
+    <span class="chip">7 个场景</span>
+    <span class="chip">旁白 1256 字</span>
+    <span class="chip">1920x1080 同源画面</span>
+  </div>
+</div></header>
+<nav><div class="navin"><a href="#s1">01</a><a href="#s2">02</a><a href="#s3">03</a><a href="#s4">04</a><a href="#s5">05</a><a href="#s6">06</a><a href="#s7">07</a><a href="#check">怎么看</a></div></nav>
+<div class="wrap">
+<section class="scene" id="s1"><div class="scene-h"><span class="no">01</span><h2>素材躺在硬盘里</h2></div><ul><li>素材躺在硬盘和微信群里</li><li>只有文件名，没有场景标签</li><li>每篇都要重新找素材、问参数</li></ul><p class="narr"><b>旁白</b>　市场部要写内容，第一件事不是写，是找素材。路测视频、场景 Demo、车队里程、接管事件、测试报告，这些东西躺在测试同事的电脑、共享盘和微信群里，名字是文件名，没有场景标签，没有时点，没有授权状态。写稿之前还要去问技术同事参数和口径，问一次断一次。最贵的不是写稿，是每篇都要重新找素材、重新问参数。所以下个月再写，还是从零开始。</p></section><section class="scene" id="s2"><div class="scene-h"><span class="no">02</span><h2>讲得出参数，讲不出价值</h2></div><ul><li>叙事骨架：城市线路到运营结果</li><li>每环挂一个指标和一个证据</li><li>四种受众四种讲法</li></ul><p class="narr"><b>旁白</b>　智能驾驶是最难讲清楚的资产，因为一讲参数就掉进自动驾驶、激光雷达、算力这一堆词。但 RoboBus 的价值不在参数，在运营这条线上：哪条城市线路，车队怎么调度，乘客怎么预约，运营方最后拿到了什么结果。所以叙事骨架是固定四环：城市和线路、车队与调度、乘客预约端、运营方的结果，每一环挂一个能量化的运营指标和一个证据来源。同一个事实，面对公交运营方、乘客、媒体、政府是四种讲法，只换表达和例子，不换事实。</p></section><section class="scene" id="s3"><div class="scene-h"><span class="no">03</span><h2>账号分三层</h2></div><ul><li>品牌号 + KOL + KOC 三层</li><li>按场景切内容，不按产品切</li><li>账号权限和口径进一张表</li></ul><p class="narr"><b>旁白</b>　企业品牌不是一个人偶尔跑出一篇爆款就结束了，所以我们搭三层账号：品牌账号自己讲产品和场景，KOL 讲行业深度和解读，KOC 讲真实乘坐和使用。三层各有各的权限和口径，品牌号能说什么，哪些话题留给 KOL，KOC 的内容要过哪几道检查，都写在一张表里，不靠群里喊一声。可以参考新能源品牌的做法，是把内容按场景切而不是按产品切，因为场景才是用户会搜、会转、会记住的东西。</p></section><section class="scene" id="s4"><div class="scene-h"><span class="no">04</span><h2>投放怎么接</h2></div><ul><li>接巨量引擎和千川做投放</li><li>投放前先有选题编号</li><li>按场景拆投放效果</li></ul><p class="narr"><b>旁白</b>　投放侧接巨量引擎和千川，但接法和做投放代理不一样。千川和巨量引擎负责把内容送到人面前，我们负责的是送之前那一段：这条内容对应哪个选题、哪个场景、面向哪一层人、依据哪条事实。所以顺序是先有选题编号，再去配定向和出价，不是先投了再补素材信息。这样投放数据回来，才知道是哪一类场景的内容有效，反过来改下一轮选题。</p></section><section class="scene" id="s5"><div class="scene-h"><span class="no">05</span><h2>参数只有一个出处</h2></div><ul><li>对外数字只有一个出处</li><li>正文只写占位符</li><li>合规两道校验 + 人工签字</li></ul><p class="narr"><b>旁白</b>　对外能讲的数字，参数、里程、车辆数、接管率，现在散在 PPT、测试报告和同事口述里，版本和时点都不明。做法是建一张对外口径卡，每个数字一个唯一编号，带版本、生效日期和停用标记。正文里不许直接写数字，只能写占位符，校验器逐项比对口径卡，没替换或者不一致就阻断。合规这一层是两道，规则正则查绝对化用语，模型判语义，拦截清单要有人签字放行。一次对外参数错误就是一次公开事故，而且往往发布之后才发现。</p></section><section class="scene" id="s6"><div class="scene-h"><span class="no">06</span><h2>舆情和调性</h2></div><ul><li>舆情用平台工具加人工看</li><li>每天一张提及量与情绪表</li><li>调性管控发布前发布后两道</li></ul><p class="narr"><b>旁白</b>　舆情和调性不是发完就完了。舆情分析我们用平台自带的舆情工具加人工定时看两条路，不另建一套舆情系统；每天把关键词的提及量、情绪和来源平台拉一张表，异常上升就回溯当天发了什么、哪条内容引起的。调性管控分两道，发布前靠红线校验拦住绝对化用语、未经证实的承诺和越界的竞品比较，发布后靠舆情表看有没有跑偏的口径。两条都指向同一张对外口径卡，所以对外说法只有一份。</p></section><section class="scene" id="s7"><div class="scene-h"><span class="no">07</span><h2>效果回流</h2></div><ul><li>发布时绑定选题编号</li><li>算到题材和场景，不算单篇</li><li>弃用理由变成下一篇约束</li></ul><p class="narr"><b>旁白</b>　内容发出去以后，各平台后台的数据和内容之间没有联系，所以选题只能凭直觉。我们做的是发布时就把选题编号、场景标签、题材、时长、平台和发布时间写进发布记录，平台数据回填到同一张表，算效果时算到题材和场景这一层，不算单篇，单篇样本太少。存量内容先回标一批，把第一版什么有效的底子建出来。市场部每次审稿记录采用、轻改、重写还是弃用，弃用理由是最贵的信号，会变成下一篇内容的约束。</p></section>
+<section class="check" id="check"><h2>怎么看</h2><ul><li>这篇稿子里的机制都能在 <code>problems/02-申沃客车-智能驾驶内容工厂.md</code> 的 L3 表里找到对应行，和题解对不上，先按题解改稿子。</li><li>宣讲会点名要做的舆情分析和调性管控，题解原本把舆情监控划在范围外，这篇按宣讲会的口径写，改成了用平台现成工具加人工看，不另建系统，两边不冲突。</li><li>市场部考核什么、线索怎么定义、对外可讲的数字由谁签字，这三件事题解标了待 Day1 现场确认，问市场部负责人，答案出来之前不要在稿子里填数。</li></ul></section>
+</div>
+<footer><div class="wrap">
+  <div class="mono">FDE 训练营 · 六道真题拆解 · 配套讲解视频与本页同源</div>
+  <div style="margin-top:6px">这一页和讲解视频用的是同一份场景数据（`tools/video/pipeline.py` 的解析结果），改稿子要重跑一次视频。</div>
+</div></footer>
+</body></html>

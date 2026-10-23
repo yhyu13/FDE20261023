@@ -44,3 +44,7 @@ data/
 samples/
 !data/README.md
 out/
+
+# 视频构建中间产物（frames/audio/html/timeline 都不入库，只留成片）
+build/
+temp/

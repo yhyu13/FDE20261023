@@ -371,6 +371,71 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
 
     <div style="height:16px"></div>
     <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
+      <div class="tree">
+        <div class="tree-l1"><span class="lv">L1</span><p>现场报修了，为什么还要从头查起？</p></div>
+        <ul class="tree-l2">
+          <li>
+            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">经验只存在于人脑，不存在于可检索系统</span></div>
+            <p class="l2why">根因：老师傅的排查顺序是口述的隐性知识；录成文字成本高，无人整理，离职即带走</p>
+            <ul class="tree-l3">
+              <li><b>经验条目化工作台</b>：老师傅口述/现场随手记录 → ASR 转写 + LLM 代拟成标准条目（现象/可能原因/排查顺序/禁忌/所需备件）→ 老师傅只做"确认/改"，不做撰写
+                <span class="reuse"><em>同族复用</em> · 任何"经验随人走"的场景：新产品工艺规程、老师傅质检判据、老中医经验方</span></li>
+              <li><b>经验结构化为可执行排查路径</b>：不是写成一段话，而是写成有序步骤树（分支条件 → 下一步），每步带观测点与判定标准
+                <span class="reuse"><em>同族复用</em> · 设备点检 SOP、巡检路线编排、应急预案决策树</span></li>
+              <li><b>经验与工单双向绑定</b>：一条经验条目 = 一条带型号/规格与故障域上下文的排查路径；工单可反向引用它
+                <span class="reuse"><em>同族复用</em> · 质量事故案例库、新员工带徒教材、审计举证</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">工单 / 报警码（故障码）/ 手册 / 型号（规格）四种载体彼此不连通</span></div>
+            <p class="l2why">根因：现象、码、部件、型号/规格、章节各自成表，查询时临时拼接</p>
+            <ul class="tree-l3">
+              <li><b>工单本体（Ontology）</b>：用业务语言定义 RepairObject / Fault / AlarmCode(FaultCode) / RepairAction / Part / Technician / WorkOrder / ManualSection，并提前固化关联（型号/规格↔手册版本↔章节、现象↔码↔部件、订单↔备件↔技师）
+                <span class="reuse"><em>同族复用</em> · 通用"制造/服务/巡检"对象模型；换行业只换实体名</span></li>
+              <li><b>主数据统一编码</b>：料号、报警码/故障码、手册章节号、型号/规格配置各给唯一 ID 与版本；变更有生效日期
+                <span class="reuse"><em>同族复用</em> · 备件主数据、设备台账、固定资产编码统一</span></li>
+              <li><b>型号/规格约束强制校验</b>：任何检索与建议都必须带型号/规格/配置过滤；无匹配则明确说"无手册依据"，不猜
+                <span class="reuse"><em>同族复用</em> · 多规格多配置产品的选型与报价防错</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">现场输入的口径与知识库口径对不上</span></div>
+            <p class="l2why">根因：技师说"起步发闷"，码表写"P0AA6"，手册写"驱动系统功率限制"（设备侧同理：口语现象 / 报警码 / 手册描述三套说法）</p>
+            <ul class="tree-l3">
+              <li><b>现象 ↔ 报警码/故障码映射表</b>：人工维护主干（码 → 标准现象描述），从历史工单反向挖掘补充同义映射；技师输入先做症状归一化再进检索
+                <span class="reuse"><em>同族复用</em> · 客服工单分类、售后问诊分流、设备报警代码归一</span></li>
+              <li><b>检索双过滤 + 混合召回</b>：结构化过滤（型号/规格/码域）+ 语义召回（手册语言）+ 关键词召回（料号/码）三路并集后重排
+                <span class="reuse"><em>同族复用</em> · 法规/标准/合同条款检索</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">派工与技师能力没有数据化</span></div>
+            <p class="l2why">根因：靠班长对"谁熟哪型号、哪类故障"的记忆</p>
+            <ul class="tree-l3">
+              <li><b>技师技能画像</b>：从历史工单反推每名技师的"擅长故障域 × 熟悉型号/规格 × 认证资质 × 通过率"
+                <span class="reuse"><em>同族复用</em> · 岗位胜任力画像、招聘匹配、外包队伍能力评估</span></li>
+              <li><b>派工匹配打分 + 理由生成</b>：得分 = 技能匹配 + 故障域重合 + 班次可用 + 资质合规，输出 Top-N 与选他/不选他的理由
+                <span class="reuse"><em>同族复用</em> · 抢单派单、值班排班、维修工程师分派</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">横贯</span>
+<span class="t">回写闭环 + 闭环即评测</span></div>
+            <p class="l2why">跨 L2 的横贯机制</p>
+            <ul class="tree-l3">
+              <li><b>回写闭环 + 闭环即评测</b>：技师勾选执行的步骤与最终原因回写工单；每条闭环工单自动成为评测样本；误判案例回流为 few-shot 与规则修正
+                <span class="reuse"><em>同族复用</em> · 所有"人在回路"的 AI 系统通用：合同审核、质检判定、客服工单</span></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <p class="count">L2 = 4 条能力缺口 · L3 = 11 条机制 · KR 7 条</p>
+    </div>
+
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 → L2 → L3</h3>
       <div class="tree">
         <div class="tree-l1"><span class="lv">L1</span><p>现场报修了，为什么还要从头查起？</p></div>
@@ -522,6 +587,68 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
       <span class="tag">多模态打标</span><span class="tag">品牌知识库 RAG</span><span class="tag">内容 Agent 流水线</span>
       <span class="tag">参数与合规校验</span><span class="tag">选题级归因</span><span class="tag">审核台</span><span class="tag grey">Echo 主导题</span>
     </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
+      <div class="tree">
+        <div class="tree-l1"><span class="lv">L1</span><p>申沃的智能驾驶，下一站开向哪里？</p></div>
+        <ul class="tree-l2">
+          <li>
+            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">素材与运营数据没有变成可检索的场景事实</span></div>
+            <p class="l2why">根因：售后侧虽已有零代码试点，但市场侧的素材仍是视频、里程、接管事件这些非结构化或半结构化资产，只以文件名与口述存在；没有场景标签、没有出处、没有时点</p>
+            <ul class="tree-l3">
+              <li><b>多模态素材场景打标管线</b>：视频抽帧 → VLM 生成场景描述 → 归一为受控标签（天气 / 路段 / 交通参与者 / 车型 / 城市 / 线路 / 是否接管）+ 人工纠正回写
+                <span class="reuse"><em>同族复用</em> · 任何"素材躺在硬盘"的库：展会演示录像、现场施工照片、培训录像、产品开箱视频</span></li>
+              <li><b>事实原子抽取与归一</b>：把测试报告、车队台账、口述补充抽成结构化事实原子 主体 + 指标 + 数值 + 口径 + 时点 + 出处；同名指标只留一条，多条并存显式标"口径分歧"
+                <span class="reuse"><em>同族复用</em> · 财报关键数据抽取、招投标参数归集、质检报告指标入库、产品参数表治理</span></li>
+              <li><b>结构化过滤 + 文本检索双索引</b>：按城市 / 线路 / 天气 / 车型做结构化过滤 + 自然语言语义召回；命中回跳视频时间戳；没标签 = 不存在
+                <span class="reuse"><em>同族复用</em> · 素材库、工程影像库、案例库、投标文件库</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">讲得出参数，讲不出运营价值</span></div>
+            <p class="l2why">根因：内容停在"自动驾驶 / 激光雷达 / 算力"的概念与技术层；RoboBus 的价值在运营链路（城市线路、车队调度、乘客预约、运营方结果），这条链路没有被翻译成内容语言</p>
+            <ul class="tree-l3">
+              <li><b>运营场景价值主张结构化</b>：把 RoboBus 运营链拆成 城市/线路 → 车队与调度 → 乘客预约端 → 运营方结果 四环，每环绑定一个可量化运营指标 + 一个证据锚
+                <span class="reuse"><em>同族复用</em> · 任何 To G / To B 产品的"能力 → 运营结果"映射：云厂商、政务 SaaS、工业设备</span></li>
+              <li><b>场景故事骨架</b>：固定骨架 谁 · 在什么路况/时刻 · 遇到什么 · 车怎么应对 · 乘客或运营方得到什么 · 证据来自哪；骨架固定、表达可换
+                <span class="reuse"><em>同族复用</em> · 客户案例故事、展会解说稿、战报、对外版故障复盘</span></li>
+              <li><b>受众分讲法改写</b>：同一事实核心，面向公交公司运营方 / 乘客 / 媒体 / 政府四种讲法不同；只换表达与例子，不换事实
+                <span class="reuse"><em>同族复用</em> · 发布会多受众材料、投资者 / 客户 / 媒体三套说明</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">对外事实没有唯一版本与出处，发布前拦不住</span></div>
+            <p class="l2why">根因：参数、里程、车辆数、接管率散在 PPT、测试报告、同事口述里，版本与时点不明；多端改写靠复制粘贴，口径逐版漂移；合规红线没有可执行清单</p>
+            <ul class="tree-l3">
+              <li><b>对外口径卡（唯一权威事实表）</b>：每个可对外的数字与承诺有唯一 ID、当前版本、生效日期、停用标记；检索强制过滤"当前在售车型 + 当前生效版本"
+                <span class="reuse"><em>同族复用</em> · 对外说明书、价目表、服务承诺口径、对外白皮书</span></li>
+              <li><b>正文占位符 + 发布前一致性校验</b>：正文里的数字只允许来自 {{fact_id}} 占位符；校验器逐项比对口径卡，未替换占位符或不一致即阻断
+                <span class="reuse"><em>同族复用</em> · 财报解读、投标文件、ESG 报告、对外白皮书</span></li>
+              <li><b>合规红线双层校验 + 人工签字</b>：禁用词表 + 规则正则 + LLM 语义判定（绝对化用语、未经证实的承诺、竞品比较边界）；拦截清单必须有人签字放行
+                <span class="reuse"><em>同族复用</em> · 广告合规、招聘 JD、外资披露材料、平台运营规范</span></li>
+              <li><b>舆情与调性管控</b>：平台舆情工具 + 人工定时看两条路；发布前红线校验拦绝对化用语与越界竞品比较，发布后异常上升回溯当天发了什么；舆情不进内容生成链路，只做发布后的看和发布前的拦
+                <span class="reuse"><em>同族复用</em> · 通用"对外内容合规"：法务审稿、政务发布、上市公司 IR 口径、平台社区运营</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">内容效果不回流，选题只能凭直觉</span></div>
+            <p class="l2why">根因：发布后各平台数据与内容之间没有绑定，"哪类题材 / 哪个场景有效"没人答得出来；市场部的采纳与弃用意见也没留痕</p>
+            <ul class="tree-l3">
+              <li><b>发布即绑定选题 ID + 效果回填</b>：发布时写入 选题ID / 场景标签 / 题材 / 时长 / 平台 / 发布时间；各平台数据手工或接口回填进同一张表
+                <span class="reuse"><em>同族复用</em> · 活动投放、电商详情页、SEO 内容、雇主品牌</span></li>
+              <li><b>选题级归因 + 存量内容回标</b>：归因到可聚合的题材 / 场景 / 平台，而非单篇；存量内容回标建第一版"什么有效"基线
+                <span class="reuse"><em>同族复用</em> · 内容复盘、投放素材效果回流、渠道组合分析</span></li>
+              <li><b>采纳率回流校准</b>：审核台记录"采用 / 轻改 / 重写 / 弃用 + 原因"，回流成 few-shot 与风格约束；弃用理由是最贵的训练信号
+                <span class="reuse"><em>同族复用</em> · 任何人机共写场景：客服话术、法务文书初稿、财报点评</span></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <p class="count">L2 = 4 条能力缺口 · L3 = 13 条机制 · KR 9 条</p>
+    </div>
+
 
     <div style="height:16px"></div>
     <div class="card" style="margin-bottom:16px">
@@ -682,6 +809,84 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
 
     <div style="height:16px"></div>
     <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
+      <div class="tree">
+        <div class="tree-l1"><span class="lv">L1</span><p>蓝莓种植的每一步，能不能都有据可查？</p></div>
+        <ul class="tree-l2">
+          <li>
+            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">农事记录没有对象化，"标准"落不到现场动作上</span></div>
+            <p class="l2why">根因：记录形态是"地块 + 日期 + 一句话"，没有品种/生育期/地块/行/株/农事批次/采收批次这些对象，标准条款挂不到具体动作上</p>
+            <ul class="tree-l3">
+              <li><b>农事本体（Ontology 三步法）</b>：Objects（Farm / Block / Row / Bush / Operation / Input / HarvestBatch / Quality / Clause）→ Links（Block→Row→Bush、Operation→Block·Bush、HarvestBatch→Operation+Quality、Clause→Operation）→ Actions+Write-back（确认即写入、作废即改）
+                <span class="reuse"><em>同族复用</em> · 通用"种植/养护"对象模型；换行业只换实体名（设备/模具/批次/客户同一套结构）</span></li>
+              <li><b>标准条款 → 可勾选作业项</b>：把《蓝莓栽培技术规范》拆成有对象、有触发条件、有判定依据的作业项（如"采前 N 天内不得使用某类药剂"），条款原文与判定口径一起入库
+                <span class="reuse"><em>同族复用</em> · 任何"标准/规范/规程"落到现场的场景：施工工艺卡、检验规程、EHS 检查项、内审条款</span></li>
+              <li><b>确认式采集（拍照 + 一句话）</b>：拍照或语音口述 → ASR+VLM 抽成草稿 → 农工只做"确认/改" → 低置信字段高亮 → 写入对象
+                <span class="reuse"><em>同族复用</em> · 任何"现场零散输入"的场景：巡检打卡、仓储收货、实验记录、设备点检</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">投入品是不可核的黑箱</span></div>
+            <p class="l2why">根因：农药/肥料/水的信息只存在于包装标签照片里，登记证号、成分、剂量、禁限用属性没有落成可比对的字段</p>
+            <ul class="tree-l3">
+              <li><b>投入品主数据 + 包装标签 OCR 管线</b>：从包装/标签照读产品名、成分、登记证号、剂量 → 映射投入品主数据 → 登记证号与禁限用属性由人工补录确认
+                <span class="reuse"><em>同族复用</em> · 任何"标签即主数据"的场景：建材质保书、危化品 SDS、兽药疫苗、试剂耗材</span></li>
+              <li><b>合规规则引擎（禁限用 + 安全间隔期）</b>：规则来自官方清单与农艺师，模型不得臆造；录入即校验，不通过当场阻断并指出依据条款
+                <span class="reuse"><em>同族复用</em> · 任何有硬性约束的场景（药、证、票、危化品、超期资质）</span></li>
+              <li><b>投入品—采收批次关联台账</b>：每条投入品使用记录绑定对象 + 时间；采收批次反向展开"采前 N 天内的全部投入品"
+                <span class="reuse"><em>同族复用</em> · 食品安全抽检溯源、农残速测异常溯源、追溯召回范围圈定</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">技术指导与培训交付过程没有留痕</span></div>
+            <p class="l2why">根因：品种推荐、栽培方案、建园指导、田间学校授课是这家单位的"产品"，但交付给谁、给了什么、覆盖多少面积、结果如何，几乎没有记录</p>
+            <ul class="tree-l3">
+              <li><b>技术指导交付记录</b>：每次指导登记：指导对象（合作社 / 农户 / 新基地）、方式（现场 / 电话 / 田间学校）、交付物（栽培方案 / 种苗建议 / 建园指导）、面积与株数、交付人
+                <span class="reuse"><em>同族复用</em> · 技术服务型组织通用：设备维保商技术服务单、咨询公司顾问工单、检测机构委托单</span></li>
+              <li><b>培训场次台账</b>：课次、学员名单与人数、教材版本、签到、考核结果
+                <span class="reuse"><em>同族复用</em> · 企业内训、农机校/驾校、职业院校课程记录</span></li>
+              <li><b>指导闭环与复访回流</b>：指导后按节点回访（成活率、产量、品质），复访结论回流修订方案与教材
+                <span class="reuse"><em>同族复用</em> · 售后回访、慢病随访、农户随访、会员复购跟进</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">农事与品质、成效指标不在同一时间轴上</span></div>
+            <p class="l2why">根因：出现糖度、硬度、商品率波动时，无法定位到某次施氮、打药或灌溉；示范区的亩产/增产/辐射面积/培训人次也散在不同报表里</p>
+            <ul class="tree-l3">
+              <li><b>植株/批次级时序视图</b>：农事、投入品、品质指标落在同一时间轴上，按株 / 行 / 批次查询
+                <span class="reuse"><em>同族复用</em> · 通用"资产时序档案"：设备履历、批次质量谱、客户跟进史</span></li>
+              <li><b>相关性归因提示（只提示不下结论）</b>：计算投入品暴露与品质指标的同期共现与相关性，输出"可能相关 + 样本量 + 区间"；文案统一写"提示 / 相关"
+                <span class="reuse"><em>同族复用</em> · 通用"多因素同期共现"提示：工单与返修、巡检与故障、投放与转化</span></li>
+              <li><b>成效指标台账</b>：示范区亩产/增产/辐射面积/培训人次/种苗销量统一口径入库，支持按品种、区域、年度对比
+                <span class="reuse"><em>同族复用</em> · 项目后评价、示范区验收、推广成效统计、专项资金绩效报告</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">横贯</span>
+<span class="t">确认闭环 + 闭环即评测</span></div>
+            <p class="l2why">跨 L2 的横贯机制</p>
+            <ul class="tree-l3">
+              <li><b>确认闭环 + 闭环即评测</b>：每条记录带确认人与确认时间；未确认不计入统计；否认样本回流成 few-shot 与评测集；历史人工记录回测作为基线
+                <span class="reuse"><em>同族复用</em> · 任何"AI 出草稿、人来定稿"的通用闭环（合同审核、质检判定、客服工单）</span></li>
+            </ul>
+          </li>
+          <li>
+            <div class="l2hd"><span class="lv g">横贯</span>
+<span class="t">知识库切片与三路召回</span></div>
+            <p class="l2why">跨 L2 的横贯机制</p>
+            <ul class="tree-l3">
+              <li><b>知识库切片与三路召回</b>：按业务对象切（一片 = 一个作业项，带条款号、判定依据、上下游）；召回走结构化过滤 + 向量 + BM25 三路并起再重排；建切片-对象-条款关系索引；召回不到就说没有依据，不许拿相似条款顶替
+                <span class="reuse"><em>同族复用</em> · 通用"切分策略决定召回上限"：制度问答、合同检索、SOP 检索、故障库检索</span></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <p class="count">L2 = 4 条能力缺口 · L3 = 14 条机制 · KR 8 条</p>
+    </div>
+
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
       <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 → L2 → L3</h3>
       <div class="tree">
         <div class="tree-l1"><span class="lv">L1</span><p>蓝莓种植的每一步，能不能都有据可查？</p></div>
@@ -838,106 +1043,7 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
     </div>
 
     <div style="height:16px"></div>
-    <div class="card" style="margin-bottom:16px">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
-      <div class="tree">
-        <div class="tree-l1"><span class="lv">L1</span><p>报价各说各话，工程分包怎么比？</p></div>
-        <ul class="tree-l2">
-          <li>
-            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">报价单与基准清单之间没有统一的行结构</span></div>
-            <p class="l2why">根因：每家表结构、品名写法、计量颗粒度都不同（有的把桩基检测按桩计、有的按米计；有的合并报、有的拆细报）</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">各家的"总价"不是同一件事（口径不可比）</span></div>
-            <p class="l2why">根因：含税/不含税、含不含运费、含不含甲供材、措施费、暂列金、暂估价、计价依据版本（GB/T 50500-2024 还是旧版）各报各的</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">漏项与多项不可见</span></div>
-            <p class="l2why">根因：少报的项目是后期变更与索赔的来源；多报、拆分合并导致错配与重复计价</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">台账数字不可溯源、评审过程不留痕</span></div>
-            <p class="l2why">根因：台账要签字、要追责、要经得起采购评审与审计；但数字来源目前靠人记，改动看不出谁改的</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <p class="count">L2-1 → 3 条，L2-2 → 3 条，L2-3 → 2 条，L2-4 → 2 条，横贯 → 2 条。L3 是 12 条机制，不是 12 个 L2。 L2 保持 4 条不变，这是深度控制。</p>
-    </div>
-
-
-    <div class="grid2">
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：口径不同，"最低价"不是真最低</h3>
-        <p>各家报价格式不一：Excel 各有模板、PDF 有扫描件、含不含税、含不含运费与甲供材、品名写法不同、有的漏项。人工归集成一张台账要两天，量一大人就错。</p>
-        <ul class="ticks">
-          <li><b>同物不同名</b>："镀锌钢管" = "DN50 镀锌管"</li>
-          <li><b>单位混用</b>：吨/米/根、含税/不含税、合计写万元</li>
-          <li><b>少报活</b>：后期变更索赔的来源</li>
-          <li><b>数字没人信</b>：改过看不出，出处追不回</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：报价归集与比选台账系统</h3>
-        <dl class="kv">
-          <dt>基准</dt><dd>我方招标/工程量清单（映射基准，不要求各家重报）</dd>
-          <dt>输出</dt><dd>原始价 / 归一价 / 可比单价 三视图 + 漏项清单 + 异常清单</dd>
-          <dt>溯源</dt><dd>每个数字回链 原文件 → 页/单元格 → 原文片段 → 置信度</dd>
-          <dt>自动化</dt><dd>目标 ~70%，剩 30% 留给人</dd>
-          <dt>红线</dt><dd>所有算术由代码完成，LLM 只抽字段</dd>
-        </dl>
-      </div>
-    </div>
-
-    <div style="height:16px"></div>
-    <div class="card" style="margin-bottom:16px">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一份报价单的一生</h3>
-      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
-        <svg viewBox="0 0 900 200" role="img" aria-label="题04 架构：报价单经解析与源定位进入口径归一，再经漏项比对与异常检测进入人工确认队列，最终生成可溯源的比选台账">
-          <g>
-            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="13" y="30">PARSE</text>
-            <text class="flow-t" x="13" y="52">Excel·PDF·扫描件</text>
-            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="198" y="30">NORMALIZE</text>
-            <text class="flow-t" x="198" y="52">口径与金额归一</text>
-            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="383" y="30">VALIDATE</text>
-            <text class="flow-t" x="383" y="52">漏项 diff + 异常</text>
-            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="568" y="30">CONFIRM</text>
-            <text class="flow-t" x="568" y="52">低置信人工确认</text>
-            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="753" y="30">DELIVER</text>
-            <text class="flow-t" x="753" y="52">比选台账 + 溯源</text>
-          </g>
-          <g class="flow-arrow" marker-end="url(#ar)">
-            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
-            <path d="M820,68 L820,96 L80,96 L80,68"/>
-          </g>
-          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
-          <text class="flow-t" x="16" y="121">未确认的行不得进台账主表：解析置信度 × 匹配置信度 × 口径明确性</text>
-          <text class="flow-lbl" x="16" y="140">算术一律走确定性代码；模型一旦参与算钱，数字就不可信，而每个数字都要签字。</text>
-          <g>
-            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
-            <text class="flow-t" x="13" y="187">兜底</text>
-            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
-            <text class="flow-t" x="463" y="187">护栏</text>
-          </g>
-          <text class="flow-lbl" x="60" y="187">拿不到口径规则表就不进入开发，改为和商务一起写出来</text>
-          <text class="flow-lbl" x="510" y="187">越权自动确认数 = 0</text>
-        </svg>
-      </div>
-    </div>
-
-    <div class="grid2">
+        <div class="grid2">
       <div class="card">
         <h3>OKR</h3>
         <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让多份口径不同的分包报价，在两小时内变成一张可评审、可签字、可追溯的比选台账。</p>
@@ -982,227 +1088,7 @@ footer .mono{font-family:var(--mono);font-size:11.5px}
     </div>
 
     <div style="height:16px"></div>
-    <div class="card" style="margin-bottom:16px">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
-      <div class="tree">
-        <div class="tree-l1"><span class="lv">L1</span><p>上百张现场照片，隐患藏在哪一张？</p></div>
-        <ul class="tree-l2">
-          <li>
-            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">照片没有对象链，工序/部位/问题三个维度落不进照片</span></div>
-            <p class="l2why">根因：业务问题 ①</p>
-            <ul class="tree-l3">
-              <li><b>照片资产化管线（去重 → 废片 → EXIF → 归集）</b>：pHash 汉明距离去重并保留最清晰一张；Laplacian 方差 + 亮度分布筛废片（归"待清理"，不直接删）；EXIF 抽时间 / GPS / 设备
-                <span class="reuse"><em>同族复用</em> · 与行业无关：巡检、仓储、零售、工地质检、文物普查通用</span></li>
-              <li><b>项目—勘探点—工序对象链（Ontology 三步法）</b>：Objects（Project → Site → Borehole/ExplorationPoint → Process → Photo → Shot）→ Links（照片 ↔ 勘探点 ↔ 工序 ↔ 隐患类别 ↔ 记录）→ Actions+Write-back（挂载 / 标记 / 整改回写）
-                <span class="reuse"><em>同族复用</em> · 通用"影像资产对象化"模型：设备履历影像、检测批次影像、案件现场照</span></li>
-              <li><b>勘探点编号主数据 + 唯一性校验</b>：勘探点/测试点/观测点统一编号模式与主数据；同一场地内重复编号直接告警（按同类标准"编号不得重复"）
-                <span class="reuse"><em>同族复用</em> · 通用"编号唯一性"做法：设备位号、批次号、单据号、车辆牌号</span></li>
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">孔号、标牌、风险线索只能逐张翻找</span></div>
-            <p class="l2why">根因：业务问题 ②</p>
-            <ul class="tree-l3">
-              <li><b>孔号 / 标牌 / 岩芯照片 OCR 管线</b>：文字检测 + 识别；透视与反光预处理；输出文本 + bbox + 置信度；对孔号做格式校验 + 与点位台账映射，映射不到挂"待归集"
-                <span class="reuse"><em>同族复用</em> · 设备铭牌、资产标签、集装箱铅封、仓储货位编号通用</span></li>
-              <li><b>照片合规前置检查（可机械判定）</b>：按归档口径逐条核：① 像素尺寸 ≥ 2500×2000 且未剪辑；② 是否带钻孔编号；③ 是否带标尺或参照物；④ 编号是否在点位台账里。不合规 → 进不了归档链，只能回现场补拍
-                <span class="reuse"><em>同族复用</em> · 任何"原始证据/影像归档"场景：试验影像、检测影像、验收影像</span></li>
-              <li><b>OCR 文本入索引 + 混合检索</b>：OCR 文本、隐患标签、时间、项目 / 勘探点 / 工序全部同索引；向量召回与结构化过滤可叠加
-                <span class="reuse"><em>同族复用</em> · 通用"把图里的字变成可检索字段"：票据、图纸、公示栏</span></li>
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">隐患判定没有权威口径，新人接不上</span></div>
-            <p class="l2why">根因：业务问题 ③</p>
-            <ul class="tree-l3">
-              <li><b>按判定条目逐类提问的 VLM 范式</b>：依据甲方现行安全检查表 + 自然资源领域判定条目，一条判定标准一次专项提问（"这张图里钻探机台配电是否实现一机一闸一漏电？""作业人员是否按要求佩戴安全帽并穿戴反光背心？""道路内作业是否设置了明显安全警示标识？"），输出 JSON {条目号, 是否存在, 置信度, 描述, bbox}
-                <span class="reuse"><em>同族复用</em> · 任何"有既定检查项体系"的场景：EHS 检查、ISO 内审、设备点检、监理旁站</span></li>
-              <li><b>新人判据卡（把老手的"看"变成可交接的规则）</b>：每条判定条目配：① 判据（一句话，说清"什么算隐患"）；② 看图要点（该看画面哪个位置）；③ 依据出处（条目号 + 原文）；④ 1–2 张正例/反例图。新人按卡片自查，老手按卡片复核
-                <span class="reuse"><em>同族复用</em> · 通用"隐性经验显性化"：老师傅工艺判据、老中医经验方、质检眼力、带徒教材</span></li>
-              <li><b>风险分级映射表 + 评测集（分条目出指标）</b>：隐患类别 → 风险等级 → 整改要求，分级口径来自甲方既有制度，不由模型定级；用甲方真实照片人工标注建集，按条目分别出召回 / 精确率与混淆样本图
-                <span class="reuse"><em>同族复用</em> · 所有"小样本视觉任务"的通用评测范式</span></li>
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">风险源与不符合项没有对象链，归档与整改闭环是断的</span></div>
-            <p class="l2why">根因：业务目标"归档 + 不符合项速查"</p>
-            <ul class="tree-l3">
-              <li><b>不符合项对象链与闭环台账</b>：Photo → DetectedHazard → Nonconformity → Rectification → RecheckPhoto；每步带责任人、期限、状态
-                <span class="reuse"><em>同族复用</em> · 质量 / 安全 / 合规类问题闭环通用</span></li>
-              <li><b>前后对照视图 + 归档台账导出</b>：同一不符合项的隐患照与复查照并排（部位 / 时间 / 说明）；导出安全台账与归档索引（编号、类别、等级、责任人、期限、状态、照片索引）
-                <span class="reuse"><em>同族复用</em> · 复查比对、索赔取证、创优工程资料归档通用</span></li>
-              <li><b>外业数据备份与介质防护提醒</b>：归档链自带"原始件只读副本 + 校验哈希 + 异地/云备份位"，导出时提示"硬盘未做防震/防水/防尘"这条行业风险
-                <span class="reuse"><em>同族复用</em> · 通用"原始数据保全"：测绘原始数据、试验原始数据、影像原始文件</span></li>
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">横贯</span>
-<span class="t">人工复核队列 + 否认样本回流</span></div>
-            <p class="l2why">跨 L2 的横贯机制</p>
-            <ul class="tree-l3">
-              <li><b>人工复核队列 + 否认样本回流</b>：置信度分档；确认 / 否认；否认样本回流成 few-shot 与评测集；不自动开整改通知
-                <span class="reuse"><em>同族复用</em> · 任何 CV 落地都要用的置信度管理范式</span></li>
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">横贯</span>
-<span class="t">引用白名单与范围声明</span></div>
-            <p class="l2why">跨 L2 的横贯机制</p>
-            <ul class="tree-l3">
-              <li><b>引用白名单与范围声明</b>：模型只能引用甲方检查表与适用判定条目；不得引用公开通用经验库或公开数据集冒充现场依据；对外输出必须写明所依据的条目号
-                <span class="reuse"><em>同族复用</em> · 审计与合规场景的通用"来源可追"约束</span></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <p class="count">L2 = 4 条能力缺口 · L3 = 14 条机制 · KR 9 条</p>
-    </div>
-
-
-<figure style=margin:16px
-
-    <div style="height:16px"></div>
         <div class="grid2">
-      <div class="card">
-        <h3>OKR</h3>
-        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让上百张现场照片在几秒内变成可检索的隐患线索，让安全整改从"翻相册"变成"搜一句话"。</p>
-        <div class="bench"><span class="bench-label">照片自动归集归档率</span><div class="bench-track"><div class="bench-fill" style="width:95%"></div></div><span class="bench-val">≥95%</span></div>
-        <div class="bench"><span class="bench-label">隐患召回率（北极星）</span><div class="bench-track"><div class="bench-fill" style="width:80%"></div></div><span class="bench-val">≥80%</span></div>
-        <div class="bench"><span class="bench-label">隐患精确率</span><div class="bench-track"><div class="bench-fill" style="width:70%"></div></div><span class="bench-val">≥70%</span></div>
-        <div class="bench"><span class="bench-label">OCR 关键字段准确率</span><div class="bench-track"><div class="bench-fill" style="width:85%"></div></div><span class="bench-val">≥85%</span></div>
-        <div class="bench"><span class="bench-label">自然语言速查响应</span><div class="bench-track empty"></div><span class="bench-val">≤10s</span></div>
-      </div>
-      <div class="card">
-        <h3>三天节奏</h3>
-        <ol class="timeline">
-          <li><strong>Day1 · 开题</strong><p>拿<b>安全检查表</b> + 1 个项目 300+ 张真实照片；安全员标注 100–200 张（覆盖 5 类隐患）。</p></li>
-          <li><strong>Day2 · 共解</strong><p>去重 + EXIF + 自动归集；逐类检测（few-shot 迭代）；OCR 入索引；混合检索；复核队列 UI；评测脚本跑基线。</p></li>
-          <li><strong>Day3 · 出厂</strong><p>安全员用真实句子速查 3 条，当场判定命中/误报；跑通 1 条"隐患→整改→复查"。</p></li>
-        </ol>
-        <div class="note" style="margin-top:14px">
-          <b>最大风险：</b>标注集不够 → 别硬撑一个低准确率检测器，退回"模型初筛 + 结论靠人"的人机协作模式。
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 题 06 ============ -->
-  <section class="problem" id="p6">
-    <div class="pnum">题 06 / 广源人力 · 卫健服务</div>
-    <h2 class="ptitle">上千名护士，这次培训到底该安排谁？</h2>
-    <p class="pgoal"><b>业务目标</b>：护理培训智能管理：分层抽选、名单确认与跨月排课 · <b>1 组</b> · <b>Echo</b> 人力运营/培训主管 · <b>Delta</b> 求解器+后端</p>
-    <div class="tagrow">
-      <span class="tag">资格规则引擎</span><span class="tag">CP-SAT 求解</span><span class="tag">LLM 只抽规则</span>
-      <span class="tag">可解释名单</span><span class="tag">人工干预重排</span><span class="tag">跨月排课</span><span class="tag grey">执行回流校准</span>
-    </div>
-
-    <div style="height:16px"></div>
-    <div class="card" style="margin-bottom:16px">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>三层拆解树 · L1 &rarr; L2 &rarr; L3</h3>
-      <div class="tree">
-        <div class="tree-l1"><span class="lv">L1</span><p>上千名护士，这次培训到底该安排谁？</p></div>
-        <ul class="tree-l2">
-          <li>
-            <div class="l2hd"><span class="lv g">L2-1</span><span class="t">"谁该训"没有可执行、且可分层的判定口径</span></div>
-            <p class="l2why">根因：规则来自三类互不相同的权威来源——人社局职业技能等级认定目录（证书种类与有效期）、卫健口径、《新入职护士培训大纲（试行）》（主要适用三级综合医院）；而服务的医院口径不统一（三级综合 / 二级 / 民营），同一套清单不能直接套全部机构；这些规则还散在制度文件与口述里，各院 Excel 各写各的</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-2</span><span class="t">硬约束只存在于人的判断里，机器给不出零违反保证</span></div>
-            <p class="l2why">根因：证书有效期、先修、岗位职称匹配、班次冲突、名额、医院配额、排班滞后，全部靠翻表和记忆；改一轮名单崩一轮</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-3</span><span class="t">名单不可解释、不可干预</span></div>
-            <p class="l2why">根因：选派说不出"为什么是他"，未入选说不出"为什么不是他"；医院一句"换人"就得从头重排</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-4</span><span class="t">跨月资源冲突与分层公平不在同一个模型里</span></div>
-            <p class="l2why">根因：只看单月，讲师 / 场地 / 时段冲突月底爆发；同一批人反复被排；三级综合与民营医院的公平与容量口径也不同</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-          <li>
-            <div class="l2hd"><span class="lv g">L2-5</span><span class="t">名单没有正式依据的版本与留痕，执行效果也不回流</span></div>
-            <p class="l2why">根因：名单是给医院与卫健看的正式依据，现在只是一份 Excel；谁在何时基于哪版规则改的、依据是什么事后说不清；排了没来的数据也回不来</p>
-            <ul class="tree-l3">
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <p class="count">L2-1 → 3 条，L2-2 → 3 条，L2-3 → 2 条，L2-4 → 2 条，L2-5 → 2 条 = 12 条机制，不是 12 个 L2。L2 保持 5 条不变（这是深度控制的上限，不再加）。</p>
-    </div>
-
-
-    <div class="grid2">
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：改三轮还排不平</h3>
-        <p>证书有效期、先修课程、岗位职称匹配、名额、班次冲突、医院配额——约束多到人脑记不住。Excel 拉名单 → 人工避冲突 → 排不满再手调 → 医院要换人 → 再改，改三轮还常漏人。</p>
-        <ul class="ticks">
-          <li><b>漏人</b>：靠人记，"该训"没训全</li>
-          <li><b>排不满/排错班</b>：约束没写出来</li>
-          <li><b>医院要换人</b>：名单不可解释，双方没有依据</li>
-          <li><b>跨月排不开</b>：只看单月，月底资源冲突爆发</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：护理培训智能排课</h3>
-        <dl class="kv">
-          <dt>地基</dt><dd>"应训"判定规则 + 硬约束清单（由运营与医院当场对齐）</dd>
-          <dt>引擎</dt><dd>CP-SAT 约束求解；LLM 只做规则抽取，不参与出名单</dd>
-          <dt>交付</dt><dd>可解释名单 · 人工干预重排 · 跨月排课 · 确认冻结 · 执行回流</dd>
-          <dt>砍掉</dt><dd>不做完整课表引擎 · 不做 HIS/教务直连</dd>
-          <dt>不可行时</dt><dd>输出冲突诊断（缺多少容量、卡在哪些约束）</dd>
-        </dl>
-      </div>
-    </div>
-
-    <div style="height:16px"></div>
-    <div class="card" style="margin-bottom:16px">
-      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一次排课的一生</h3>
-      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
-        <svg viewBox="0 0 900 200" role="img" aria-label="题06 架构：花名册与证书构建人员画像，LLM抽取规则经人工确认生成可执行规则集，CP-SAT求解产出可解释名单，经人工干预重排后跨月排课，医院确认冻结并回流校准">
-          <g>
-            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="13" y="30">PROFILE</text>
-            <text class="flow-t" x="13" y="52">人员画像</text>
-            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="198" y="30">RULES</text>
-            <text class="flow-t" x="198" y="52">LLM 抽规则+人确认</text>
-            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="383" y="30">SOLVE</text>
-            <text class="flow-t" x="383" y="52">CP-SAT 求解</text>
-            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="568" y="30">EXPLAIN</text>
-            <text class="flow-t" x="568" y="52">可解释名单</text>
-            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
-            <text class="flow-s" x="753" y="30">CONFIRM</text>
-            <text class="flow-t" x="753" y="52">医院确认·冻结</text>
-          </g>
-          <g class="flow-arrow" marker-end="url(#ar)">
-            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
-            <path d="M820,68 L820,96 L270,96 L270,68"/>
-          </g>
-          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
-          <text class="flow-t" x="16" y="121">人工锁定/替换/排除 → 求解器带固定解重排其余；执行到场率回流校准权重</text>
-          <text class="flow-lbl" x="16" y="140">硬约束零违反是底线；"零违反"比"排得最优"更重要。</text>
-          <g>
-            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
-            <text class="flow-t" x="13" y="187">关键判断</text>
-            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
-            <text class="flow-t" x="463" y="187">护栏</text>
-          </g>
-          <text class="flow-lbl" x="88" y="187">用 LLM 直接推荐名单：既不可靠也不可解释，医院不认</text>
-          <text class="flow-lbl" x="510" y="187">换人后重排 100% 成功且零违规</text>
-        </svg>
-      </div>
-    </div>
-
-    <div class="grid2">
       <div class="card">
         <h3>OKR</h3>
         <p style="font-size:13px;margin-bottom:12px"><b>O</b>：把"上千名护士该派谁去培训"从两天的人工拉扯，变成两小时出一份规则合法、算法公平、逐条可解释、可由医院确认并微调的名单。</p>

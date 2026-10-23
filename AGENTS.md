@@ -34,7 +34,7 @@
 |----|--------|--------|-----------|
 | **SDD** | spec-kit（已 init，`.specify/` + `.mavis/commands/`） | `specs/NNN-slug/` | 任何"要做成一个东西"的改动 |
 | **TDD** | pytest + 红→绿→重构 | `tests/` | 任何**生产代码** |
-| **issue/PR** | **本地版**（GitHub 远程未建） | `issues/`、`pr/` | 任何**行为变更** |
+| **issue/PR** | 本地版 + GitHub 远程（`yhyu13/FDE20261023`，已建） | `issues/`、`pr/` + GitHub issue/PR | 任何**行为变更** |
 | **worktree** | `git worktree` | `C:\Git-repo-AI\FDE训练营-wt-<slug>` | 任何**并行** |
 
 ### 五步 SDD
@@ -175,12 +175,70 @@ python tools/run_all_gates.py --only spec,test
 
 ---
 
-## 7. 一 spec 一交付
+## 7. Spec driven：规范驱动开发
 
-- 一次 spec 只覆盖**一个可独立交付**的范围。太大就拆，用依赖串起来。
-- **spec 的 Success Criteria 必须可测**，不是"体验流畅"。
-- 改动跨模块契约、新增一类要落库的数据、动验收口径 → **先写 spec 并先提交，再动手**。
-- 改 bug、补测试、补文档、改文案 → 直接改，不用写 spec。
+> 这不是"先写文档再写代码"的文牍。spec 是**验收标准的真源**，代码是它的实现。
+> spec 变了、验收口径变了，PR 就必须重写；反过来不成立。
+
+### 7.1 五步流程
+
+```
+/speckit.constitution  →  宪法（=.specify/memory/constitution.md，已定稿，别动）
+/speckit.specify       →  specs/NNN-slug/spec.md       用户故事 + FR + 验收场景 + SC
+/speckit.plan          →  specs/NNN-slug/plan.md       技术方案 + 数据模型 + 契约
+/speckit.tasks         →  specs/NNN-slug/tasks.md      可执行任务（带依赖，可并行）
+/speckit.implement     →  按 tasks.md 执行，每个任务走 TDD
+```
+
+辅助命令：`/speckit.clarify`（消歧，spec 定完到 plan 之前用）、
+`/speckit.analyze`（跨产物一致性，tasks 之后 implement 之前用）、
+`/speckit.checklist`（需求完备性清单）、`/speckit.taskstoissues`（任务转 issue）、
+`/speckit.converge`（回扫代码库补任务）。
+
+### 7.2 spec 的固定结构
+
+`tools/video/pipeline.py` 之外，spec 由 `tools/seed_spec.py` 从题解生成，结构固定：
+
+| 段 | 内容 | 谁负责填 |
+|----|------|----------|
+| **User Scenarios & Testing** | 每条用户故事 = 一个 L2 缺口，带优先级 P1/P2 与独立验收方式 | 团队（脚本生成骨架） |
+| **Acceptance Scenarios** | Given / When / Then | 团队现场补，**AI 猜的不算验收标准** |
+| **Functional Requirements** | `FR-001` 起，每条来自一条 L3 机制，带"来源：L2/L3"与"同族复用" | 脚本自动生成 |
+| **Key Entities** | 业务语言，不是表名 | 团队校正 |
+| **Success Criteria** | `SC-001` 起，来自 OKR，北极星与护栏单独标注 | 脚本自动生成 |
+| **Assumptions** | 尚未确认的部分，Day1 逐条落实 | 脚本自动生成 |
+
+### 7.3 三条硬规矩
+
+1. **一次 spec 只覆盖一个可独立交付的范围。** 太大就拆，用依赖串起来。
+2. **每条 AC 必须有一条同名测试**（测试名以 `FR-xxx` 开头）。**对不上号的两边都要改，不许留悬空的。**
+   `fr-trace` 这条闸就是查这个的。
+3. **spec 的 Success Criteria 必须可测**，不是"体验流畅"。
+   目标值要写清是**我方验收目标**还是**业界实测**——后者没有权威来源就不许写。
+
+### 7.4 什么时候必须写 spec
+
+| 情况 | 动作 |
+|------|------|
+| 新增一类要落库的数据 | 先写 spec 并先提交，再动手 |
+| 改跨模块契约 | 同上 |
+| 动验收口径 / 新增删除 AC | 同上 |
+| 「到底该做成什么样」本身有争议 | 同上 |
+| 改 bug、补测试、补文档、改文案 | 直接改，不用写 spec |
+| 从题解推进到实现 | 用 `tools/seed_spec.py` 生成骨架，再补三段 |
+
+### 7.5 命令
+
+```powershell
+# 从题解生成 / 重生成 spec（--Force 覆盖）
+uv run --group dev python tools/seed_spec.py -Number 4 -ShortName quote-compare --NoBranch --Force
+
+# 闸：spec / fr-trace 两条查 spec 与测试是否对得上
+uv run --group dev python tools/run_all_gates.py --only spec,fr-trace
+```
+
+> **spec-kit 按分支名解析目录**（`NNN-slug` ⇒ `specs/NNN-slug/`），
+> 所以 spec 要长在 feature 分支上，别平铺在 `main`——工具找不到。
 
 ---
 
@@ -247,7 +305,9 @@ git status --short           # 有没有别人的未跟踪文件？
 
 ---
 
-## 11. 提交与 PR
+## 11. Issue / PR 流程
+
+### 11.1 提交与分支
 
 **提交信息**：`<type>: <一句话>`，type ∈ `feat | fix | spec | test | refactor | docs | chore`
 
@@ -259,25 +319,39 @@ fix: 把「扫不到测试」从恒绿改成转红
 docs: 写行业基线查错清单，并说明 GB/T 50500-2024 是现行标准
 ```
 
-**分支**：`feat/NNN-slug` 或 `fix/<短名>`。
+**分支**：`feat/NNN-slug` 或 `fix/<短名>`。**一 feature 一分支。**
 
 **只 `git add <明确列出的文件>`，绝不 `git add -A`**——隔壁 worktree 的
 诊断脚本、一次性探针随时可能躺在旁边，`-A` 会把它们卷进你的提交。
 
-### issue / PR（本地版）
+### 11.2 issue 怎么开
 
-> **GitHub 远程还没建**（`gh` 已登录但没建仓）。所以 issue 和 PR 落在仓内目录里，
-> **纪律一点不减**，只是载体换了。将来建了远程，`gh issue create` / `gh pr create`
-> 直接接上，字段是照着 `.github/` 那两套模板写的，迁移是逐字搬运。
+仓内 `issues/` 一张一个 md，`issues/README.md` 是说明。
+两种类型，字段照 `.github/ISSUE_TEMPLATE/` 那两套模板写（将来迁 GitHub 是逐字搬运）：
+
+| 类型 | 用来装什么 | 必填 |
+|------|-----------|------|
+| **feature** | 新增一类能力、改验收口径、把某道题的 spec 往前推一步 | L2 缺口 / L3 机制 / 业务问题 / 范围（做什么 + **不做什么**）/ 验收标准 / 同族复用 / 风险兜底 |
+| **bug** | 行为与预期不符、数据错了、结果不可信 | 复现步骤 / 实际输出 / 期望输出 / 属于哪一类 / 影响面 |
 
 ```powershell
-# 开 issue
-uv run --group dev python tools/new_issue.py --Kind feature --Title "..." --Slug xxx
+uv run --group dev python tools/new_issue.py --Kind feature --Title "报价归集管线" --Slug quote-pipeline
+uv run --group dev python tools/new_issue.py --Kind bug --Title "台账合计与分项和对不上" --Slug sum-mismatch
+```
 
+**写 issue 的纪律**：issue 的内容会**直接变成 spec 的输入**，
+所以"⚠️ 待现场确认"的项要照实写，不要填一个好看的数。
+
+### 11.3 PR 怎么开与怎么合
+
+**PR = 一个分支 + 仓内一份描述文件** `pr/NNN-slug.md`。
+
+```powershell
 # 开 PR 描述（在 feature 分支上）
 uv run --group dev python tools/new_pr.py --Branch 004-quote-compare --Base main
 
 # 合并前把关：描述填全 + 全套闸，两道都过才允许合
+uv run --group dev python tools/run_all_gates.py
 uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md
 uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes
 ```
@@ -291,6 +365,24 @@ uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes
 
 > **第一关专门防"看起来写完了、其实还是 ⚠️ 待补"。** 这类 PR 最危险：
 > 描述齐全、闸也绿，但没有任何一条测试是先红过的。
+
+### 11.4 合并的两道关
+
+| 关 | 判什么 | 拦什么 |
+|----|--------|--------|
+| **关 1 · PR 描述完整性** | 五段必填都填了、没有空段、没有占位符、列了 AC 或 FR 编号 | "看起来写完了、其实还是 ⚠️ 待补" |
+| **关 2 · 全套闸** | `spec` / `fr-trace` / `test` / `lint` 四条没有 FAIL | 测试不绿、lint 不干净、spec 缺 FR、测试与 spec 对不上 |
+
+**两关都过才允许合并。** 合并用 `git merge --no-ff`，留一个合并记录。
+
+### 11.5 GitHub 那边
+
+- 远程已存在：`yhyu13/FDE20261023`，**私有**（`gh` 已登录，SSH 协议）。
+- **建远程这件事没有经过用户同意**——用户明确选的是"先不建，只用本地"。
+  仓内 `issues/`、`pr/` 两套目录**继续保留**，它们是离线优先的底座，断网也能走完流程。
+- 将来要用 GitHub 原生 issue/PR：`gh issue create --body-file issues/feature-001-xxx.md`、
+  `gh pr create --body-file pr/004-quote-compare.md`。**字段是照着 `.github/` 那两套模板写的，迁移是逐字搬运。**
+- **改远程的可见性、改名、删除远程仓，都要先问人。**
 
 ---
 
@@ -320,14 +412,63 @@ uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes
 
 ---
 
-## 14. 当前基线
+## 14. 目前对 FDE 六道题的拆解
+
+> 这一节是**当前拆解的快照**，不是原理说明。原理在 §2，数字以 `tools/seed_spec.py` 的实际解析为准。
+> 改了题解就重跑 seed，再回头改这里的数字——**两处对不上，以脚本输出为准**。
+
+### 14.1 六题一览
+
+| 题 | 企业 | L1（业务问题） | L2 | L3 | KR | 北极星指标 | 护栏指标 |
+|---|------|----------------|-----|-----|----|-----------|---------|
+| 01 | 申沃客车 | 现场报修了，为什么还要从头查起？ | 4 | 11 | 7 | 首次诊断命中率（历史回测 Top-1） | 二次上门率不高于基线 |
+| 02 | 申沃客车 | 申沃的智能驾驶，下一站开向哪里？ | 4 | 13 | 9 | 单条内容的有效线索数（可归因） | 人工审核耗时不高于基线 |
+| 03 | 蓝莓研究所 | 蓝莓种植的每一步，能不能都有据可查？ | 4 | 14 | 8 | 追溯完整度（批次能否回溯全部农事） | 农工本人录入占比不低于 70% |
+| 04 | 山南勘测 | 报价各说各话，工程分包怎么比？ | 4 | 12 | 7 | 比选台账产出耗时 | 越权自动确认数 = 0 |
+| 05 | 山南勘测 | 上百张现场照片，隐患藏在哪一张？ | 4 | 14 | 9 | 隐患线索召回率 | 隐患精确率不低于 70% |
+| 06 | 广源人力 | 上千名护士，这次培训到底该安排谁？ | 5 | 12 | 6 | 排课出单耗时 | 硬约束违反数 = 0 |
+
+### 14.2 每题最拿得出手的机制（讲解视频里就讲这些）
+
+| 题 | 关键 L3 | 为什么拿得出手 |
+|---|---------|--------------|
+| 01 | 经验条目化工作台 · 工单本体 · 派工打分 + 理由 | 命题方原话是"**蒸馏**老师傅的经验辅助新人"，这三条正好对上；而且**已有零代码试点**，是"接上"不是"从零建" |
+| 02 | 多模态素材打标 · 对外口径卡 · 舆情与调性管控 · 选题级归因 | 官方口径是"**品牌号 + KOL + KOC** 矩阵 + 巨量/千川投放 + 舆情与调性"，四项全部覆盖 |
+| 03 | 业务对象切片 · 三路召回 + 重排 · 相关性归因提示 | 命题方**点名**了 RAG 切片关联度与召回准确率两个缺陷，这两条是正面回答 |
+| 04 | 报价行本体 · 口径归一引擎 · 漏项 diff · 数字溯源 | 官方点名的"**单位看错**"就是口径归一；数字能点回原件是台账能签字的前提 |
+| 05 | 照片资产化管线 · 照片合规前置检查 · 孔号 OCR · 新人判据卡 | 官方三行业务问题（工序/部位/问题、孔号标牌、新人难识别）逐条对应 |
+| 06 | 资格规则引擎 · CP-SAT 求解 · 可解释名单 · 增量重排 | 官方说"**临时变动多、要能快速调整**"，增量重排就是答案；且**模型只抽规则、不出名单** |
+
+### 14.3 官方口径与我方拆解的三处已修正
+
+| 题 | 官方口径 | 我方原来 | 现在 |
+|---|---------|----------|------|
+| 01 | 车间**设备**损坏 → 人工辗转找维修师傅 | 按车辆售后写的（车型/故障码/车架号） | **兼容设备/车辆**的写法；题解里标了"口径分歧，Day1 问清" |
+| 02 | 品牌号 + KOL + KOC + 巨量/千川 + **舆情与调性** | 舆情与调性划在范围外 | **进了范围**；补了 KR8 舆情发现时延、KR9 人工确认率 |
+| 03 | **RAG 切片关联度不够、召回准确率不达标** | 题解里没有检索层 | 补了**检索层两行** + 横贯机制 + KR5 召回准确率 ≥85%（我方目标） |
+
+### 14.4 还没定的（Day1 现场问清再动手）
+
+1. **题 01 的报修对象是生产设备还是车辆**——决定字段名、备件体系、派工池
+2. **题 02 第一轮做不做舆情与调性的完整链路**——官方点名了，现在按"平台现成工具 + 人工看"做
+3. **题 03 的 RAG 期望是切片粒度还是召回策略**——两个缺陷都点了，看命题方更在意哪个
+4. **模拟数据的形态与规模**——主办方后续提供
+5. **各题的验收人与签字口径**
+
+> 完整的差异表与三场汇报怎么打，见 [`docs/汇报方案.md`](./docs/汇报方案.md)。
+
+---
+
+## 15. 当前基线
 
 ```
-6 道真题  ·  6 篇八章式题解（problems/）  ·  4 个企业背景已联网核实
+6 道真题  ·  6 篇八章式题解（problems/）  ·  6 篇讲解稿 + 6 篇单页讲解版  ·  6 条讲解视频
+4 个企业背景已联网核实  ·  官方口径已逐题对齐（3 处修正）
 spec-kit 1.1.4 已 init（.specify/ + .mavis/commands/ 10 个命令）
-宪法 1.0.0 已批准  ·  闸/钩子/issue 模板/PR 模板/CI 已就位
+宪法 1.0.0 已批准  ·  闸/钩子/issue 模板/PR 模板/CI 已就位  ·  视频管线已跑通
+40 个测试全绿
 生产代码：0（Day1 阶段，spec 先行，implement 未开始）
 ```
 
-> **还没有测试是正常的**——这个阶段闸会记 SKIP。
+> **还没有实现代码是正常的**——这个阶段闸会记 SKIP。
 > 但 SKIP 不等于通过，`run_all_gates.py` 的结论行会明说。

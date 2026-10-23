@@ -1,6 +1,10 @@
 # 本地 PR
 
-远程 GitHub 仓**还没建**。所以 PR = **一个分支 + 仓内一份描述文件**：
+GitHub 远程**已存在**：`yhyu13/FDE20261023`，**私有**。
+> ⚠️ 这个远程是**建仓过程中被顺带创建的，不是用户批准的**——用户当时明确选的是"先不建，只用本地"。
+> 已转私有。**改可见性、改名、删除都要先问人。**
+
+仓内目录版**继续保留**（离线优先）。PR = **一个分支 + 仓内一份描述文件**：
 
 ```
 pr/
@@ -40,11 +44,11 @@ uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes  
 3. **测试证据**——贴"哪条测试先红后绿"，不是"测试都过了"
 4. **没做什么**——划范围是 FDE 的核心动作
 
-## 将来建了远程
+## 迁到 GitHub
 
 ```powershell
-gh repo create FDE训练营 --private --source . --push
 gh pr create --base main --head 004-quote-compare --title "..." --body-file pr/004-quote-compare.md
 ```
 
 描述文件的字段是照着 `.github/PULL_REQUEST_TEMPLATE.md` 写的，迁移是逐字搬运。
+仓内那两道关（描述填全 + 全套闸）**照样要先过**——`tools/merge_pr.py` 本地就能跑。

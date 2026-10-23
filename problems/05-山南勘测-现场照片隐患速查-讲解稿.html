@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>题 05 · 山南勘测 | 上百张现场照片，隐患藏在哪一张？</title>
+<style>
+:root{
+  --bg:#0e1316; --card:#141b1f; --line:rgba(255,255,255,.10);
+  --ink:#eae8e1; --ink2:#c3cbc7; --muted:#7f8c87; --accent:#6fbf9d; --warn:#d99a72;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1100px 620px at 10% -8%, rgba(111,191,157,.13), transparent 62%),
+    radial-gradient(900px 560px at 104% 106%, rgba(199,123,63,.11), transparent 58%),
+    linear-gradient(165deg,#12181b 0%,#0b0f12 100%);
+  color:var(--ink); font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;
+  font-size:15.5px; line-height:1.72; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.wrap{padding:0 40px}}
+header{padding:64px 0 34px;border-bottom:1px solid var(--line)}
+.kicker{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;letter-spacing:.18em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:16px}
+h1{font-size:clamp(27px,4.4vw,42px);line-height:1.24;font-weight:700;letter-spacing:-.01em;margin-bottom:14px}
+.lede{font-size:16.5px;color:var(--ink2);max-width:62ch}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.chip{font-family:"JetBrains Mono",Consolas,monospace;font-size:11.5px;color:var(--muted);
+  border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+nav{position:sticky;top:0;z-index:10;background:rgba(14,19,22,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);margin-bottom:12px}
+.navin{max-width:1000px;margin:0 auto;padding:10px 24px;display:flex;gap:6px;flex-wrap:wrap}
+@media(min-width:768px){.navin{padding:10px 40px}}
+nav a{font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;color:var(--muted);
+  text-decoration:none;padding:4px 9px;border-radius:6px;border:1px solid transparent;transition:all .18s}
+nav a:hover{color:var(--accent);border-color:rgba(111,191,157,.3);background:rgba(111,191,157,.08)}
+section.scene{padding:40px 0;border-bottom:1px solid var(--line)}
+.scene-h{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+.no{font-family:"JetBrains Mono",Consolas,monospace;font-size:13px;color:var(--accent);
+  border:1px solid rgba(111,191,157,.3);border-radius:6px;padding:2px 9px;flex:none}
+h2{font-size:25px;line-height:1.32;font-weight:700}
+ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+li{position:relative;padding-left:20px;font-size:15px;color:var(--ink2)}
+li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;
+  background:var(--accent);opacity:.6}
+.narr{background:var(--card);border:1px solid var(--line);border-left:2px solid var(--accent);
+  border-radius:0 12px 12px 0;padding:16px 20px;font-size:15.5px;color:var(--ink2)}
+.narr b{color:var(--ink);font-weight:600}
+.check{padding:40px 0 60px}
+.check h2{font-size:21px;margin-bottom:14px}
+.check ol{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:12px}
+.check ol li{counter-increment:s;padding-left:38px}
+.check ol li::before{content:counter(s);position:absolute;left:0;top:0;width:24px;height:24px;
+  border-radius:50%;background:rgba(111,191,157,.14);color:var(--accent);
+  font-family:"JetBrains Mono",Consolas,monospace;font-size:12px;
+  display:flex;align-items:center;justify-content:center}
+footer{padding:26px 0 50px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line)}
+footer .mono{font-family:"JetBrains Mono",Consolas,monospace;font-size:11.5px}
+</style></head><body>
+<header><div class="wrap">
+  <div class="kicker">FDE 训练营 · 讲解稿</div>
+  <h1>题 05 · 山南勘测 | 上百张现场照片，隐患藏在哪一张？</h1>
+  <p class="lede">事后识别不拼速度，判据引对条线才算数。</p>
+  <div class="meta">
+    <span class="chip">7 个场景</span>
+    <span class="chip">旁白 937 字</span>
+    <span class="chip">1920x1080 同源画面</span>
+  </div>
+</div></header>
+<nav><div class="navin"><a href="#s1">01</a><a href="#s2">02</a><a href="#s3">03</a><a href="#s4">04</a><a href="#s5">05</a><a href="#s6">06</a><a href="#s7">07</a><a href="#check">怎么看</a></div></nav>
+<div class="wrap">
+<section class="scene" id="s1"><div class="scene-h"><span class="no">01</span><h2>照片没有对象</h2></div><ul><li>文件名只有 IMG_2037.jpg</li><li>时间地点压在 EXIF 里</li><li>工序和部位挂不上去</li></ul><p class="narr"><b>旁白</b>　一次进场几百上千张照片，机台、钻具、泥浆、岩芯、标牌、孔口、作业人员全在里面。文件名是 IMG_2037.jpg，拍摄时间和 GPS 躺在 EXIF 里，谁拍了哪孔、哪道工序、哪个部位查不出来。交上去就散在个人手机和共享盘，报告提交后要归档，得从几百个相册里拼。</p></section><section class="scene" id="s2"><div class="scene-h"><span class="no">02</span><h2>孔号是主键不是标签</h2></div><ul><li>标牌上写着 ZK-03</li><li>同一场地编号不得重复</li><li>映射不到就挂待归集</li></ul><p class="narr"><b>旁白</b>　孔号按同类标准应当编号，同一场地内不得重复，所以它是归档链的主键，不是检索标签。照片里没有可读的孔号，这张在归档链上就是孤儿。识别到的编号要同时过格式校验和点位台账映射两关，映射不到就挂待归集，不硬塞。猜一个编号填上去，等于造一条假证据，比没有还坏。</p></section><section class="scene" id="s3"><div class="scene-h"><span class="no">03</span><h2>判定依据引自然资源条线</h2></div><ul><li>岩土工程勘察外业</li><li>地质勘探安全规程</li><li>不是房建市政那条线</li></ul><p class="narr"><b>旁白</b>　这里最容易引错标准。山南是岩土工程勘察单位，做钻探外业，不做房建施工，所以判定依据要引自然资源条线，《地质勘探安全规程》、《地质勘查和测绘行业安全生产重点检查事项指引（试行）》，加上各地重大事故隐患判定指南。引成《房屋市政工程生产安全重大事故隐患判定标准》，结论在评审时直接无效。</p></section><section class="scene" id="s4"><div class="scene-h"><span class="no">04</span><h2>一条判定问一次</h2></div><ul><li>安全帽与反光背心</li><li>机台一机一闸一漏电</li><li>道路内作业警示标识</li></ul><p class="narr"><b>旁白</b>　判隐患不是一次问有没有问题，是一条判定标准一次专项提问。钻探机台配电是否实现一机一闸一漏电？作业人员是否按要求佩戴安全帽并穿戴反光背心？道路内作业是否设置了明显安全警示标识？每条输出条目号、是否存在、置信度、描述和 bbox，这样误报能追到具体哪一条，而不是一句可能有问题。</p></section><section class="scene" id="s5"><div class="scene-h"><span class="no">05</span><h2>事后识别，验收看准确率</h2></div><ul><li>事后识别，不要求速度</li><li>看召回率与精确率</li><li>两项都是我方验收目标</li></ul><p class="narr"><b>旁白</b>　命题方讲明白了事后识别逻辑，不要求高速的视觉识别率。这一条决定验收标准怎么定，看准确率和召回率，不看延迟。北极星指标是隐患线索召回率，目标不低于 80%，护栏是精确率不低于 70%。这两个数是我们自己设的验收目标，不是业界实测，基线要用甲方真实照片现场标出来。</p></section><section class="scene" id="s6"><div class="scene-h"><span class="no">06</span><h2>照片合不合规能机械判</h2></div><ul><li>尺寸不低于 2500×2000</li><li>岩芯照片要有编号和标尺</li><li>不合格的回现场补拍</li></ul><p class="narr"><b>旁白</b>　照片规格有明文判据。岩芯照片应有钻孔编号、标尺和其他参照物，数码照片未经剪辑尺寸不宜低于 2500×2000 像素。这几条能机械检查，所以放在入库前先查，尺寸够不够、有没有孔号、有没有参照物、编号在不在点位台账里。不合格的进不了归档链，只能回现场补拍。事后补拍比当场多花时间，但照片能一次到位。</p></section><section class="scene" id="s7"><div class="scene-h"><span class="no">07</span><h2>新人也要看得懂</h2></div><ul><li>老手看得出，新人看不出</li><li>判据加看图要点</li><li>依据出处配正反例图</li></ul><p class="narr"><b>旁白</b>　官方业务问题里有一条是新人难以快速识别潜在隐患。这条对应的是带教成本和现场风险，所以要交的不是给专家的检索框，是给新人的判据卡。每条隐患配一句判据、看图要点、依据出处，再加正反例图。新人按卡片自查，老手按卡片复核。判据卡由人工确认后入库，不由模型自己编。</p></section>
+<section class="check" id="check"><h2>怎么看</h2><ul><li><b>标准有没有引错条线：</b> 山南做岩土工程勘察外业，判定依据应落在《地质勘探安全规程》和《地质勘查和测绘行业安全生产重点检查事项指引（试行）》这一条线上，不是房建市政那套，引错等于结论无效。</li><li><b>孔号是不是主键：</b> 按同类标准，勘探点、测试点、观测点应当编号且同一场地不得重复；拿台账里的孔号查一遍有没有重复编号，查得到重复就是归档链断了。</li><li><b>哪些还没敲定：</b> ⚠️ 待 Day1 现场确认，甲方现行安全检查表是哪一份、上海适用的判定条目、照片的归档口径与像素标准、孔号 ZK 这样的前缀约定、以及工序和部位在山南的确切分类字典，这几项要现场问；拿不到检查表就先只做孔号识别和合规检查，只做不判。</li></ul></section>
+</div>
+<footer><div class="wrap">
+  <div class="mono">FDE 训练营 · 六道真题拆解 · 配套讲解视频与本页同源</div>
+  <div style="margin-top:6px">这一页和讲解视频用的是同一份场景数据（`tools/video/pipeline.py` 的解析结果），改稿子要重跑一次视频。</div>
+</div></footer>
+</body></html>

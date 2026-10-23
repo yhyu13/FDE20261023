@@ -223,6 +223,9 @@ def _components_of(text: str) -> list[str]:
         domain, component = cells[0], cells[1]
         if domain in {"L1 技术域", "技术域"} or component in {"L2 组件", "组件", ""}:
             continue
+        # 表格分隔行（全是横线）不是实体
+        if set(component) <= set("-: "):
+            continue
         if component not in seen:
             seen.append(component)
     return seen
@@ -253,9 +256,16 @@ def parse_problem(text: str, source: str = "") -> Problem:
 
 
 def find_problem_file(problems_dir: Path, number: int) -> Path:
-    """按题号找到题解文件（`NN-xxx.md`）。"""
+    """按题号找到题解文件（`NN-xxx.md`）。
+
+    `problems/` 里同题号还有一份 `-讲解稿.md`（讲分镜的稿子，不是拆解树）。
+    字典序上 `-讲解稿` 排在 `.md` 前面，不排除掉就会取错文件——
+    讲解稿里没有 L1 业务问题，解析出来是空的。
+    """
     prefix = f"{number:02d}-"
-    matches = sorted(p for p in problems_dir.glob("*.md") if p.name.startswith(prefix))
+    matches = sorted(
+        p for p in problems_dir.glob("*.md") if p.name.startswith(prefix) and "讲解稿" not in p.stem
+    )
     if not matches:
         raise FileNotFoundError(f"在 {problems_dir} 里找不到题号 {number} 的题解")
     return matches[0]

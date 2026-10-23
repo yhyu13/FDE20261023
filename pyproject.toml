@@ -31,3 +31,7 @@ ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["E402"]
+# tools/video/vendor/ 是从 karpathy-explain-better skill 整份拷进来的第三方脚本。
+# 保持与上游逐字一致，好让下次重新 vendor 时能干净覆盖、不留本地分叉；
+# 在这里逐条修它的 lint，改动会在下次 vendor 时被整体冲掉，等于白干。
+"tools/video/vendor/*" = ["ALL"]
