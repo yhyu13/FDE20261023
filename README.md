@@ -145,7 +145,12 @@ FDE训练营/
 ├── tools/
 │   ├── seed_spec.py             # 把三层拆解灌进 spec.md
 │   ├── run_all_gates.py         # 跑全套闸（看退出码）
-│   └── new_worktree.py          # 开工作树
+│   ├── new_worktree.py          # 开工作树
+│   ├── new_issue.py             # 开本地 issue
+│   ├── new_pr.py                # 开本地 PR 描述
+│   └── merge_pr.py              # 合并前把关（描述填全 + 全套闸，两道都过才合）
+├── issues/                      # 本地 issue（一张一个 md）
+├── pr/                          # 本地 PR 描述（一张一个 md）+ merged/ 归档
 ├── .githooks/                   # 预提交闸 + 提交信息闸（core.hooksPath 已设）
 ├── .github/                     # issue 模板 + PR 模板 + CI
 ├── .specify/                    # spec-kit 1.1.4（含 memory/constitution.md 宪法）
@@ -190,7 +195,12 @@ uv run --group dev python tools/run_all_gates.py
 | **SDD** | 六道题各一个 feature 目录，`spec.md` 已从题解自动生成（L2/L3/OKR 已灌好） |
 | **TDD** | `uv run pytest`，24 个测试；**每行实现都有先失败过的测试** |
 | **闸** | `spec` / `fr-trace` / `test` / `lint` 四条，**OK / FAIL / SKIP 三态**——SKIP 明写"不等于全部通过"，空跑转红 |
-| **issue/PR** | 两套 issue 模板 + PR 模板（必填：动了哪条 AC、测试证据、闸结果、**没做什么**）+ CI |
+| **issue/PR** | **本地版**（GitHub 远程未建）：`issues/` 一张一个 md，`pr/` 一张一个 md，合并前两道关（描述填全 + 全套闸） | 两套 issue 模板 + PR 模板（必填：动了哪条 AC、测试证据、闸结果、**没做什么**）+ CI |
+
+> **为什么是本地版**：GitHub 远程还没建（`gh` 已登录但没建仓）。
+> 纪律一点不减，只是载体从 GitHub 换成仓内目录——将来建了远程，
+> `gh issue create` / `gh pr create` 直接接上，字段是照着 `.github/` 那两套模板写的，**逐字搬运即可迁移**。
+> 详见 [`pr/README.md`](pr/README.md) 与 [`issues/README.md`](issues/README.md)。
 | **worktree** | `tools/new_worktree.py`，目录约定 `<repo>-wt-<slug>`，分支名与 spec-kit 的 `specs/NNN-slug/` 对齐 |
 
 > **spec 里标 ⚠️ 的三段必须由团队在 Day1 现场补**：用户故事的行为、验收场景（Given/When/Then）、实体定义。

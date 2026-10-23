@@ -74,7 +74,12 @@ def main() -> int:
 
     if not args.NoBranch:
         result = subprocess.run(
-            ["git", "checkout", "-b", branch], cwd=ROOT, capture_output=True, text=True
+            ["git", "checkout", "-b", branch],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
         if result.returncode == 0:
             print(f"[OK ] 分支: {branch}（已切换）")

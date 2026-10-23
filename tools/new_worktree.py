@@ -30,7 +30,10 @@ from fde.worktree import plan_worktree, render_commands  # noqa: E402
 
 
 def _run(cmd: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+    # 显式 utf-8：Windows 默认按 GBK 解码子进程输出，路径里有中文就会炸。
+    return subprocess.run(
+        cmd, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
 
 
 def list_worktrees() -> int:

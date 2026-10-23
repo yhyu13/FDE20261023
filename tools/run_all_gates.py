@@ -51,7 +51,12 @@ def _current_branch() -> str:
     否则 CI 上 `spec` / `fr-trace` 两条闸会永远 SKIP，等于没有。
     """
     out = subprocess.run(
-        ["git", "branch", "--show-current"], cwd=ROOT, capture_output=True, text=True
+        ["git", "branch", "--show-current"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     branch = out.stdout.strip()
     if branch:
@@ -105,7 +110,12 @@ def gate_test() -> GateResult:
     if not tests_dir.is_dir() or not any(tests_dir.rglob("test_*.py")):
         return GateResult("test", SKIP, "还没有测试文件", 0)
     proc = subprocess.run(
-        [sys.executable, "-m", "pytest", "-q"], cwd=ROOT, capture_output=True, text=True
+        [sys.executable, "-m", "pytest", "-q"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     if proc.returncode == 0:
         return GateResult("test", OK, "pytest 全绿", 1)
@@ -118,7 +128,12 @@ def gate_lint() -> GateResult:
     """ruff 必须干净。"""
     try:
         proc = subprocess.run(
-            [sys.executable, "-m", "ruff", "check", "."], cwd=ROOT, capture_output=True, text=True
+            [sys.executable, "-m", "ruff", "check", "."],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except OSError as exc:  # pragma: no cover
         return GateResult("lint", SKIP, f"ruff 不可用：{exc}", 0)

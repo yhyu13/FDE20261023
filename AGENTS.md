@@ -34,7 +34,7 @@
 |----|--------|--------|-----------|
 | **SDD** | spec-kit（已 init，`.specify/` + `.mavis/commands/`） | `specs/NNN-slug/` | 任何"要做成一个东西"的改动 |
 | **TDD** | pytest + 红→绿→重构 | `tests/` | 任何**生产代码** |
-| **issue/PR** | GitHub | 仓库 Issues / PRs | 任何**行为变更** |
+| **issue/PR** | **本地版**（GitHub 远程未建） | `issues/`、`pr/` | 任何**行为变更** |
 | **worktree** | `git worktree` | `C:\Git-repo-AI\FDE训练营-wt-<slug>` | 任何**并行** |
 
 ### 五步 SDD
@@ -264,7 +264,33 @@ docs: 写行业基线查错清单，并说明 GB/T 50500-2024 是现行标准
 **只 `git add <明确列出的文件>`，绝不 `git add -A`**——隔壁 worktree 的
 诊断脚本、一次性探针随时可能躺在旁边，`-A` 会把它们卷进你的提交。
 
-**PR 必须带**：动了哪条 AC · 测试证据（哪条测试先红后绿）· 闸结果 · **没做什么**。
+### issue / PR（本地版）
+
+> **GitHub 远程还没建**（`gh` 已登录但没建仓）。所以 issue 和 PR 落在仓内目录里，
+> **纪律一点不减**，只是载体换了。将来建了远程，`gh issue create` / `gh pr create`
+> 直接接上，字段是照着 `.github/` 那两套模板写的，迁移是逐字搬运。
+
+```powershell
+# 开 issue
+uv run --group dev python tools/new_issue.py --Kind feature --Title "..." --Slug xxx
+
+# 开 PR 描述（在 feature 分支上）
+uv run --group dev python tools/new_pr.py --Branch 004-quote-compare --Base main
+
+# 合并前把关：描述填全 + 全套闸，两道都过才允许合
+uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md
+uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes
+```
+
+**PR 描述必填四段**（缺任何一段都过不了第一关）：
+
+1. **动了什么**——写**为什么**
+2. **对应哪条 AC / FR**——没有编号的 PR 不许合
+3. **测试证据**——贴"哪条测试先红后绿"，不是"测试都过了"
+4. **没做什么**——划范围是 FDE 的核心动作
+
+> **第一关专门防"看起来写完了、其实还是 ⚠️ 待补"。** 这类 PR 最危险：
+> 描述齐全、闸也绿，但没有任何一条测试是先红过的。
 
 ---
 
