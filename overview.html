@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FDE 训练营 · 六道真题拆解</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0; --card:#ffffff; --line:#e9e3d6; --line-soft:#f0ebe1;
+  --ink:#14171e; --ink-2:#3a4256; --muted:#7c7a72;
+  --primary:#2f6f5e; --primary-soft:rgba(47,111,94,.08); --primary-line:rgba(47,111,94,.22);
+  --warn:#b06367; --warn-soft:rgba(176,99,103,.09);
+  --sans:'Outfit','PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;
+  --serif:'DM Serif Display','Songti SC','Noto Serif SC',serif;
+  --mono:'JetBrains Mono',Consolas,'Courier New',monospace;
+  --shadow:0 4px 16px -2px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--sans);
+  font-size:14.5px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(900px 400px at 8% -6%, rgba(47,111,94,.05), transparent 70%),
+    radial-gradient(700px 380px at 96% 4%, rgba(199,123,63,.05), transparent 70%);
+  background-attachment:fixed;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+@media(min-width:768px){.wrap{padding:0 40px}}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:20;background:rgba(247,245,240,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.navin{max-width:1080px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-size:17px;letter-spacing:.01em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.navlinks{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.navlinks a{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none;padding:4px 9px;border-radius:6px;border:1px solid transparent;transition:all .18s}
+.navlinks a:hover{color:var(--primary);border-color:var(--primary-line);background:var(--primary-soft)}
+
+/* ---------- hero ---------- */
+.hero{padding:56px 0 40px}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary);margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(29px,4.2vw,44px);line-height:1.18;letter-spacing:-.005em;margin-bottom:16px}
+h1 em{font-style:normal;color:var(--primary)}
+.lead{font-size:15.5px;line-height:1.72;color:var(--ink-2);max-width:74ch;margin-bottom:20px}
+.lead strong{color:var(--ink);font-weight:600}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.chip{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+.chip b{color:var(--primary);font-weight:600}
+
+/* ---------- sections ---------- */
+section{padding:44px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
+.sec-num{font-family:var(--mono);font-size:12px;color:var(--primary);padding-top:3px}
+h2{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.6vw,27px);line-height:1.3;letter-spacing:-.004em}
+h3{font-size:15px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+h3 svg{width:16px;height:16px;flex:none;color:var(--primary)}
+p{margin-bottom:10px;color:var(--ink-2)}
+p:last-child{margin-bottom:0}
+.sub{font-size:13px;color:var(--muted);margin:-6px 0 18px}
+
+/* ---------- photo ---------- */
+figure{margin:0}
+.shot{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow);display:block;background:#fff}
+figcaption{font-size:12.5px;color:var(--muted);margin-top:9px;font-family:var(--mono)}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:720px}
+th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:11px 14px;border-bottom:1px solid var(--line);background:var(--bg)}
+td{padding:12px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink-2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.q{color:var(--ink);font-weight:500}
+td .mono{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:860px){.grid2,.grid4{grid-template-columns:1fr}}
+
+/* ---------- problem blocks ---------- */
+.problem{padding:46px 0;border-top:1px solid var(--line)}
+.pnum{font-family:var(--mono);font-size:12px;color:var(--primary);letter-spacing:.1em;margin-bottom:8px}
+.ptitle{font-family:var(--serif);font-weight:400;font-size:clamp(23px,2.9vw,30px);line-height:1.28;margin-bottom:10px}
+.pgoal{font-size:13.5px;color:var(--muted);margin-bottom:22px}
+.pgoal b{color:var(--ink-2);font-weight:600}
+.tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.tag{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border-radius:6px;border:1px solid var(--primary-line);color:var(--primary);background:var(--primary-soft)}
+.tag.grey{border-color:var(--line);color:var(--muted);background:transparent}
+
+/* ---------- bench ---------- */
+.bench{display:grid;grid-template-columns:1fr 128px 62px;gap:12px;align-items:center;padding:6px 0}
+@media(max-width:640px){.bench{grid-template-columns:1fr 74px;}.bench .bt{display:none}}
+.bench-label{font-size:13px;color:var(--ink-2)}
+.bench-track{height:14px;background:var(--line-soft);border-radius:7px;overflow:hidden}
+.bench-track.empty{background:repeating-linear-gradient(90deg,var(--line-soft) 0 5px,rgba(255,255,255,.9) 5px 11px)}
+.bench-fill{height:100%;background:var(--primary);border-radius:7px}
+.bench-val{font-family:var(--mono);font-size:12px;color:var(--ink);text-align:right;font-weight:500}
+.bt{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:right}
+
+/* ---------- flow svg ---------- */
+.flowbox{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px 14px;overflow-x:auto;box-shadow:var(--shadow)}
+.flowbox svg{display:block;min-width:660px;width:100%;height:auto}
+.flow-node{fill:#fff;stroke:var(--primary-line);stroke-width:1}
+.flow-node-2{fill:var(--primary-soft);stroke:var(--primary-line);stroke-width:1}
+.flow-t{font-family:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;font-size:12.5px;fill:var(--ink)}
+.flow-s{font-family:'JetBrains Mono',Consolas,monospace;font-size:9.5px;fill:var(--muted);letter-spacing:.04em}
+.flow-lbl{font-family:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;font-size:11.5px;fill:var(--muted)}
+.flow-band{fill:var(--primary-soft);stroke:var(--primary-line);stroke-width:1;stroke-dasharray:4 3}
+.flow-arrow{stroke:var(--primary);stroke-width:1.4;fill:none;opacity:.6}
+
+/* ---------- timeline ---------- */
+.timeline{list-style:none;padding:0;margin:0;position:relative}
+.timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--primary);opacity:.3}
+.timeline li{position:relative;padding:0 0 18px 30px}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:1px;top:4px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--primary)}
+.timeline strong{display:block;font-size:13.5px;color:var(--ink);font-weight:600;margin-bottom:2px}
+.timeline p{font-size:12.8px;color:var(--muted)}
+
+/* ---------- lists ---------- */
+ul.ticks{list-style:none;padding:0}
+ul.ticks li{position:relative;padding-left:18px;margin-bottom:7px;font-size:13.3px;color:var(--ink-2)}
+ul.ticks li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--primary);opacity:.55}
+ul.ticks li b{color:var(--ink);font-weight:600}
+ul.ticks.warn li::before{background:var(--warn);opacity:.7}
+
+.risk{border-left:1px solid var(--line-soft);padding-left:14px;font-size:12.8px;color:var(--ink-2)}
+.risk b{color:var(--warn);font-weight:600}
+
+/* ---------- kv ---------- */
+.kv{display:grid;grid-template-columns:96px 1fr;row-gap:8px;column-gap:14px;margin:0;font-size:13px}
+.kv dt{color:var(--muted);border-bottom:1px dashed var(--line);padding-bottom:7px}
+.kv dd{margin:0;border-bottom:1px dashed var(--line);padding-bottom:7px;color:var(--ink-2)}
+@media(max-width:520px){.kv{grid-template-columns:78px 1fr;font-size:12.5px}}
+
+.note{background:var(--primary-soft);border:1px solid var(--primary-line);border-radius:12px;padding:14px 16px;font-size:13.2px;color:var(--ink-2)}
+.note b{color:var(--primary)}
+footer{padding:36px 0 56px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+footer .mono{font-family:var(--mono);font-size:11.5px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <marker id="ar" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+    <path d="M0,1 L7,4 L0,7 z" fill="#2f6f5e" opacity=".65"/>
+  </marker>
+</defs></svg>
+
+<nav>
+  <div class="navin">
+    <a class="brand" href="#top">FDE 训练营 · 六道真题</a>
+    <div class="navlinks">
+      <a href="#slide">真题原片</a>
+      <a href="#matrix">六题总览</a>
+      <a href="#method">方法论</a>
+      <a href="#p1">01 申沃·报修</a>
+      <a href="#p2">02 申沃·内容</a>
+      <a href="#p3">03 蓝莓</a>
+      <a href="#p4">04 山南·报价</a>
+      <a href="#p5">05 山南·照片</a>
+      <a href="#p6">06 广源</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="top">
+
+  <header class="hero">
+    <div class="eyebrow">GPS 2026 全球开发者先锋大会 · FDE 智能人才工厂 · 2026.10.23–25 · 上海张江科学会堂</div>
+    <h1>六道真题，从<em>业务问题</em>到<em>可验证的 AI 原型</em></h1>
+    <p class="lead">
+      现场拿到的不是练习题，是四家企业挂在生产上的真问题：客车维修为什么每次都从头查起、蓝莓的每一步能不能有据可查、
+      分包报价各说各话怎么比、上百张现场照片隐患藏在哪、上千名护士培训该派谁。
+      <strong>每一题都拆成同一套五段：场景 → 项目 → 专项技术点 → OKR → 解决方案</strong>，
+      并且只用一个北极星业务指标衡量成败——不是功能数量。
+    </p>
+    <div class="chips">
+      <span class="chip"><b>6</b> 道真题</span>
+      <span class="chip"><b>4</b> 家企业</span>
+      <span class="chip"><b>10</b> 个组队</span>
+      <span class="chip"><b>3</b> 天连续共创</span>
+      <span class="chip"><b>48</b> 轮 FDE 培训</span>
+      <span class="chip"><b>5</b> 场专项分享</span>
+      <span class="chip">结项：真实卡顿 · 团队 AI 模型 · 测试与验证记录</span>
+    </div>
+  </header>
+
+  <!-- ============ 真题原片 ============ -->
+  <section id="slide">
+    <div class="sec-head"><span class="sec-num">01</span><h2>真题原片</h2></div>
+    <figure>
+      <img class="shot" src="assets/六道题-寻找问题.jpg" alt="GPS 2026 FDE 训练营企业出题环节现场大屏：六道题，寻找问题">
+      <figcaption>GPS 2026 FDE 智能人才工厂 · 企业出真题环节现场大屏 · 2026-10-23</figcaption>
+    </figure>
+    <div style="height:22px"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th style="width:44px">#</th><th style="width:96px">企业</th><th>题目</th><th style="width:30%">业务目标</th><th style="width:64px">组数</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">01</td><td>申沃客车</td><td class="q">现场报修了，为什么还要从头查起？</td><td>现场维修智能协同、派工建议与工匠经验复用</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">02</td><td>申沃客车</td><td class="q">申沃的智能驾驶，下一站开向哪里？</td><td>智能驾驶品牌营销、场景化传播与内容持续运营</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">03</td><td>蓝莓研究所</td><td class="q">蓝莓种植的每一步，能不能都有据可查？</td><td>蓝莓种植档案与农事记录智能整理</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">04</td><td>山南勘测</td><td class="q">报价各说各话，工程分包怎么比？</td><td>分包比选报价归集比对与比选台账生成</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">05</td><td>山南勘测</td><td class="q">上百张现场照片，隐患藏在哪一张？</td><td>项目现场资料照片归档、风险源与不符合项速查（含文字识别）</td><td class="mono">1 组</td></tr>
+          <tr><td class="mono">06</td><td>广源人力</td><td class="q">上千名护士，这次培训到底该安排谁？</td><td>护理培训智能管理：分层抽选、名单确认与跨月排课</td><td class="mono">1 组</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sub" style="margin-top:12px">题面照抄原文。企业规模、在用系统名称、数据口径等原片未提供的信息，全部标注 <span class="mono">⚠️ 待 Day1 现场确认</span>，不做事实断言。</p>
+  </section>
+
+  <!-- ============ 六题总览 ============ -->
+  <section id="matrix">
+    <div class="sec-head"><span class="sec-num">02</span><h2>六题总览</h2></div>
+    <p class="sub">一行一北极星。技术路线不同，但落法一致：先把业务对象建出来，再让模型只在被约束的范围内干活，最后把动作写回真实系统。</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th style="width:44px">#</th><th style="width:104px">企业</th><th>北极星指标</th><th>主技术路线</th><th style="width:62px">组数</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">01</td><td>申沃客车</td><td class="q">首次诊断命中率（历史回测 Top-1）</td><td>工单本体 · 混合检索 RAG · 故障树推理 · 回写工单</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">02</td><td>申沃客车</td><td class="q">单条内容的有效线索数（可归因）</td><td>多模态素材库 · 品牌知识库 · 内容 Agent 流水线</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">03</td><td>蓝莓研究所</td><td class="q">追溯完整度（批次能否回溯全部农事）</td><td>植株级本体 · 照片语音结构化 · 时序溯源</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">04</td><td>山南勘测</td><td class="q">比选台账产出耗时</td><td>报价行本体 · OCR/Excel 解析 · 口径归一 · 漏项校验</td><td class="mono">2 组</td></tr>
+          <tr><td class="mono">05</td><td>山南勘测</td><td class="q">隐患线索召回率</td><td>照片去重归集 · 逐类隐患 VLM · 标牌 OCR · 混合检索</td><td class="mono">1 组</td></tr>
+          <tr><td class="mono">06</td><td>广源人力</td><td class="q">排课出单耗时</td><td>资格规则引擎 · CP-SAT 约束求解 · 可解释名单</td><td class="mono">1 组</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 方法论 ============ -->
+  <section id="method">
+    <div class="sec-head"><span class="sec-num">03</span><h2>六题共用的骨架</h2></div>
+    <p class="sub">拆解语言不临时发明，全部沿用既有 FDE 方法论——这决定了六份方案能在同一支团队手里并行推进。</p>
+    <div class="flowbox">
+      <svg viewBox="0 0 900 230" role="img" aria-label="六题共用的 FDE 骨架：从数据到本体到推理到交付到回写">
+        <g>
+          <rect class="flow-node" x="0"   y="14" width="160" height="58" rx="10"/>
+          <text class="flow-s" x="14" y="34">01 DATA</text>
+          <text class="flow-t" x="14" y="56">真实业务数据</text>
+          <rect class="flow-node" x="185" y="14" width="160" height="58" rx="10"/>
+          <text class="flow-s" x="199" y="34">02 ONTOLOGY</text>
+          <text class="flow-t" x="199" y="56">业务对象与关联</text>
+          <rect class="flow-node-2" x="370" y="14" width="160" height="58" rx="10"/>
+          <text class="flow-s" x="384" y="34">03 REASONING</text>
+          <text class="flow-t" x="384" y="56">检索 + 规则推理</text>
+          <rect class="flow-node" x="555" y="14" width="160" height="58" rx="10"/>
+          <text class="flow-s" x="569" y="34">04 DELIVERY</text>
+          <text class="flow-t" x="569" y="56">人用的交付物</text>
+          <rect class="flow-node" x="740" y="14" width="160" height="58" rx="10"/>
+          <text class="flow-s" x="754" y="34">05 WRITE-BACK</text>
+          <text class="flow-t" x="754" y="56">写回真实系统</text>
+        </g>
+        <g class="flow-arrow" marker-end="url(#ar)">
+          <path d="M162,43 L181,43"/><path d="M347,43 L366,43"/><path d="M532,43 L551,43"/><path d="M717,43 L736,43"/>
+          <path d="M820,74 L820,104 L80,104 L80,74"/>
+        </g>
+        <rect class="flow-band" x="0" y="106" width="900" height="56" rx="10"/>
+        <text class="flow-t" x="16" y="130">闭环：人工确认 · 修正 · 执行结果回流 → 校准规则与权重</text>
+        <text class="flow-lbl" x="16" y="150">只读 demo 不算完成。动作要能反改物理世界，闭环才是滚雪球的入口。</text>
+        <g>
+          <rect class="flow-node" x="0" y="180" width="286" height="44" rx="9"/>
+          <text class="flow-t" x="14" y="199">Ontology 三步法</text>
+          <text class="flow-lbl" x="14" y="216">Objects → Links → Actions + Write-back</text>
+          <rect class="flow-node" x="306" y="180" width="286" height="44" rx="9"/>
+          <text class="flow-t" x="320" y="199">Echo + Delta 双人战术</text>
+          <text class="flow-lbl" x="320" y="216">Echo 听懂并定义 · Delta 快速交付</text>
+          <rect class="flow-node" x="612" y="180" width="288" height="44" rx="9"/>
+          <text class="flow-t" x="626" y="199">锁定 1 个业务指标</text>
+          <text class="flow-lbl" x="626" y="216">KR 挂在业务结果上，不是功能数量</text>
+        </g>
+      </svg>
+    </div>
+    <div style="height:16px"></div>
+    <div class="grid4">
+      <div class="card">
+        <h3>Ontology 三步法</h3>
+        <p style="font-size:13px">用业务语言定义对象（车、批次、地块、护士），提前固化关联，动作能反写回系统。不让模型直接啃原始表。</p>
+      </div>
+      <div class="card">
+        <h3>Echo + Delta</h3>
+        <p style="font-size:13px">Echo 负责听懂业务并定义问题，Delta 负责快速交付可跑结果。缺 Echo 变咨询，缺 Delta 变外包。题 02 是 Echo 主导的题。</p>
+      </div>
+      <div class="card">
+        <h3>5 天一个 demo 节点</h3>
+        <p style="font-size:13px">不写长需求文档，每 5 天一次客户可见演示。本仓按训练营的 3 天节奏给到 Day1–Day3 交付物。</p>
+      </div>
+      <div class="card">
+        <h3>碎石路 → 高速公路</h3>
+        <p style="font-size:13px">现场定制不是浪费，是用客户场景做产品调研。每题都标出哪些部分能沉淀成跨行业通用件。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 题 01 ============ -->
+  <section class="problem" id="p1">
+    <div class="pnum">题 01 / 申沃客车 · 智能制造</div>
+    <h2 class="ptitle">现场报修了，为什么还要从头查起？</h2>
+    <p class="pgoal"><b>业务目标</b>：现场维修智能协同、派工建议与工匠经验复用 · <b>2 组</b> · <b>Echo</b> 售后技术主管/老师傅 · <b>Delta</b> 算法+后端</p>
+    <div class="tagrow">
+      <span class="tag">工单 Ontology</span><span class="tag">混合检索 RAG</span><span class="tag">故障树推理</span>
+      <span class="tag">技能画像派工</span><span class="tag">Write-back</span><span class="tag">离线回测</span><span class="tag grey">内网部署</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：经验在脑子里，历史工单检索不了</h3>
+        <p>技师到场处置要经过「确认车型 → 判断原因 → 逐条排查 → 备件 → 复检关单」。中间两步是黑洞：判断依据是老师傅口口相传，历史工单只写了自由文本，检索等于没有。</p>
+        <ul class="ticks">
+          <li><b>查手册慢</b>：PDF 无结构，靠翻章节</li>
+          <li><b>历史工单用不上</b>：没有统一故障码/部件/步骤字段</li>
+          <li><b>经验留不下</b>：录成文字成本太高，无人整理</li>
+          <li><b>派工靠拍脑袋</b>：技师擅长什么没有数据化</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：维修协同助手 Repair Copilot</h3>
+        <dl class="kv">
+          <dt>输入</dt><dd>车架号/车型 + 故障现象（文字/照片/故障码）</dd>
+          <dt>输出</dt><dd>候选故障原因 Top-N · 推荐排查步骤 · 携带配件清单 · 建议派工</dd>
+          <dt>溯源</dt><dd>每条结论指回手册章节 / 历史工单 / 经验条目</dd>
+          <dt>砍掉</dt><dd>不改工单系统本体 · 不接实时库存 · 不做自动报价</dd>
+          <dt>范围</dt><dd>只覆盖 Top 20 高频故障码/现象</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：从原始工单到可回写的答案</h3>
+      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
+        <svg viewBox="0 0 900 200" role="img" aria-label="题01 架构：工单手册码表进入抽取归一，进入工单本体，经混合检索与故障树推理输出工单侧边栏，再回写工单；下层为派工画像与经验回流">
+          <g>
+            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="13" y="30">SOURCE</text>
+            <text class="flow-t" x="13" y="52">工单·手册·码表</text>
+            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="198" y="30">EXTRACT</text>
+            <text class="flow-t" x="198" y="52">抽取与归一</text>
+            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="383" y="30">ONTOLOGY</text>
+            <text class="flow-t" x="383" y="52">工单本体</text>
+            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="568" y="30">REASON</text>
+            <text class="flow-t" x="568" y="52">检索+故障树</text>
+            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="753" y="30">DELIVER</text>
+            <text class="flow-t" x="753" y="52">工单侧边栏</text>
+          </g>
+          <g class="flow-arrow" marker-end="url(#ar)">
+            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
+            <path d="M820,68 L820,96 L80,96 L80,68"/>
+          </g>
+          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
+          <text class="flow-t" x="16" y="121">回写工单 → 新工单成为评测样本 → 经验回流本体</text>
+          <text class="flow-lbl" x="16" y="140">技师技能画像 + 派工打分；每条建议必须可溯源，指不回来源的不展示。</text>
+          <g>
+            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
+            <text class="flow-t" x="13" y="187">硬红线</text>
+            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
+            <text class="flow-t" x="463" y="187">评估</text>
+          </g>
+          <text class="flow-lbl" x="96" y="187">LLM 不得凭记忆生成故障原因</text>
+          <text class="flow-lbl" x="530" y="187">历史已闭环工单回测 Top-1 命中率</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>OKR</h3>
+        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让现场维修从「凭经验从头查起」变成「带着答案进场」，让老师傅的经验第一次成为可复用资产。</p>
+        <div class="bench"><span class="bench-label">首次诊断命中率（北极星）</span><div class="bench-track"><div class="bench-fill" style="width:70%"></div></div><span class="bench-val">≥70%</span></div>
+        <div class="bench"><span class="bench-label">建议准确率</span><div class="bench-track"><div class="bench-fill" style="width:80%"></div></div><span class="bench-val">≥80%</span></div>
+        <div class="bench"><span class="bench-label">派工建议采纳率</span><div class="bench-track"><div class="bench-fill" style="width:60%"></div></div><span class="bench-val">≥60%</span></div>
+        <div class="bench"><span class="bench-label">获取排障信息耗时</span><div class="bench-track empty"></div><span class="bench-val">≤2min</span></div>
+        <div class="bench"><span class="bench-label">老师傅经验条目化</span><div class="bench-track empty"></div><span class="bench-val">≥200条</span></div>
+        <p style="font-size:12.5px;color:var(--warn);margin-top:10px">护栏：二次上门率不得高于基线。工具让技师"照系统走"而漏掉真原因，即使命中率达标也算失败。</p>
+      </div>
+      <div class="card">
+        <h3>三天节奏</h3>
+        <ol class="timeline">
+          <li><strong>Day1 · 开题</strong><p>2 小时老师傅访谈 + 100 条脱敏工单 + 手册 + DTC 表；定 Top20 故障范围。</p></li>
+          <li><strong>Day2 · 共解</strong><p>抽取归一管线、手册索引、检索+故障树服务、工单侧边栏；离线回测跑第一版基线。</p></li>
+          <li><strong>Day3 · 出厂</strong><p>用真实故障码端到端走一遍；老师傅逐条打分；打通回写。</p></li>
+        </ol>
+        <div class="note" style="margin-top:14px">
+          <b>最大风险：</b>老师傅不愿配合或没时间 → 兜底是「语音录入 + AI 代拟，他只做确认」，同时把范围砍到 Top20 故障码。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 题 02 ============ -->
+  <section class="problem" id="p2">
+    <div class="pnum">题 02 / 申沃客车 · 品牌传播</div>
+    <h2 class="ptitle">申沃的智能驾驶，下一站开向哪里？</h2>
+    <p class="pgoal"><b>业务目标</b>：智能驾驶品牌营销、场景化传播与内容持续运营 · <b>2 组</b> · <b>Echo 主导</b> 市场部/品牌负责人 · <b>Delta</b> 内容流水线工程师</p>
+    <div class="tagrow">
+      <span class="tag">多模态打标</span><span class="tag">品牌知识库 RAG</span><span class="tag">内容 Agent 流水线</span>
+      <span class="tag">参数与合规校验</span><span class="tag">选题级归因</span><span class="tag">审核台</span><span class="tag grey">Echo 主导题</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：素材躺着没人翻，每篇内容从零写</h3>
+        <p>路测视频、车队里程、接管记录散在测试同事的电脑和微信群里；市场部每次写稿都要重新找素材、重新问参数、重新改格式；发完效果数据躺在各平台后台，与内容对不上号。</p>
+        <ul class="ticks">
+          <li><b>素材没资产化</b>：只有文件名，没有场景标签</li>
+          <li><b>技术话没人翻译</b>：参数与传播口径之间缺知识层</li>
+          <li><b>写完就忘</b>：没有「内容 → 效果」的闭环</li>
+          <li><b>参数常对不上</b>：没有发布前一致性校验</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：智能驾驶内容工厂</h3>
+        <dl class="kv">
+          <dt>交付</dt><dd>素材库 · 品牌知识库 · 内容 Agent · 可溯源审核台 · 效果归因</dd>
+          <dt>输入</dt><dd>市场部当场给出的 8–12 个真实选题</dd>
+          <dt>输出</dt><dd>公众号长文 + 小红书短文 + 短视频脚本（三端）</dd>
+          <dt>砍掉</dt><dd>不做视频自动剪辑 · 不做舆情监控 · 不做自建 BI</dd>
+          <dt>红线</dt><dd>正文只允许引用参数库与素材库，无素材不写</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：7 步内容工作流，每步可单独重跑</h3>
+      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
+        <svg viewBox="0 0 900 200" role="img" aria-label="题02 架构：路测素材与存量内容进入打标与品牌知识库，经内容Agent生成三端稿，经参数与合规校验后进入审核台发布，再由效果回流归因到选题">
+          <g>
+            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="13" y="30">SOURCE</text>
+            <text class="flow-t" x="13" y="52">路测素材·存量稿</text>
+            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="198" y="30">ASSET</text>
+            <text class="flow-t" x="198" y="52">打标+品牌知识库</text>
+            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="383" y="30">AGENT</text>
+            <text class="flow-t" x="383" y="52">内容 Agent 三端稿</text>
+            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="568" y="30">CHECK</text>
+            <text class="flow-t" x="568" y="52">参数+合规校验</text>
+            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="753" y="30">PUBLISH</text>
+            <text class="flow-t" x="753" y="52">审核台·多平台</text>
+          </g>
+          <g class="flow-arrow" marker-end="url(#ar)">
+            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
+            <path d="M820,68 L820,96 L80,96 L80,68"/>
+          </g>
+          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
+          <text class="flow-t" x="16" y="121">平台数据回填 → 归因到选题（题材 × 场景 × 时长 × 平台）→ 反哺选题池</text>
+          <text class="flow-lbl" x="16" y="140">归因到选题而非单篇：样本太少时，单篇统计没有意义。</text>
+          <g>
+            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
+            <text class="flow-t" x="13" y="187">最大失败模式</text>
+            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
+            <text class="flow-t" x="463" y="187">护栏</text>
+          </g>
+          <text class="flow-lbl" x="120" y="187">做成通用文案机 → 市场部说"我自己也能写"</text>
+          <text class="flow-lbl" x="510" y="187">人工审核耗时不得高于基线</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>OKR</h3>
+        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让智能驾驶的技术资产持续变成可运营的内容，市场部不再每次从零写，且每条内容都能说清效果。</p>
+        <div class="bench"><span class="bench-label">有效线索数（北极星，口径待确认）</span><div class="bench-track empty"></div><span class="bench-val">×1.5</span></div>
+        <div class="bench"><span class="bench-label">参数/合规错误拦截率</span><div class="bench-track"><div class="bench-fill" style="width:100%"></div></div><span class="bench-val">100%</span></div>
+        <div class="bench"><span class="bench-label">素材复用率</span><div class="bench-track"><div class="bench-fill" style="width:60%"></div></div><span class="bench-val">≥60%</span></div>
+        <div class="bench"><span class="bench-label">AI 初稿采纳率</span><div class="bench-track"><div class="bench-fill" style="width:50%"></div></div><span class="bench-val">≥50%</span></div>
+        <div class="bench"><span class="bench-label">单篇初稿生产周期</span><div class="bench-track empty"></div><span class="bench-val">≤3h</span></div>
+      </div>
+      <div class="card">
+        <h3>三天节奏</h3>
+        <ol class="timeline">
+          <li><strong>Day1 · 开题</strong><p>市场部 2 小时访谈：<b>必须拿到 8–12 个真实选题 + 指标口径</b>，否则不进 Day2 开发。</p></li>
+          <li><strong>Day2 · 共解</strong><p>素材打标管线、参数知识库、合规词表、7 步工作流、审核台；用 3 个真实选题出稿。</p></li>
+          <li><strong>Day3 · 出厂</strong><p>市场部当场出 3 个新选题跑通；10 条错误参数对抗测试演示拦截。</p></li>
+        </ol>
+        <div class="note" style="margin-top:14px">
+          <b>这道题的胜负手：</b>Echo（市场部）是主角，不是工程。把品牌判断外包给模型，市场部当场就不认。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 题 03 ============ -->
+  <section class="problem" id="p3">
+    <div class="pnum">题 03 / 蓝莓研究所 · 农业科技</div>
+    <h2 class="ptitle">蓝莓种植的每一步，能不能都有据可查？</h2>
+    <p class="pgoal"><b>业务目标</b>：蓝莓种植档案与农事记录智能整理 · <b>2 组</b> · <b>Echo</b> 农艺师/基地负责人 · <b>Delta</b> 算法+后端</p>
+    <div class="tagrow">
+      <span class="tag">植株级本体</span><span class="tag">照片 VLM 解析</span><span class="tag">语音 ASR</span>
+      <span class="tag">合规规则阻断</span><span class="tag">时序溯源</span><span class="tag">相关性归因</span><span class="tag grey">离线优先</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：记录散在纸本和微信群</h3>
+        <p>修剪、疏果、施肥、灌溉、打药、采收——这些操作决定了糖度、硬度和商品率，但记录散在纸本、微信群照片和各自 Excel 里。品质一波动，就查不到是第几次施氮、哪一天打药导致的。</p>
+        <ul class="ticks">
+          <li><b>农工不愿填表</b>：15 分钟/条，且看不到用在哪</li>
+          <li><b>颗粒度太粗</b>：多数只到地块级，真追溯要到行/株</li>
+          <li><b>照片没法用</b>：药名、剂量、登记证号都在像素里</li>
+          <li><b>认证要材料来不及</b>：追溯报告只能翻本子拼</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：种植档案系统</h3>
+        <dl class="kv">
+          <dt>交付</dt><dd>轻采集端 · 种植本体与时序 · 植株档案视图 · 溯源问答 · 追溯报告导出</dd>
+          <dt>范围</dt><dd>1 个基地 1 个地块打样 · 5–6 类高频农事</dd>
+          <dt>粒度</dt><dd>默认行级，株级按需指定</dd>
+          <dt>输入</dt><dd>拍照 + 一句话（语音），表单仅兜底</dd>
+          <dt>砍掉</dt><dd>不做预测模型 · 不做认证系统直连 · 不做株级 IoT</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一条农事记录的一生</h3>
+      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
+        <svg viewBox="0 0 900 200" role="img" aria-label="题03 架构：拍照与语音进入离线采集端，经转写与视觉解析和合规校验，写入植株本体与时序库，输出植株档案、溯源问答与追溯报告">
+          <g>
+            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="13" y="30">COLLECT</text>
+            <text class="flow-t" x="13" y="52">拍照 + 语音</text>
+            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="198" y="30">PARSE</text>
+            <text class="flow-t" x="198" y="52">ASR + VLM 结构化</text>
+            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="383" y="30">ONTOLOGY</text>
+            <text class="flow-t" x="383" y="52">植株本体 + 时序</text>
+            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="568" y="30">TRACE</text>
+            <text class="flow-t" x="568" y="52">溯源与归因</text>
+            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="753" y="30">DELIVER</text>
+            <text class="flow-t" x="753" y="52">追溯报告导出</text>
+          </g>
+          <g class="flow-arrow" marker-end="url(#ar)">
+            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
+            <path d="M160,68 L160,96 L740,96 L740,68"/>
+          </g>
+          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
+          <text class="flow-t" x="16" y="121">合规规则即时阻断：禁限用农药、安全间隔期不足 → 当场拦住，不进库</text>
+          <text class="flow-lbl" x="16" y="140">规则只能来自农艺师/官方清单，模型不得推断"这个药能不能用"。</text>
+          <g>
+            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
+            <text class="flow-t" x="13" y="187">护栏</text>
+            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
+            <text class="flow-t" x="463" y="187">边界</text>
+          </g>
+          <text class="flow-lbl" x="60" y="187">农工录入占比 ≥70%，否则只是把补录搬上线</text>
+          <text class="flow-lbl" x="500" y="187">归因只给相关性提示 + 样本量，不下因果结论</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>OKR</h3>
+        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让每一步种植操作都能追溯到地块、行、株，让品质问题有据可查，认证与抽检不再靠人翻本子。</p>
+        <div class="bench"><span class="bench-label">追溯完整度（北极星）</span><div class="bench-track"><div class="bench-fill" style="width:100%"></div></div><span class="bench-val">100%</span></div>
+        <div class="bench"><span class="bench-label">农事记录结构化率</span><div class="bench-track"><div class="bench-fill" style="width:85%"></div></div><span class="bench-val">≥85%</span></div>
+        <div class="bench"><span class="bench-label">行级档案覆盖</span><div class="bench-track"><div class="bench-fill" style="width:100%"></div></div><span class="bench-val">1地块·全量</span></div>
+        <div class="bench"><span class="bench-label">归因提示被认可率</span><div class="bench-track"><div class="bench-fill" style="width:60%"></div></div><span class="bench-val">≥60%</span></div>
+        <div class="bench"><span class="bench-label">单条录入耗时</span><div class="bench-track empty"></div><span class="bench-val">≤2min</span></div>
+      </div>
+      <div class="card">
+        <h3>三天节奏</h3>
+        <ol class="timeline">
+          <li><strong>Day1 · 开题</strong><p><b>下地跟班半天</b>（不是会议室）；拿 5–6 类农事清单 + 投入品合规规则；农工试用采集端 1 小时收集吐槽。</p></li>
+          <li><strong>Day2 · 共解</strong><p>离线采集端、结构化管线、本体与时序入库、植株档案视图、1 个地块建档。</p></li>
+          <li><strong>Day3 · 出厂</strong><p>真实采收批次跑完整追溯导出；农艺师逐项核对；<b>故意录一条禁用农药验证阻断</b>。</p></li>
+        </ol>
+        <div class="note" style="margin-top:14px">
+          <b>最大风险：</b>农工不用 → 数据源枯竭。录入必须压到 2 分钟内，并让"当天录入量"成为每日看板指标。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 题 04 ============ -->
+  <section class="problem" id="p4">
+    <div class="pnum">题 04 / 山南勘测 · 工程服务</div>
+    <h2 class="ptitle">报价各说各话，工程分包怎么比？</h2>
+    <p class="pgoal"><b>业务目标</b>：分包比选报价归集比对与比选台账生成 · <b>2 组</b> · <b>Echo</b> 商务/造价负责人 · <b>Delta</b> 解析+后端</p>
+    <div class="tagrow">
+      <span class="tag">报价行本体</span><span class="tag">Excel 解析</span><span class="tag">PDF 表格还原</span>
+      <span class="tag">口径归一</span><span class="tag">漏项 diff</span><span class="tag">置信度确认台</span><span class="tag">审计留痕</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：口径不同，"最低价"不是真最低</h3>
+        <p>各家报价格式不一：Excel 各有模板、PDF 有扫描件、含不含税、含不含运费与甲供材、品名写法不同、有的漏项。人工归集成一张台账要两天，量一大人就错。</p>
+        <ul class="ticks">
+          <li><b>同物不同名</b>："镀锌钢管" = "DN50 镀锌管"</li>
+          <li><b>单位混用</b>：吨/米/根、含税/不含税、合计写万元</li>
+          <li><b>少报活</b>：后期变更索赔的来源</li>
+          <li><b>数字没人信</b>：改过看不出，出处追不回</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：报价归集与比选台账系统</h3>
+        <dl class="kv">
+          <dt>基准</dt><dd>我方招标/工程量清单（映射基准，不要求各家重报）</dd>
+          <dt>输出</dt><dd>原始价 / 归一价 / 可比单价 三视图 + 漏项清单 + 异常清单</dd>
+          <dt>溯源</dt><dd>每个数字回链 原文件 → 页/单元格 → 原文片段 → 置信度</dd>
+          <dt>自动化</dt><dd>目标 ~70%，剩 30% 留给人</dd>
+          <dt>红线</dt><dd>所有算术由代码完成，LLM 只抽字段</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一份报价单的一生</h3>
+      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
+        <svg viewBox="0 0 900 200" role="img" aria-label="题04 架构：报价单经解析与源定位进入口径归一，再经漏项比对与异常检测进入人工确认队列，最终生成可溯源的比选台账">
+          <g>
+            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="13" y="30">PARSE</text>
+            <text class="flow-t" x="13" y="52">Excel·PDF·扫描件</text>
+            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="198" y="30">NORMALIZE</text>
+            <text class="flow-t" x="198" y="52">口径与金额归一</text>
+            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="383" y="30">VALIDATE</text>
+            <text class="flow-t" x="383" y="52">漏项 diff + 异常</text>
+            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="568" y="30">CONFIRM</text>
+            <text class="flow-t" x="568" y="52">低置信人工确认</text>
+            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="753" y="30">DELIVER</text>
+            <text class="flow-t" x="753" y="52">比选台账 + 溯源</text>
+          </g>
+          <g class="flow-arrow" marker-end="url(#ar)">
+            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
+            <path d="M820,68 L820,96 L80,96 L80,68"/>
+          </g>
+          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
+          <text class="flow-t" x="16" y="121">未确认的行不得进台账主表：解析置信度 × 匹配置信度 × 口径明确性</text>
+          <text class="flow-lbl" x="16" y="140">算术一律走确定性代码；模型一旦参与算钱，数字就不可信，而每个数字都要签字。</text>
+          <g>
+            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
+            <text class="flow-t" x="13" y="187">兜底</text>
+            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
+            <text class="flow-t" x="463" y="187">护栏</text>
+          </g>
+          <text class="flow-lbl" x="60" y="187">拿不到口径规则表就不进入开发，改为和商务一起写出来</text>
+          <text class="flow-lbl" x="510" y="187">越权自动确认数 = 0</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>OKR</h3>
+        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让多份口径不同的分包报价，在两小时内变成一张可评审、可签字、可追溯的比选台账。</p>
+        <div class="bench"><span class="bench-label">数字可溯源率</span><div class="bench-track"><div class="bench-fill" style="width:100%"></div></div><span class="bench-val">100%</span></div>
+        <div class="bench"><span class="bench-label">报价行归一准确率</span><div class="bench-track"><div class="bench-fill" style="width:95%"></div></div><span class="bench-val">≥95%</span></div>
+        <div class="bench"><span class="bench-label">漏项/口径异常检出率</span><div class="bench-track"><div class="bench-fill" style="width:90%"></div></div><span class="bench-val">≥90%</span></div>
+        <div class="bench"><span class="bench-label">台账一次签字通过率</span><div class="bench-track"><div class="bench-fill" style="width:70%"></div></div><span class="bench-val">≥70%</span></div>
+        <div class="bench"><span class="bench-label">台账产出耗时</span><div class="bench-track empty"></div><span class="bench-val">≤2h</span></div>
+      </div>
+      <div class="card">
+        <h3>三天节奏</h3>
+        <ol class="timeline">
+          <li><strong>Day1 · 开题</strong><p>商务 2 小时访谈拿<b>口径规则表 + 招标清单 + 历史台账</b>；取 3–5 家真实报价（至少 1 份扫描件）；用历史 3 次比选搭回测集。</p></li>
+          <li><strong>Day2 · 共解</strong><p>三条解析路径、归一引擎与别名表、漏项 diff、确认队列 UI、台账生成与导出、回测跑第一版。</p></li>
+          <li><strong>Day3 · 出厂</strong><p>真实新报价组端到端跑；商务抽 20 行逐行核；演示"漏项被抓出来"的案例。</p></li>
+        </ol>
+        <div class="note" style="margin-top:14px">
+          <b>最大风险：</b>口径规则没拿到 → 归一无依据。Day1 硬性要求：拿不到规则表，不进入开发。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 题 05 ============ -->
+  <section class="problem" id="p5">
+    <div class="pnum">题 05 / 山南勘测 · 工程建设</div>
+    <h2 class="ptitle">上百张现场照片，隐患藏在哪一张？</h2>
+    <p class="pgoal"><b>业务目标</b>：项目现场资料照片归档、风险源与不符合项速查（含文字识别） · <b>1 组</b> · <b>Echo</b> 安全员/质量员 · <b>Delta</b> CV/多模态+后端</p>
+    <div class="tagrow">
+      <span class="tag">pHash 去重</span><span class="tag">EXIF 归集</span><span class="tag">逐类隐患 VLM</span>
+      <span class="tag">标牌 OCR</span><span class="tag">混合检索</span><span class="tag">不符合项闭环</span><span class="tag grey">置信度分流</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：照片全是 IMG_2037.jpg</h3>
+        <p>每次进场几百张：进度、设备、隐蔽工程、标识牌、验收牌。找一张要往后拖几百下；标牌上的"3 号井段 已验收 2026-08-11"想按文字查完全没门；安全员要找"临边防护缺失"只能肉眼过。</p>
+        <ul class="ticks">
+          <li><b>翻不到</b>：无去重、无分类、命名无语义</li>
+          <li><b>隐患查不出</b>：照片只被"看"，没被"检查"</li>
+          <li><b>文字查不了</b>：标牌文字只在像素里</li>
+          <li><b>闭环断</b>：照片与"不符合项"对象没有绑定</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：照片归档与隐患速查系统</h3>
+        <dl class="kv">
+          <dt>依据</dt><dd>甲方安全检查表（隐患类别从这来，模型只能按它判）</dd>
+          <dt>交付</dt><dd>自动归档 · 隐患识别 · 文字识别 · 自然语言速查 · 不符合项闭环</dd>
+          <dt>范围</dt><dd>1 个项目 · 5 类高频隐患 · 标牌/铭牌/验收牌 OCR</dd>
+          <dt>砍掉</dt><dd>不做手写单据全解析 · 不做以图搜图 · 不做移动原生 App</dd>
+          <dt>红线</dt><dd>不自动开整改通知（误报会变成安全记录事故）</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一张照片的一生</h3>
+      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
+        <svg viewBox="0 0 900 200" role="img" aria-label="题05 架构：照片批量导入后经去重与EXIF归集，再经逐类隐患识别与OCR写入对象层，通过混合检索返回候选，进入人工复核队列与不符合项闭环">
+          <g>
+            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="13" y="30">IMPORT</text>
+            <text class="flow-t" x="13" y="52">批量导入</text>
+            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="198" y="30">CLEAN</text>
+            <text class="flow-t" x="198" y="52">去重 + EXIF 归集</text>
+            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="383" y="30">DETECT</text>
+            <text class="flow-t" x="383" y="52">逐类隐患 + OCR</text>
+            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="568" y="30">SEARCH</text>
+            <text class="flow-t" x="568" y="52">混合检索</text>
+            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="753" y="30">CLOSE</text>
+            <text class="flow-t" x="753" y="52">不符合项闭环</text>
+          </g>
+          <g class="flow-arrow" marker-end="url(#ar)">
+            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
+            <path d="M555,68 L555,96 L80,96 L80,68"/>
+          </g>
+          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
+          <text class="flow-t" x="16" y="121">中低置信 → 人工复核队列（确认/否认）→ 否认样本回流做 few-shot 与评测集</text>
+          <text class="flow-lbl" x="16" y="140">按隐患类别逐个问（"这张图里临边防护栏杆是否连续完整？"），不要一次问"有没有问题"。</text>
+          <g>
+            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
+            <text class="flow-t" x="13" y="187">最大风险</text>
+            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
+            <text class="flow-t" x="463" y="187">护栏</text>
+          </g>
+          <text class="flow-lbl" x="105" y="187">拿公开 PPE 数据集训通用模型，现场根本不是那个场景</text>
+          <text class="flow-lbl" x="505" y="187">召回与精确率必须成对看</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>OKR</h3>
+        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：让上百张现场照片在几秒内变成可检索的隐患线索，让安全整改从"翻相册"变成"搜一句话"。</p>
+        <div class="bench"><span class="bench-label">照片自动归集归档率</span><div class="bench-track"><div class="bench-fill" style="width:95%"></div></div><span class="bench-val">≥95%</span></div>
+        <div class="bench"><span class="bench-label">隐患召回率（北极星）</span><div class="bench-track"><div class="bench-fill" style="width:80%"></div></div><span class="bench-val">≥80%</span></div>
+        <div class="bench"><span class="bench-label">隐患精确率</span><div class="bench-track"><div class="bench-fill" style="width:70%"></div></div><span class="bench-val">≥70%</span></div>
+        <div class="bench"><span class="bench-label">OCR 关键字段准确率</span><div class="bench-track"><div class="bench-fill" style="width:85%"></div></div><span class="bench-val">≥85%</span></div>
+        <div class="bench"><span class="bench-label">自然语言速查响应</span><div class="bench-track empty"></div><span class="bench-val">≤10s</span></div>
+      </div>
+      <div class="card">
+        <h3>三天节奏</h3>
+        <ol class="timeline">
+          <li><strong>Day1 · 开题</strong><p>拿<b>安全检查表</b> + 1 个项目 300+ 张真实照片；安全员标注 100–200 张（覆盖 5 类隐患）。</p></li>
+          <li><strong>Day2 · 共解</strong><p>去重 + EXIF + 自动归集；逐类检测（few-shot 迭代）；OCR 入索引；混合检索；复核队列 UI；评测脚本跑基线。</p></li>
+          <li><strong>Day3 · 出厂</strong><p>安全员用真实句子速查 3 条，当场判定命中/误报；跑通 1 条"隐患→整改→复查"。</p></li>
+        </ol>
+        <div class="note" style="margin-top:14px">
+          <b>最大风险：</b>标注集不够 → 别硬撑一个低准确率检测器，退回"模型初筛 + 结论靠人"的人机协作模式。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 题 06 ============ -->
+  <section class="problem" id="p6">
+    <div class="pnum">题 06 / 广源人力 · 卫健服务</div>
+    <h2 class="ptitle">上千名护士，这次培训到底该安排谁？</h2>
+    <p class="pgoal"><b>业务目标</b>：护理培训智能管理：分层抽选、名单确认与跨月排课 · <b>1 组</b> · <b>Echo</b> 人力运营/培训主管 · <b>Delta</b> 求解器+后端</p>
+    <div class="tagrow">
+      <span class="tag">资格规则引擎</span><span class="tag">CP-SAT 求解</span><span class="tag">LLM 只抽规则</span>
+      <span class="tag">可解释名单</span><span class="tag">人工干预重排</span><span class="tag">跨月排课</span><span class="tag grey">执行回流校准</span>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>场景：改三轮还排不平</h3>
+        <p>证书有效期、先修课程、岗位职称匹配、名额、班次冲突、医院配额——约束多到人脑记不住。Excel 拉名单 → 人工避冲突 → 排不满再手调 → 医院要换人 → 再改，改三轮还常漏人。</p>
+        <ul class="ticks">
+          <li><b>漏人</b>：靠人记，"该训"没训全</li>
+          <li><b>排不满/排错班</b>：约束没写出来</li>
+          <li><b>医院要换人</b>：名单不可解释，双方没有依据</li>
+          <li><b>跨月排不开</b>：只看单月，月底资源冲突爆发</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>项目：护理培训智能排课</h3>
+        <dl class="kv">
+          <dt>地基</dt><dd>"应训"判定规则 + 硬约束清单（由运营与医院当场对齐）</dd>
+          <dt>引擎</dt><dd>CP-SAT 约束求解；LLM 只做规则抽取，不参与出名单</dd>
+          <dt>交付</dt><dd>可解释名单 · 人工干预重排 · 跨月排课 · 确认冻结 · 执行回流</dd>
+          <dt>砍掉</dt><dd>不做完整课表引擎 · 不做 HIS/教务直连</dd>
+          <dt>不可行时</dt><dd>输出冲突诊断（缺多少容量、卡在哪些约束）</dd>
+        </dl>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>解决方案：一次排课的一生</h3>
+      <div class="flowbox" style="border:none;box-shadow:none;padding:4px 0 0">
+        <svg viewBox="0 0 900 200" role="img" aria-label="题06 架构：花名册与证书构建人员画像，LLM抽取规则经人工确认生成可执行规则集，CP-SAT求解产出可解释名单，经人工干预重排后跨月排课，医院确认冻结并回流校准">
+          <g>
+            <rect class="flow-node" x="0" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="13" y="30">PROFILE</text>
+            <text class="flow-t" x="13" y="52">人员画像</text>
+            <rect class="flow-node" x="185" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="198" y="30">RULES</text>
+            <text class="flow-t" x="198" y="52">LLM 抽规则+人确认</text>
+            <rect class="flow-node-2" x="370" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="383" y="30">SOLVE</text>
+            <text class="flow-t" x="383" y="52">CP-SAT 求解</text>
+            <rect class="flow-node" x="555" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="568" y="30">EXPLAIN</text>
+            <text class="flow-t" x="568" y="52">可解释名单</text>
+            <rect class="flow-node" x="740" y="10" width="160" height="56" rx="10"/>
+            <text class="flow-s" x="753" y="30">CONFIRM</text>
+            <text class="flow-t" x="753" y="52">医院确认·冻结</text>
+          </g>
+          <g class="flow-arrow" marker-end="url(#ar)">
+            <path d="M162,38 L181,38"/><path d="M347,38 L366,38"/><path d="M532,38 L551,38"/><path d="M717,38 L736,38"/>
+            <path d="M820,68 L820,96 L270,96 L270,68"/>
+          </g>
+          <rect class="flow-band" x="0" y="98" width="900" height="54" rx="10"/>
+          <text class="flow-t" x="16" y="121">人工锁定/替换/排除 → 求解器带固定解重排其余；执行到场率回流校准权重</text>
+          <text class="flow-lbl" x="16" y="140">硬约束零违反是底线；"零违反"比"排得最优"更重要。</text>
+          <g>
+            <rect class="flow-node" x="0" y="164" width="430" height="36" rx="8"/>
+            <text class="flow-t" x="13" y="187">关键判断</text>
+            <rect class="flow-node" x="450" y="164" width="450" height="36" rx="8"/>
+            <text class="flow-t" x="463" y="187">护栏</text>
+          </g>
+          <text class="flow-lbl" x="88" y="187">用 LLM 直接推荐名单：既不可靠也不可解释，医院不认</text>
+          <text class="flow-lbl" x="510" y="187">换人后重排 100% 成功且零违规</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>OKR</h3>
+        <p style="font-size:13px;margin-bottom:12px"><b>O</b>：把"上千名护士该派谁去培训"从两天的人工拉扯，变成两小时出一份规则合法、算法公平、逐条可解释、可由医院确认并微调的名单。</p>
+        <div class="bench"><span class="bench-label">名单可解释率</span><div class="bench-track"><div class="bench-fill" style="width:100%"></div></div><span class="bench-val">100%</span></div>
+        <div class="bench"><span class="bench-label">人工改单率</span><div class="bench-track"><div class="bench-fill" style="width:20%"></div></div><span class="bench-val">≤20%</span></div>
+        <div class="bench"><span class="bench-label">应训覆盖率（相对提升）</span><div class="bench-track empty"></div><span class="bench-val">+20%</span></div>
+        <div class="bench"><span class="bench-label">硬约束违反数</span><div class="bench-track empty"></div><span class="bench-val">=0</span></div>
+        <div class="bench"><span class="bench-label">出名单耗时</span><div class="bench-track empty"></div><span class="bench-val">≤2h</span></div>
+      </div>
+      <div class="card">
+        <h3>三天节奏</h3>
+        <ol class="timeline">
+          <li><strong>Day1 · 开题</strong><p>运营 2 小时访谈，拿<b>"应训"判定规则与硬约束清单</b>；拿花名册样本、证书台账、排班表、期次表；用历史排课做回测基准。</p></li>
+          <li><strong>Day2 · 共解</strong><p>规则抽取 + 确认台、画像构建、CP-SAT 建模与不可行诊断、可解释层、人工干预重排、跨月视图、Excel 导出。</p></li>
+          <li><strong>Day3 · 出厂</strong><p>真实花名册跑 30 天名单；运营当场换 2 人重排；医院确认并提意见；硬约束零违反断言演示。</p></li>
+        </ol>
+        <div class="note" style="margin-top:14px">
+          <b>最大风险：</b>"应训"口径打架 → 名单基底就错。Day1 必须当场对齐一份可执行规则清单。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 结项 ============ -->
+  <section id="deliver">
+    <div class="sec-head"><span class="sec-num">07</span><h2>结项要交什么</h2></div>
+    <p class="sub">训练营官方口径：实战收获 = 真实卡顿 · 团队 AI 模型 · 测试与验证记录。结项交的是可验证的 AI 原型，不是 PPT。</p>
+    <div class="grid4">
+      <div class="card">
+        <h3>真实卡顿</h3>
+        <p style="font-size:13px">每题记录 2 次实际踩坑：数据格式、接口、口径、模型失败样本。这是训练营明确要求的第一项产出。</p>
+      </div>
+      <div class="card">
+        <h3>团队 AI 模型</h3>
+        <p style="font-size:13px">不是"我们用了大模型"，而是<b>带评测集的模型</b>：回测脚本 + 评测集入库，跑得出分数。</p>
+      </div>
+      <div class="card">
+        <h3>测试与验证记录</h3>
+        <p style="font-size:13px">甲方人工抽检表、断言报告、干预演示记录——每条建议"可用/需改/不可用"由甲方签字。</p>
+      </div>
+      <div class="card">
+        <h3>可复用件</h3>
+        <p style="font-size:13px">每题标出哪些沉淀成通用件。碎石路修成高速公路，是 FDE 模式能规模化的前提。</p>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+    <div class="note">
+      <b>三条贯穿六题的硬规矩：</b>① 模型不做算术、不编事实，凡是要签字的数字与参数都必须可溯源；
+      ② 低置信度结果必须走人工确认台，自动化率再高也不取消这一步；
+      ③ 每题都有护栏指标（不恶化 / 零违反 / 不超基线），只报好看的那条不算达标。
+    </div>
+  </section>
+
+  <footer>
+    <div class="mono">FDE 训练营 · 六道真题拆解 · GPS 2026 全球开发者先锋大会 FDE 智能人才工厂</div>
+    <div style="margin-top:6px">仓库：<span class="mono">C:\Git-repo-AI\FDE训练营</span> · 真题原片见 <span class="mono">assets/六道题-寻找问题.jpg</span> · 逐题文档见 <span class="mono">problems/</span></div>
+    <div style="margin-top:6px;color:var(--muted)">说明：题面照抄现场大屏原文。企业规模、在用系统、数据口径等原片未提供的信息均标注「⚠️ 待 Day1 现场确认」，本文未对其作事实断言。</div>
+  </footer>
+
+</div>
+</body>
+</html>
