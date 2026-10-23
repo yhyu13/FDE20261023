@@ -384,6 +384,11 @@ uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes
   `gh pr create --body-file pr/004-quote-compare.md`。**字段是照着 `.github/` 那两套模板写的，迁移是逐字搬运。**
 - **改远程的可见性、改名、删除远程仓，都要先问人。**
 
+> **已经踩过一次的坑（记下来）：** 这个远程被创建时是 **public**，
+> 后来被转成 private，**又被某个并行任务改回 public**，直到推送前复核才发现。
+> 所以：**每次要往远程推东西之前，先 `gh api repos/yhyu13/FDE20261023 --jq '.visibility'` 查一遍**，
+> 确认是 `private` 再推。推送本身不改变可见性，但**别的命令会**。
+
 ---
 
 ## 12. 必须停下来问，不许自己决定
