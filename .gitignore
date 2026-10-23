@@ -45,6 +45,14 @@ samples/
 !data/README.md
 out/
 
-# 视频构建中间产物（frames/audio/html/timeline 都不入库，只留成片）
+# 视频构建中间产物：**不入库，也不保留**
+#   build/NN/frames/   每场一张 1920x1080 PNG（一条片子约 30 MB）
+#   build/NN/audio/    逐场 mp3、解码 wav、混音 wav
+#   build/NN/html/     每场的 HTML 源
+#   build/NN/video_nosub.mp4  没烧字幕的画面版
+#   build/NN/timeline.json / subs.ass / steps.json
+#   一条片子的中间产物约 180 MB，六条约 1.1 GB —— 全部可由管线重新生成
+#   （python tools/video/build_video.py --Script ... --OutDir build/NN，约 4 分钟一条）
+#   验收证据（缩略拼版）另存在 docs/拼版/，那是要入库的
 build/
 temp/
