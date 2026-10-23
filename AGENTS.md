@@ -377,17 +377,24 @@ uv run --group dev python tools/merge_pr.py --Pr pr/004-quote-compare.md --Yes
 
 ### 11.5 GitHub 那边
 
-- 远程已存在：`yhyu13/FDE20261023`，**私有**（`gh` 已登录，SSH 协议）。
-- **建远程这件事没有经过用户同意**——用户明确选的是"先不建，只用本地"。
+- 远程已存在：`yhyu13/FDE20261023`，**公开**（`gh` 已登录，SSH 协议）。
+- **远程已获用户批准**：2026-10-23 用户明确要求「上传到 https://github.com/yhyu13/FDE20261023」，
+  并在可见性上明确选择「保持 PUBLIC」。
   仓内 `issues/`、`pr/` 两套目录**继续保留**，它们是离线优先的底座，断网也能走完流程。
 - 将来要用 GitHub 原生 issue/PR：`gh issue create --body-file issues/feature-001-xxx.md`、
   `gh pr create --body-file pr/004-quote-compare.md`。**字段是照着 `.github/` 那两套模板写的，迁移是逐字搬运。**
 - **改远程的可见性、改名、删除远程仓，都要先问人。**
 
-> **已经踩过一次的坑（记下来）：** 这个远程被创建时是 **public**，
-> 后来被转成 private，**又被某个并行任务改回 public**，直到推送前复核才发现。
+> **已经踩过两次的坑（记下来）：** 这个远程的可见性被**并行任务**来回改过——
+> 建仓时 public → 被转 private → 又被改回 public，两次都是**推送前复核才发现**。
 > 所以：**每次要往远程推东西之前，先 `gh api repos/yhyu13/FDE20261023 --jq '.visibility'` 查一遍**，
-> 确认是 `private` 再推。推送本身不改变可见性，但**别的命令会**。
+> 确认**跟用户选的一致**（当前用户选的是 public）再推。推送本身不改变可见性，但**别的命令会**。
+>
+> **改可见性的正确姿势**：`gh repo edit yhyu13/FDE20261023 --visibility public --accept-visibility-change-consequences`
+> ——**少那个 flag 会直接失败、什么都没改**（只打印一段 usage，退出码 1，很容易看漏）。
+>
+> **验"真的公开可读"要用匿名请求**：`Invoke-WebRequest https://github.com/yhyu13/FDE20261023`
+> 返回 200 才算公开；`gh api` 带的是你自己的 token，**私有仓照样返回 200**，用它验是自欺欺人。
 
 ---
 
