@@ -66,6 +66,11 @@ assets/*
 !assets/problem-original-photo.jpg
 !assets/survey-detail-photo-05.jpg
 !assets/training-camp-site-photo.jpg
+#   下面三个是"被测原型"本体：tests/ 里的验收测试直接读它们的 index.html，
+#   不入库的话，克隆下来的仓库里测试必然失败。它们是交付物，不是中间产物。
+!assets/day1024_prd_kimi/
+!assets/day1024_prd_v1/
+!assets/day1024_sol_v1_v2/
 
 # 交付归档包：单文件 380 MB，超过 GitHub 单文件 100 MB 硬限制，推送必被拒
 #   内容是视频构建产物（mp4 / wav / frames / 27 MB 的 index.html）
