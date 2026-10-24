@@ -24,6 +24,11 @@ addopts = "-q --strict-markers"
 line-length = 100
 target-version = "py311"
 src = ["src", "tools"]
+# .kilo/skills/ 里是整份拷进来的第三方 skill（hyperframes 的 lint_source.py 等）。
+# 保持与上游逐字一致，好让下次重新 vendor 时能干净覆盖、不留本地分叉；
+# 逐条修它的 lint 会在下次 vendor 时被整体冲掉，等于白干。
+# assets/ 是素材与交付物，不是源码目录，里面的一次性探针脚本不入库也不按本仓规则改。
+extend-exclude = [".kilo/skills", "assets"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]

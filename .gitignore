@@ -38,12 +38,28 @@ build/
 *.log
 *.tmp
 _tmp/
+# 一次性解包/探针脚本的落地目录（不入库）
+# 它不是源码，但 ruff 会扫到里面的 .py —— 不忽略的话 lint 闸会一直红
+.tmp_extract/
 
 # 训练营期间的大文件与中间产物（原始素材、数据样本、脱敏数据不入库）
 data/
 samples/
 !data/README.md
 out/
+
+# 素材与交付物目录（不入库）
+#   assets/day1023/、day1024_*/  演示原型、截图、一次性探针脚本
+#   assets/02 申沃的智能驾驶…/    原始素材的解包目录
+#   合计约 108 MB，多为 PNG/HTML 一次性中间物，可由脚本重新生成
+#   真正值得入库的只有 assets/day1024_glm/spec.md（小文本），
+#   需要时单独放行那一个文件，别把整个目录带进来
+assets/
+
+# 交付归档包：单文件 380 MB，超过 GitHub 单文件 100 MB 硬限制，推送必被拒
+#   内容是视频构建产物（mp4 / wav / frames / 27 MB 的 index.html）
+#   留在本地即可，要入库走 LFS
+FDE20261023——ppt废案.zip
 
 # 视频构建中间产物：**不入库，也不保留**
 #   build/NN/frames/   每场一张 1920x1080 PNG（一条片子约 30 MB）
