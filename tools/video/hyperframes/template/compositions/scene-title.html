@@ -1,0 +1,43 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #title-headline {
+      left: 160px;
+      top: 400px;
+      color: var(--ink);
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    #title-rule {
+      left: 160px;
+      top: 560px;
+      width: 360px;
+      height: 4px;
+      background: var(--accent);
+    }
+    #title-subhead {
+      left: 160px;
+      top: 600px;
+      color: var(--muted);
+      font-size: 34px;
+    }
+  </style>
+  <div id="root" data-composition-id="scene-title" data-width="1920" data-height="1080">
+    <h1 id="title-headline" class="clip" data-start="0" data-duration="4" data-track-index="1" data-var-text="headline"></h1>
+    <div id="title-rule" class="clip" data-start="0.35" data-duration="3.4" data-track-index="2"></div>
+    <p id="title-subhead" class="clip" data-start="0.6" data-duration="3.2" data-track-index="3" data-var-text="subhead"></p>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // 用 fromTo，不要用 from：host 每次显示场景都会重新 seek，from 只记录一次起始态，来回 seek 会漂
+    tl.fromTo("#title-headline", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0);
+    tl.fromTo("#title-rule", { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.5, ease: "power2.out" }, 0.35);
+    tl.fromTo("#title-subhead", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.6);
+    window.__timelines["scene-title"] = tl;
+  </script>
+</template>

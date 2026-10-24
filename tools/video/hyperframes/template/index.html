@@ -1,0 +1,63 @@
+<!doctype html>
+<html
+  lang="zh-CN"
+  data-composition-variables='[
+    {"id":"headline","type":"string","label":"主标题","default":"申沃智能驾驶内容工厂"},
+    {"id":"subhead","type":"string","label":"副标题","default":"HyperFrames + Microsoft Edge，可复现的讲解片"},
+    {"id":"point","type":"string","label":"要点","default":"口播一句一屏，字幕走词级时间戳"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #12131a;
+        --ink: #f4f2ec;
+        --muted: #9a9aa2;
+        --accent: #d97757;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); }
+      /* 每个 clip 自己定位：引擎会把 clip 移出普通流，flex 居中会叠在一起 */
+      .clip { position: absolute; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="main"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="8"
+      data-width="1920"
+      data-height="1080"
+      style="position: relative; width: 1920px; height: 1080px;"
+    >
+      <!-- host 的 id、场景的 data-composition-id、时间轴 key 三者必须一致 -->
+      <div
+        id="scene-title"
+        data-composition-id="scene-title"
+        data-composition-src="compositions/scene-title.html"
+        data-start="0"
+        data-duration="4"
+        data-track-index="1"
+      ></div>
+      <div
+        id="scene-point"
+        data-composition-id="scene-point"
+        data-composition-src="compositions/scene-point.html"
+        data-start="4"
+        data-duration="4"
+        data-track-index="2"
+      ></div>
+    </div>
+    <script>
+      // 根 composition 自己也要注册一条时间轴，key 与 data-composition-id 一致。
+      // 场景的动画写在各自文件的 <template> 里，根这里只负责根级动画（例如整片底色）。
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#main", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "none" }, 0);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

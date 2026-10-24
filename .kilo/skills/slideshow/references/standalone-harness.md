@@ -31,9 +31,12 @@ For public or user-facing generated projects, make this wrapper the root `index.
     <title>My Deck — Slideshow Demo</title>
 
     <!--
-      Load both bundles from packages/player/dist.
-      The global builds register <hyperframes-player> and <hyperframes-slideshow>
-      as custom elements — no import map needed.
+      Load both dist bundles of the player package. The global builds register
+      <hyperframes-player> and <hyperframes-slideshow> as custom elements — no
+      import map needed. The src paths below assume the upstream monorepo layout
+      (packages/ beside skills/); a standalone skills install ships no bundles,
+      so take them from an `hyperframes` npm/plugin release and point src at
+      wherever they live relative to this wrapper.
     -->
     <script src="../../../packages/player/dist/hyperframes-player.global.js"></script>
     <script src="../../../packages/player/dist/slideshow/hyperframes-slideshow.global.js"></script>

@@ -15,7 +15,7 @@
 
 ## 一、真题原片
 
-![真题原片：六道题，寻找问题](assets/六道题-寻找问题.jpg)
+![真题原片：六道题，寻找问题](assets/problem-original-photo.jpg)
 
 <sub>来源：GPS 2026 FDE 智能人才工厂 · 企业出真题环节现场大屏 · 2026-10-23</sub>
 
@@ -34,7 +34,7 @@
 
 ### 需求细节页（题 05 · 山南勘测）
 
-![题05 需求细节：上百张现场照片，隐患藏在哪一张？](assets/山南勘测-题05-需求细节.jpg)
+![题05 需求细节：上百张现场照片，隐患藏在哪一张？](assets/survey-detail-photo-05.jpg)
 
 <sub>来源：GPS 2026 FDE 智能人才工厂 · 命题方需求详情页 · 2026-10-23</sub>
 
@@ -201,8 +201,8 @@ FDE训练营/
 ├── .specify/                    # spec-kit 1.1.4（含 memory/constitution.md 宪法）
 ├── .mavis/commands/             # /speckit.* 十���命令
 └── assets/
-    ├── 六道题-寻找问题.jpg        # 真题原片（现场大屏）
-    ├── GPS2026-FDE训练营-现场.jpg # 训练营现场实拍（日程来源）
+    problem-original-photo.jpg    # 真题原片（现场大屏）
+    training-camp-site-photo.jpg   # 训练营现场实拍（日程来源）
     └── overview-preview.png       # overview.html 首屏预览
 ```
 

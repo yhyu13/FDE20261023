@@ -50,7 +50,7 @@
 **六道题不用从零写 spec**——`problems/*.md` 的三层拆解树已经是 80% 的 spec：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/seed_spec.ps1 -Number 1 -ShortName repair-copilot
+uv run --group dev python tools/seed_spec.py -Number 1 -ShortName repair-copilot
 ```
 
 它会建分支 `001-repair-copilot`、建 `specs/001-repair-copilot/spec.md`，
@@ -246,7 +246,7 @@ uv run --group dev python tools/run_all_gates.py --only spec,fr-trace
 
 | 东西 | 真源 | 派生产物 |
 |------|------|----------|
-| **六道题的拆解** | [`problems/*.md`](./problems/) | `specs/*/spec.md`（用 `tools/seed_spec.ps1` 生成，**不要手改**） |
+| **六道题的拆解** | [`problems/*.md`](./problems/) | `specs/*/spec.md`（用 `tools/seed_spec.py` 生成，**不要手改**） |
 | **拆解规范** | [`docs/拆解规范.md`](./docs/拆解规范.md) | — |
 | **企业背景** | 联网核实结果，存 `problems/*.md` 〇 章 + `docs/拆解规范.md` §五 | README §二 |
 | **spec** | `specs/NNN-slug/spec.md` | `plan.md` / `tasks.md` / 实现 |
@@ -284,8 +284,8 @@ uv run --group dev python tools/run_all_gates.py --only spec,fr-trace
 要并行就用工作树把两边分开——共享 `.git`，文件目录各自独立，提交互不覆盖：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/new_worktree.ps1 -Feature 1 -ShortName repair-copilot
-powershell -ExecutionPolicy Bypass -File tools/new_worktree.ps1 -List
+uv run --group dev python tools/new_worktree.py -Feature 1 -ShortName repair-copilot
+uv run --group dev python tools/new_worktree.py --List
 ```
 
 **六道题 = 六棵工作树**，各组各开各的，目录约定 `FDE训练营-wt-<slug>`。

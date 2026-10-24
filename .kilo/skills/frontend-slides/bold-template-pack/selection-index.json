@@ -6,7 +6,7 @@
   "usage": {
     "selection": "Read this compact index first to shortlist bold templates from metadata.",
     "previews": "For title-slide previews, read only the preview_md files for the shortlisted bold candidates.",
-    "final_generation": "After the user chooses a bold template, read exactly that template design_md before generating the full deck.",
+    "final_generation": "After the user chooses a bold template, read exactly that template design_md before generating the full deck. If that design_md is absent from this install (only preview_md files ship here), generate from the template's preview.md style card instead.",
     "never": "Do not bulk-read templates/*/design.md and do not read template.html unless the selected design.md is missing a critical implementation detail."
   },
   "frontend_slides_policy": {

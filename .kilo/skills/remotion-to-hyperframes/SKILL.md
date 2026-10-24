@@ -3,7 +3,7 @@ name: remotion-to-hyperframes
 description: Bring existing video code or footage into HyperFrames and verify it frame by frame against the original - Remotion first, also Motion Canvas, Lottie, Three.js, p5.js, canvas or plain HTML/CSS animation, or renders from Manim, After Effects or Blender. Use to port, convert, migrate or reuse work made with another tool.
 ---
 
-**Plugin installs:** Before setup or freshness commands, follow [plugin execution rules](../hyperframes/references/plugin-installation.md) when this skill is inside a HyperFrames plugin.
+**Plugin installs:** Before setup or freshness commands, follow [plugin execution rules](references/plugin-installation.md) when this skill is inside a HyperFrames plugin.
 
 # Import into HyperFrames
 
@@ -40,7 +40,7 @@ Before hand-building a named visual the source used, search `npx hyperframes cat
 
 ## Hosted
 
-Keep the code and let HyperFrames own the clock: it draws the frame for the time it is given. The seek protocol and the built-in adapters for Lottie, Three.js, anime.js, WAAPI and CSS animations are in `../hyperframes/references/runtimes.md`. No `requestAnimationFrame` loop or timer as the time source, seeded randomness only, and `data-duration` on the root when nothing else defines the length.
+Keep the code and let HyperFrames own the clock: it draws the frame for the time it is given. The seek protocol and the built-in adapters for Lottie, Three.js, anime.js, WAAPI and CSS animations are in `references/runtimes.md`. No `requestAnimationFrame` loop or timer as the time source, seeded randomness only, and `data-duration` on the root when nothing else defines the length.
 
 ## Media
 

@@ -51,8 +51,10 @@
 
 ## 本机环境现状
 
-- **HyperFrames：** Node v22.14.0 ✅ · ffmpeg 9.0.2 ✅ · ffprobe 9.0.2 ✅ · **Chrome Headless Shell ❌**（补法 `npx.cmd hyperframes browser ensure`，约 150 MB）。可选的 Docker / Kokoro TTS / MusicGen / whisper.cpp 都没装，也不影响出片。详见 `mock/学习笔记/02-视频-HyperFrames.md` §4。
-- **视觉工具：** 本仓已有 `tools/video/pipeline.py` 全链路（Edge TTS → 词级字幕 → 音频实测定时 → 逐帧 → libass 烧字幕 → 校验），换 HyperFrames 的话是换渲染层，不是从零。
+- **HyperFrames：** Node v22.14.0 ✅ · ffmpeg 9.0.2 ✅ · ffprobe 9.0.2 ✅ · **浏览器 = Microsoft Edge 156.0.4314.42** ✅（用户级环境变量 `HYPERFRAMES_BROWSER_PATH`）。常规浏览器没有 `beginFrame`，引擎退到截图采集路径，慢一些但结果一样确定；走这条路不支持 `--resolution` 放大到 4K。实测 8 秒片子渲了 15 秒。详见 `mock/学习笔记/02-视频-HyperFrames.md` §11。
+- **HyperFrames 在本仓的落点：** `tools/video/hyperframes/`——`template/`（两场景模板，GSAP 本地化在 `assets/gsap.min.js`）、`render.ps1`（check → render → ffprobe 核对一条命令）、`README.md`。
+- **visual-explainer MCP：** 已装已注册（`.kilo/kilo.json`），运行时在 `tools/vendor/visual-explainer/`（上游原版 0.14.0，未改动）。
+- **视觉工具：** 本仓已有 `tools/video/pipeline.py` 全链路（Edge TTS → 词级字幕 → 音频实测定时 → 逐帧 → libass 烧字幕 → 校验）。HyperFrames 接管的是**出帧与编码**这一段，稿子/TTS/字幕/混音仍在 Python 侧；现有 6 支讲解片不动。
 
 ---
 

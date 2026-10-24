@@ -31,21 +31,29 @@
   - **暴露的 prompt：** 9 个命令模板，`generate-web-diagram`、`generate-visual-plan`、`generate-slides`、`generate-video`、`diff-review`、`plan-review`、`project-recap`、`compare`、`fact-check`。
   - **暴露的资源：** `visual-explainer://skill/SKILL.md`、`references/*.md`、`kit/kit.css`、`commands/*.md`。
   - **写盘限制：** 只写配置的输出目录，默认 `~/.agent/diagrams/`，可用 `VISUAL_EXPLAINER_OUTPUT_DIR` 换；路径必须是 basename，拒绝目录穿越、控制字符和 symlink 目标；`render` 默认 `open: false`。
-- **接进 Kilo 的写法（还没接，TODO）：** 在 `.kilo/kilo.json` 里加：
+- **接进 Kilo 的写法（已装、已注册）：** `.kilo/kilo.json` 里加了：
 
 ```json
 {
   "mcp": {
     "visual-explainer": {
       "type": "local",
-      "command": ["node", "D:\\GitRepo-AI\\FDE20261023\\.kilo\\skills\\visual-explainer\\mcp\\server.mjs"],
-      "enabled": true
+      "command": [
+        "node",
+        "D:\\GitRepo-AI\\FDE20261023\\tools\\vendor\\visual-explainer\\node_modules\\visual-explainer\\plugins\\visual-explainer\\mcp\\server.mjs"
+      ],
+      "enabled": true,
+      "timeout": 30000
     }
   }
 }
 ```
 
-- **接之前要做的事：** 在 `.kilo/skills/visual-explainer/` 目录里 `npm install --no-package-lock`，否则 server 起不来；`node_modules` 已被 `.gitignore` 挡住，不入库。
+- **实测通过（2026-10-24）：** stdio 起得来，`initialize` 回 `visual-explainer 0.14.0`、协议 2025-06-18；`tools/list` 给出 `visual_explainer_prepare`、`visual_explainer_render_html`；`prompts/list` 给出 9 个命令模板；`resources/list` 20 条。
+- **运行时放在 `tools/vendor/visual-explainer/`：** 那儿用 `npm install --no-package-lock` 装了未改动的 `visual-explainer@0.14.0`，依赖树 144 个包，`node_modules` 不入库。
+- **为什么不能放在 `.kilo/` 里：** server.mjs 启动时读自己往上两级的 `package.json` 取 version，在 `.kilo/skills/visual-explainer/` 这个布局下那个路径是 `.kilo/package.json`——**Kilo 把 `.kilo/` 下任何 package.json 当配置校验，不认识的键直接判为无效**，那个文件建不出来。`.kilo/skills/visual-explainer/` 里留的是 skill 文档、kit、references 与源码副本，不直接运行。
+- **接之前要做的事：** 已做——`tools/vendor/visual-explainer/` 里 `npm install --no-package-lock`。
+- **写盘目录：** 默认 `~/.agent/diagrams/`，可用 `VISUAL_EXPLAINER_OUTPUT_DIR` 换。**本仓要显式指到项目内的目录**，别让它往用户主目录写。
 - **本仓装法：** 装了 `plugins/visual-explainer/` 全量文本树，49 个文件 1,069,344 字节；跳过了 `banner.png`（1,187,907 字节）和 `replay.gif`（367,945 字节），二进制不入库。
 
 ## 4. 没装的候选，理由各自不同
@@ -80,6 +88,7 @@ flowchart TD
 
 ## 6. 接下来
 
-- **先做：** 把 `visual-explainer` 的 MCP server 在本机跑起来一次，确认 `visual_explainer_render_html` 能写出图解页；这是本轮唯一有实际产出价值的验证点。
+- **已做：** `visual-explainer` 的 MCP server 在本机跑通并注册进 `.kilo/kilo.json`；`tools/vendor/visual-explainer/` 里装了上游原版 0.14.0。
+- **还没做：** 拿真实需求（比如 day1024 的平台 mock 拆解图）出一张图解页，验证 `visual_explainer_render_html` 的产物在浏览器里能直接看。
 - **不做：** 不去装 Kokoro/MusicGen/whisper.cpp，不去装 AGPL 的 skill，不去为 14 套 deck 模板腾 3.5 MB 仓库空间。
 - **待确认：** 汇报片最终要 HTML 还是可编辑 PPTX——这决定 huashu-design 值不值得单独装。

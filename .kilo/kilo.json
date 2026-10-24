@@ -1,0 +1,14 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "visual-explainer": {
+      "type": "local",
+      "command": [
+        "node",
+        "D:\\GitRepo-AI\\FDE20261023\\tools\\vendor\\visual-explainer\\node_modules\\visual-explainer\\plugins\\visual-explainer\\mcp\\server.mjs"
+      ],
+      "enabled": true,
+      "timeout": 30000
+    }
+  }
+}

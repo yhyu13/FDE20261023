@@ -24,7 +24,7 @@ A reference film or image gives its grammar, never its content: shot lengths, ho
 
 ## Presets
 
-The presets are slide-deck looks: use one when the person names it, or for a deck (`/slideshow`), never as the fallback for a film without a brand. Each folder in `../assets/frame-presets/` holds a `FRAME.md` spec, a `caption-skin.html` and a `frame-showcase.html` contact sheet. To use one, copy its `FRAME.md` to the project root as `frame.md`, then read it as above; its fonts that aren't bundled need `@font-face` files. The two HTML files are reference code: read them for treatments, never mount them.
+The presets are slide-deck looks: use one when the person names it, or for a deck (`/slideshow`), never as the fallback for a film without a brand. In a full plugin install, each folder in `assets/frame-presets/` (beside the skills) holds a `FRAME.md` spec, a `caption-skin.html` and a `frame-showcase.html` contact sheet; to use one, copy its `FRAME.md` to the project root as `frame.md`, then read it as above, and give its non-bundled fonts `@font-face` files. This standalone install ships no preset folder (the packs carry bundled fonts), so do not treat it as present: take the look from the table below, or fetch the preset from an upstream HyperFrames release. The two HTML files in a preset are reference code: read them for treatments, never mount them.
 
 | Preset              | Look                                                                                           |
 | ------------------- | ---------------------------------------------------------------------------------------------- |

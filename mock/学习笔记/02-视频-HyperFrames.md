@@ -36,7 +36,7 @@
 ## 4. 本机环境实测（`npx hyperframes doctor --json`，2026-10-24）
 
 - **就绪：** Node v22.14.0、ffmpeg 9.0.2、ffprobe 9.0.2、32 核 i9-13900HX、内存 63.7 GB、磁盘 819.1 GB 空闲、frames cache 所在盘 305.4 GB 空闲。
-- **唯一硬缺口：** Chrome Headless Shell 没装，报 `Chrome Headless Shell is required for local rendering`，补法是 `npx.cmd hyperframes browser ensure`，约 150 MB。固定版本是刻意的——跨 Chrome 版本像素会漂，锁版本才能保证可复现。
+- **唯一硬缺口（当时的判断，已被下面的实测推翻）：** Chrome Headless Shell 没装，报 `Chrome Headless Shell is required for local rendering`。**后来决定用本机 Edge，不再装 Chrome**，见 §11。
 - **可选没装，不影响出片：** Docker（只有 `render --docker --strict` 要）、whisper.cpp（转写）、Kokoro TTS（本地配音兜底）、MusicGen（本地配乐兜底）。后三个要拉 torch/transformers，对本仓已有 Edge TTS + numpy 配乐来说纯重复投资。
 - **判断口径：** `doctor --json` 顶层 `ok` 会因为可选依赖缺失一直是 false，上游文档写明它恒 exit 0，要 gate 就 gate 在 `checks[].ok` 逐条上。
 - **Windows：** `npx` 被 PowerShell 执行策略挡，要用 `npx.cmd`；ffmpeg 来自 WinGet 的 Gyan 包，路径在 `%LOCALAPPDATA%\Microsoft\WinGet\Packages\...`，别硬编码。
@@ -100,5 +100,23 @@ flowchart TD
 - **增量在哪：** HyperFrames 多出来的是动效编排精度、组件复用、内置 lint 与审帧三件事；本仓做好的 TTS、字幕、混音、验收不必推倒。
 - **迁移切法：** 换渲染层、留内容层，先拿新内容试点，不要动已跑通的 6 支讲解片。
 - **状态：** 本机环境已实测就绪，但**还没有在本仓实际渲过一支 HyperFrames 片子**——渲染能力目前是"文档保证 + 环境就绪"，不是"本机已跑通"。
+
+## 11. 本机实测：用 Microsoft Edge 跑通了
+
+- **决定：** 不装 chrome-headless-shell，用本机的 `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`（版本 156.0.4314.42）。路径写进用户级环境变量 `HYPERFRAMES_BROWSER_PATH`。
+- **为什么可行：** 引擎的源码里写明——用系统浏览器时，`HeadlessExperimental.beginFrame` 在常规浏览器构建里不可用，于是**退到截图采集路径**，慢一些但结果一样确定。上游原话是"Any Chrome build works for the screenshot capture path"。
+- **代价：** 走截图路径时不支持 `--resolution` 放大到 4K；要 4K 得另装 headless shell。
+- **实测数据：** 8 秒 1920×1080 片子，240 帧，4 worker，Edge 上渲了 15 秒；ffprobe 核对 8.000000 秒、1920x1080、30 fps。
+- **第一次渲染翻车的两个点：**
+  - **`.clip` 会被引擎移出普通流。** 原来把标题和副标题放在 flex 容器里居中，渲出来叠成一团。给 `.clip` 写 `position: absolute` 自己定坐标才正常。
+  - **根 composition 也要注册时间轴。** 只给场景注册、根不注册，`check` 直接报 `Missing window.__timelines registration`。
+- **PowerShell 的坑：** 带中文的 `.ps1` 必须是 UTF-8 with BOM。PowerShell 5.1 按 ANSI 读无 BOM 文件，中文变乱码，脚本直接解析失败（`Unexpected token '}'`）。本仓 `render.ps1` 已存成带 BOM 的。
+- **本仓已落的产物：** `tools/video/hyperframes/` —— `template/`（两场景模板，GSAP 本地化在 `assets/gsap.min.js`）、`render.ps1`（check → render → ffprobe 核对一条命令）、`README.md`。
+
+## 12. 这次实测补上的三条契约
+
+- **根 composition 也要注册 `window.__timelines["<id>"]`**，不是只有子场景要。
+- **`.clip` 自己定位**，引擎接管它的可见性，别指望普通流布局。
+- **host id = 场景的 `data-composition-id` = 时间轴 key**，三者不一致时每个场景会等 45 秒再显示静帧（`references/format.md` 里写明的代价）。
 
 下一节看幻灯片那条线，那是同一批 skill 生态在页面方向的对应物。

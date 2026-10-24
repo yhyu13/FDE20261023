@@ -214,14 +214,14 @@ If the user's stated needs are mixed, choose the closer of the two modes instead
 
 Never let high density become visual clutter. If a high-density slide starts to overflow, split it or redesign it into a clearer structure.
 
-If the user selected a bold template from `bold-template-pack`, read that one template's full `design.md` before generating. Do not read the other bold templates. Treat `design.md` as the design recipe:
+If the user selected a bold template from `bold-template-pack`, read that one template's full `design.md` before generating — **this install ships only `preview.md`, not `design.md` or `template.html`**: when `design.md` is absent, use the picked template's `preview.md` as the style recipe (palette, type, decorative vocabulary) and design the remaining layouts from it. Do not read the other bold templates. Treat the style source as the design recipe:
 
 - Preserve its fonts, palette, decorative vocabulary, spacing rhythm, and component grammar.
 - Generate the final deck as a fixed 1920×1080 stage scaled uniformly to the viewport, regardless of whether the source template originally used `deck-stage.js` or viewport-fluid CSS.
 - Treat viewport-fluid values in `design.md` as design proportions to translate into 1920×1080 stage coordinates. Do not keep them as live viewport reflow rules in the final deck.
 - Keep the output as a single self-contained Frontend Slides HTML file.
 - Do not copy demo slide content or mimic the source template too literally.
-- Use `template.html` only as a last-resort implementation reference for the selected template.
+- `template.html` is not shipped in this install; treat the picked template's `preview.md` plus the fixed-stage rules as the implementation reference.
 - After generating, verify both content overflow and panel overlap in rendered browser screenshots. `scrollHeight` checks alone are not enough because grid panels can visually cover each other.
 
 If the user selected a self-generated custom wildcard, treat that preview's CSS and layout as the design recipe:
@@ -251,7 +251,7 @@ If the user selected a self-generated custom wildcard, treat that preview's CSS 
 
 When converting PowerPoint files:
 
-1. **Extract content** — Run `python scripts/extract-pptx.py <input.pptx> <output_dir>` (install python-pptx if needed: `pip install python-pptx`)
+1. **Extract content** — Run `python scripts/extract-pptx.py <input.pptx> <output_dir>` (install python-pptx if needed: `pip install python-pptx`). *The `scripts/` folder is not shipped in this install — extract with a short python-pptx script of your own, or fetch `extract-pptx.py` from the upstream frontend-slides repo.*
 2. **Confirm with user** — Present extracted slide titles, content summaries, and image counts
 3. **Style selection** — Proceed to Phase 2 for style discovery
 4. **Generate HTML** — Convert to chosen style, preserving all text, images (from assets/), slide order, and speaker notes (as HTML comments)
@@ -300,7 +300,7 @@ This deploys the presentation to Vercel — a free hosting platform. The link wo
      - Step 4: Confirm login with `vercel whoami`
    - Wait for the user to confirm they're logged in before proceeding.
 
-3. **Deploy** — Run the deploy script:
+3. **Deploy** — Run the deploy script (*`deploy.sh` is not shipped in this install; fetch it from the upstream repo, or deploy the folder with `npx vercel` directly — and on Windows the bash script needs WSL/Git Bash anyway*):
 
    ```bash
    bash scripts/deploy.sh <path-to-presentation>
@@ -327,7 +327,7 @@ This captures each slide as a screenshot and combines them into a PDF. Perfect f
 
 **Note:** Animations and interactivity are not preserved — the PDF is a static snapshot. This is normal and expected; mention it to the user so they're not surprised.
 
-1. **Run the export script:**
+1. **Run the export script** (*`export-pdf.sh` is not shipped in this install; fetch it from upstream, or screenshot the slides headlessly — the script needs Playwright either way*):
 
    ```bash
    bash scripts/export-pdf.sh <path-to-html> [output.pdf]
@@ -371,10 +371,10 @@ This captures each slide as a screenshot and combines them into a PDF. Perfect f
 | [STYLE_PRESETS.md](STYLE_PRESETS.md)               | 12 curated visual presets with colors, fonts, and signature elements | Phase 2 (style selection) |
 | [bold-template-pack/selection-index.json](bold-template-pack/selection-index.json) | Compact bold template metadata for candidate selection | Phase 2 (style selection) |
 | [bold-template-pack/templates/*/preview.md](bold-template-pack/templates/) | Lightweight style cards for shortlisted bold title previews | Phase 2 after shortlisting |
-| [bold-template-pack/templates/*/design.md](bold-template-pack/templates/) | Detailed design-system docs for the selected bold template only | Phase 3 after user selection |
+| `bold-template-pack/templates/*/design.md` (not shipped in this install — use `preview.md`) | Detailed design-system docs for the selected bold template only | Phase 3 after user selection |
 | [viewport-base.css](viewport-base.css)             | Mandatory fixed-stage CSS — copy into every presentation             | Phase 3 (generation)      |
 | [html-template.md](html-template.md)               | HTML structure, JS features, code quality standards                  | Phase 3 (generation)      |
 | [animation-patterns.md](animation-patterns.md)     | CSS/JS animation snippets and effect-to-feeling guide                | Phase 3 (generation)      |
-| [scripts/extract-pptx.py](scripts/extract-pptx.py) | Python script for PPT content extraction                             | Phase 4 (conversion)      |
-| [scripts/deploy.sh](scripts/deploy.sh)             | Deploy slides to Vercel for instant sharing                          | Phase 6 (sharing)         |
-| [scripts/export-pdf.sh](scripts/export-pdf.sh)     | Export slides to PDF                                                 | Phase 6 (sharing)         |
+| `scripts/extract-pptx.py` (not shipped in this install) | Python script for PPT content extraction | Phase 4 (conversion) |
+| `scripts/deploy.sh` (not shipped in this install) | Deploy slides to Vercel for instant sharing | Phase 6 (sharing) |
+| `scripts/export-pdf.sh` (not shipped in this install) | Export slides to PDF | Phase 6 (sharing) |

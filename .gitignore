@@ -52,18 +52,20 @@ out/
 #   assets/day1023/、day1024_*/  演示原型、截图、一次性探针脚本
 #   assets/02 申沃的智能驾驶…/    原始素材的解包目录
 #   合计约 108 MB，多为 PNG/HTML 一次性中间物，可由脚本重新生成
-#   真正值得入库的只有 assets/day1024_glm/spec.md（小文本），
-#   需要时单独放行那一个文件，别把整个目录带进来
+#   真正值得入库的只有交付级图片与小文本（白名单见下），其余都是中间产物。
 #
-# 例外：下面 4 个文件是历史遗留，早于这条规则入库，且**已经在远程**。
-#   README.md 的预览图与 docs/训练营背景.md 的"一手现场材料"引用都指着它们，
+# 例外（白名单）：下面几个文件是交付物，不是中间产物。
+#   README.md / overview.html 的预览图与 docs/训练营背景.md 的"一手现场材料"引用都指着它们，
 #   删掉会让预览图挂掉、让溯源链断掉，所以继续跟踪。
 #   用 assets/* 而不是 assets/ 目录，是因为 git 不允许在被排除的目录里再放行子项。
+#   新增白名单项 = 确认它不是中间产物 + 确认有引用。
+#   图片全部用 ASCII 文件名：Git for Windows 在 ACP=GBK 下会把
+#   中文文件名转码错位，导致本地与远程名字对不上。
 assets/*
 !assets/overview-preview.png
-!assets/GPS2026-FDE训练营-现场.jpg
-!assets/光通预告-幻灯片.jpg
-!assets/沙盘启动-题05-需求细节.jpg
+!assets/problem-original-photo.jpg
+!assets/survey-detail-photo-05.jpg
+!assets/training-camp-site-photo.jpg
 
 # 交付归档包：单文件 380 MB，超过 GitHub 单文件 100 MB 硬限制，推送必被拒
 #   内容是视频构建产物（mp4 / wav / frames / 27 MB 的 index.html）
@@ -81,3 +83,20 @@ FDE20261023——ppt废案.zip
 #   验收证据（缩略拼版）另存在 docs/拼版/，那是要入库的
 build/
 temp/
+
+# 第三方工具本地安装目录（visual-explainer 的 node_modules，约 165 MB）
+#   靠 tools/video/hyperframes/render.ps1 等脚本按需重装，不入库
+tools/vendor/
+
+# 一次性打包产物（原型/失败 Demo 的 zip）
+day1024_fail_demo.zip
+day1024_fail_demo2.zip
+FDE20261024——产品原型废案.zip
+
+# HyperFrames 渲染产物与检查报告（不入库）
+#   renders/*.mp4      渲染成片，可由 tools/video/hyperframes/render.ps1 重新生成
+#   .check.json        hyperframes check 的报告，落在各片子的项目目录里
+renders/
+.check.json
+.hyperframes/
+

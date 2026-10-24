@@ -28,7 +28,7 @@ description: 在本仓做 HTML 幻灯片/讲解页/汇报片/图解时调用—�
 |---|---|---|
 | 一套**页面**（封面、章节、内容页、结尾） | `frontend-slides` | 先出 3 个预览让眼睛选，再全量生成；每份都要嵌完整 `viewport-base.css` |
 | 一张**图解**（流程、架构、对照、机制） | `visual-explainer` | 先 `visual-explainer_prepare` 拿流程建议，再 `visual-explainer_render_html` 出图 |
-| PPTX → 网页 | `frontend-slides` 的 `scripts/extract-pptx.py` + `html-template.md` | bash 脚本在 Windows 要走 WSL 或 Git Bash |
+| PPTX → 网页 | `frontend-slides`（`html-template.md`；其 `scripts/extract-pptx.py` 未随本仓安装） | 抽取现场用 python-pptx 或从上游补装；`deploy.sh`/`export-pdf.sh` 是 bash 且同样未随装 |
 | 要**可编辑 PPTX** 交付 | 先别做 | 要装 `alchaincyf/huashu-design`（仓库 229,769 KB），单独评估 |
 
 ## 二、本仓要改的上游默认
@@ -39,23 +39,30 @@ description: 在本仓做 HTML 幻灯片/讲解页/汇报片/图解时调用—�
 - **动画克制：** 动效只为讲清因果服务，每页最多一个主动画。
 - **导出脚本是 bash：** `export-pdf.sh`、`deploy.sh` 在 Windows 上用 `bash`（WSL/Git Bash），别假设有 sh。
 
-## 三、接 MCP（可选，还没接）
+## 三、MCP（已装，已注册）
 
-`visual-explainer` 自带 stdio-only 的本地 MCP server，暴露 `visual_explainer_prepare`、`visual_explainer_render_html` 两个工具，9 个命令模板作为 prompt。
+`visual-explainer` 自带 stdio-only 的本地 MCP server，暴露 `visual_explainer_prepare`、`visual_explainer_render_html` 两个工具，9 个命令模板作为 prompt，20 个只读资源。
+
+**注册在 `.kilo/kilo.json`：**
 
 ```json
 {
   "mcp": {
     "visual-explainer": {
       "type": "local",
-      "command": ["node", "D:\\GitRepo-AI\\FDE20261023\\.kilo\\skills\\visual-explainer\\mcp\\server.mjs"],
-      "enabled": true
+      "command": [
+        "node",
+        "D:\\GitRepo-AI\\FDE20261023\\tools\\vendor\\visual-explainer\\node_modules\\visual-explainer\\plugins\\visual-explainer\\mcp\\server.mjs"
+      ],
+      "enabled": true,
+      "timeout": 30000
     }
   }
 }
 ```
 
-- **接之前：** 在 `.kilo/skills/visual-explainer/` 里 `npm install --no-package-lock`；`node_modules` 已被 `.gitignore` 挡住。
+- **运行时在上游原版里：** `tools/vendor/visual-explainer/` 用 `npm install --no-package-lock` 装了未改动的 `visual-explainer@0.14.0`。`.kilo/skills/visual-explainer/` 里的那份是 skill 文档、kit、references 与源码副本，**不直接运行**。
+- **为什么运行时不在 `.kilo/` 里：** server.mjs 启动时读的是自己往上两级的 `package.json`（取 version），在 `.kilo/` 下那个路径是 `.kilo/package.json`——**Kilo 把 `.kilo/` 下任何 package.json 当配置校验并判为无效**，所以放不了。
 - **写盘目录：** 默认 `~/.agent/diagrams/`，可用 `VISUAL_EXPLAINER_OUTPUT_DIR` 改。**本仓要显式指到项目内的目录**，别让它往用户主目录写。
 - **安全边界（上游自己写的）：** 路径必须是 basename，拒绝目录穿越、控制字符、symlink 目标；`render` 默认 `open: false`。
 - **不接也行：** 直接用 `SKILL.md` 和 `commands/` 里的模板，功能不缺。

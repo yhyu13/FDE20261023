@@ -5,6 +5,8 @@ description: Read first to make, edit, animate or render any video with HyperFra
 
 **Plugin installs:** Before setup or freshness commands, follow [plugin execution rules](references/plugin-installation.md) when this skill is inside a HyperFrames plugin.
 
+> 本仓注记（FDE20261023）：`/media-use` 与 `/figma` 两个 skill 未安装（原因与替代见 `hyperframes-video` skill §六）。媒体与声音改用 CLI 自带命令（`tts`、`beats`、`normalize-audio`、`media-treatment`）或本仓 `tools/video/pipeline.py` 既有链路。
+
 # HyperFrames
 
 HyperFrames renders HTML to video by seeking a paused timeline frame by frame, so every render is identical; the person edits the same files in the Studio preview. Use it unless another framework or a plain browser recording is asked for. Run the CLI as `npx hyperframes <command>` (`/hyperframes-cli`); at the start of a new video, `npx hyperframes usage --json` reports the person's remaining plan usage (say "unknown" when it is).

@@ -56,10 +56,12 @@ gist recap.
    external scripts, no build step. Vanilla HTML + CSS + a little JS; inline
    `<svg>` for diagrams. It must open correctly from a `file://` path with no
    network. Use the house design system below.
-3. **Save to `~/.claude/artifacts/` and pop it open.** Use the helper:
+3. **Save to `~/.claude/artifacts/` and pop it open.** Use the helper (it ships
+   inside this skill's own folder — adjust the path to wherever this skill is
+   installed; in this repo that is `.kilo/skills/html-artifacts/`):
 
    ```bash
-   bash ~/.claude/skills/html-artifacts/scripts/open-artifact.sh <slug> [source.html]
+   bash <this-skill-dir>/scripts/open-artifact.sh <slug> [source.html]
    ```
 
    It writes `~/.claude/artifacts/<slug>.html` (from a file arg or stdin),
@@ -189,9 +191,9 @@ should land on. Greys (`--g100…g700`) carry structure.
 - Helper does write + `open` + prints the path:
   ```bash
   # from an existing file:
-  bash ~/.claude/skills/html-artifacts/scripts/open-artifact.sh deploy-flowchart /tmp/draft.html
+  bash <this-skill-dir>/scripts/open-artifact.sh deploy-flowchart /tmp/draft.html
   # or pipe content in:
-  cat <<'HTML' | bash ~/.claude/skills/html-artifacts/scripts/open-artifact.sh status-report-w24
+  cat <<'HTML' | bash <this-skill-dir>/scripts/open-artifact.sh status-report-w24
   <!doctype html>...
   HTML
   ```

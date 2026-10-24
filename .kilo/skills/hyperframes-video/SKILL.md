@@ -17,9 +17,10 @@ description: 用 HyperFrames（HeyGen 的 HTML→MP4 引擎）在本仓做视频
 | 事实 | 位置 | 影响 |
 |---|---|---|
 | 本仓**已有**一条能跑的视频管线 | `tools/video/pipeline.py` | 解析稿 md → Edge TTS 逐句 → 真实词级字幕时间戳 → HTML 每场 1920×1080 无头 Edge 截图 → numpy 配乐 → 按语音能量闪避混音 → **音频实测**定时 → 逐帧几何插值 → libass 烧字幕 → 时长/命中/抖动校验 |
-| 6 支讲解视频已跑通 | `videos/`、`docs/拼版/` | 换引擎 = 重做渲染层，不是从零 |
+| **渲染层已改用 HyperFrames** | `tools/video/hyperframes/`（`template/` 模板 + `render.ps1` 包装 + `README.md`） | 出帧与编码交给 HyperFrames；稿子/TTS/字幕/混音仍在 Python 侧 |
+| 6 支讲解视频已跑通 | `videos/`、`docs/拼版/` | 换栈 = 重做渲染层，不是从零；**现有片子不动** |
 | 资产红线 | `AGENTS.md` §13.1 | 纯文本可 diff；大二进制不入库 |
-| 本机环境已实测 | `references/调研与安装.md` §三 | Node 22.14 ✅ / ffmpeg+ffprobe 9.0.2 ✅ / **Chrome ❌ 唯一硬缺口** |
+| 本机环境已实测 | `references/调研与安装.md` §三、§四 | Node 22.14 ✅ / ffmpeg+ffprobe 9.0.2 ✅ / 浏览器 = **Microsoft Edge 156.0.4314.42** ✅ |
 | 上游 7 个 skill | `.kilo/skills/{hyperframes,hyperframes-cli,hyperframes-registry,remotion-to-hyperframes,slideshow}/` 已装；`media-use`、`figma` 未装（原因见 §六） | 装的是"工程契约 + CLI + 组件目录 + Remotion 迁移"四件套 |
 
 ## 一、选型：三条路，别混着走
@@ -44,6 +45,12 @@ description: 用 HyperFrames（HeyGen 的 HTML→MP4 引擎）在本仓做视频
 7. 媒体不许 `play()/pause()/seek`；`<video>` 要保留声音就 `data-has-audio="true"`，否则 `muted`
 8. 资产路径**根相对**（`assets/...`），子 composition 里也一样
 
+**本机实测补充的三条（2026-10-24 渲染时踩到）**：
+
+- **根 composition 也要注册时间轴。** 只给子场景注册、根不注册，`check` 直接报 `Missing window.__timelines registration`。
+- **`.clip` 会被引擎移出普通流。** 写成 flex 居中，所有 clip 会叠在一起（第一次渲染标题和副标题压成一团）。给 `.clip` 写 `position: absolute`，坐标自己定；场景根用 `inset: 0`，别写死像素。
+- **host 的 id、场景的 `data-composition-id`、时间轴 key 三者必须一致。** 不一致时每个场景会等 45 秒再显示静帧。
+
 ## 三、命令阶梯（每一步都有闸）
 
 ```powershell
@@ -55,23 +62,33 @@ npx.cmd hyperframes preview --background    # 浏览器里看，URL 要回 200
 npx.cmd hyperframes render --quality looks --output out.mp4   # draft 迭代 / delivery 终版
 ```
 
+**本仓已封装好一条命令**，会先 check 再 render，最后用 ffprobe 核对时长与分辨率：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\video\hyperframes\render.ps1 `
+    -ProjectDir work\hyperframes\片名 -Output renders\片名.mp4
+```
+
+模板在 `tools/video/hyperframes/template/`，用法见 `tools/video/hyperframes/README.md`。
+
 Windows 注意：
 
 - `npx` 在 PowerShell 被执行策略挡，**用 `npx.cmd`**
 - 渲染完必须核 `ffprobe` 时长 == 根 `data-duration`，再抽帧看
 - 渲染超过工具超时就设 `HYPERFRAMES_RENDER_DETACHED=1` 放后台等日志，**不要 `pgrep -f`**（会匹配到自己）
 - 30 秒片子大约 1–2 分钟，前台跑就行
+- **`.ps1` 带中文必须存成 UTF-8 with BOM**，否则 PowerShell 5.1 按 ANSI 读，脚本直接解析失败
 
-## 四、装在哪、还差什么（本机实测）
+## 四、浏览器：已配成 Microsoft Edge
 
-**只差一样：Chrome Headless Shell。**
+**本仓不用 chrome-headless-shell，用本机的 Edge**：
 
-```powershell
-npx.cmd hyperframes browser ensure     # 拉取固定版本 Chrome（约 150 MB），像素输出才可复现
-npx.cmd hyperframes doctor --json      # 自检；顶层 ok=false 时逐条看 checks[].ok
-```
+- **路径：** `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`（版本 156.0.4314.42），已写进用户级环境变量 `HYPERFRAMES_BROWSER_PATH`。
+- **代价：** 常规浏览器构建没有 `HeadlessExperimental.beginFrame`，引擎退到**截图采集路径**，慢一些但结果一样确定。走这条路时 `--resolution` 放大到 4K 用不了。
+- **实测：** 8 秒 1920×1080 片子，240 帧，4 worker，Edge 上渲了 15 秒。
+- **换回快速路径：** `npx.cmd hyperframes browser ensure` 拉固定版本 chrome-headless-shell（约 150 MB）。
 
-已具备：Node v22.14.0 ✅ · ffmpeg 9.0.2 ✅ · ffprobe 9.0.2 ✅ · 32 核 / 64 GB / 819 GB 空闲 ✅
+其余环境已就绪：Node v22.14.0 ✅ · ffmpeg 9.0.2 ✅ · ffprobe 9.0.2 ✅ · 32 核 / 64 GB / 819 GB 空闲 ✅
 
 **可选**（不装也能出片，只是没有本地能力）：Docker（`render --docker --strict`）、Kokoro TTS（本地配音）、MusicGen（本地配乐）、whisper.cpp（转写）。这些是 Python 侧依赖，别为了"看起来齐全"就装。
 
@@ -98,7 +115,7 @@ npx.cmd hyperframes doctor --json      # 自检；顶层 ok=false 时逐条看 c
 |---|---|---|
 | `media-use`（116 文件 / 1.9 MB） | ❌ 未装 | 含 ~1 MB 的 mp3 音效与 LUT 二进制，与 `AGENTS.md` §13.1（纯文本资产）冲突；且本仓已有 Edge TTS + numpy 配乐 + 混音链路，功能重叠 |
 | `figma`（2 文件） | ❌ 未装 | 需要 Figma MCP + 设计上下文，本仓没有 Figma 资产 |
-| `hyperframes/assets/frame-presets`（13 套 / ~990 KB） | ❌ 未装 | 按 `references/look.md:27`，这些是**幻灯片 deck 外观**，只在明确点名或做 deck 时用，不做兜底；含二进制字体 |
+| `hyperframes/assets/frame-presets`（13 套 / ~990 KB） | ❌ 未装 | 按 `hyperframes/references/look.md` §Presets，这些是**幻灯片 deck 外观**，只在明确点名或做 deck 时用，不做兜底；含二进制字体 |
 | `nexu-io/open-design` 的 hyperframes 模板 | ❌ 未装 | SKILL.md 与 OpenDesign daemon 强耦合（`$OD_PROJECT_DIR`），且与已装的 `hyperframes` **同名冲突**；它的排版/转场/动效参考值得单独读，见调研文档 §二 |
 
 ## 七、什么时候**不**用

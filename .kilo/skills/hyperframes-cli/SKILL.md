@@ -3,7 +3,7 @@ name: hyperframes-cli
 description: The HyperFrames CLI by job - scaffold, check, look at frames, edit the timeline, preview, render locally or in the cloud, publish, project history - plus reading its JSON and recovering from build or render failures.
 ---
 
-**Plugin installs:** Before setup or freshness commands, follow [plugin execution rules](../hyperframes/references/plugin-installation.md) when this skill is inside a HyperFrames plugin.
+**Plugin installs:** Before setup or freshness commands, follow [plugin execution rules](references/plugin-installation.md) when this skill is inside a HyperFrames plugin.
 
 # HyperFrames CLI
 
@@ -30,7 +30,7 @@ Run `npx hyperframes <command>` unless the project gives a wrapper; then use the
 
 1. Write, then `npx hyperframes lint` after the first pass and after structural changes.
 2. `npx hyperframes check --json` and fix every error. While a lint error remains the layout and contrast audits don't run; "0 samples" means nothing was checked. Contrast failures carry a `suggestedColor`. A finding at a single sample (an entrance in flight) is info; a 3 s+ video with no visible change fails `sweep_static`.
-3. `npx hyperframes snapshot` and read the PNGs (under `.hyperframes/artifacts/snapshots/`): that is how you see the video. With sub-compositions, snapshot a midpoint of every scene; tiny unstyled content or a missing hero is a mount defect (`../hyperframes/references/format.md`).
+3. `npx hyperframes snapshot` and read the PNGs (under `.hyperframes/artifacts/snapshots/`): that is how you see the video. With sub-compositions, snapshot a midpoint of every scene; tiny unstyled content or a missing hero is a mount defect (`references/format.md`).
 4. `npx hyperframes preview --background`, check the URL answers 200, give the person the project URL and wait, unless they asked for the file or for no stops. Passing checks alone is not a reason to render.
 5. When it is time to render (step 4): `npx hyperframes render --quality looks --output out.mp4` (`draft` while iterating, `delivery` for the final). Confirm the file is non-empty and its `ffprobe` duration matches the root `data-duration`, then look at decoded frames.
 
@@ -94,4 +94,4 @@ Read the row before running its command.
 | `lambda`, `cloudrun` | `references/lambda.md`, `references/cloudrun.md` |
 | `info`, `upgrade`, `compositions`, `timeline`, `docs`, `usage`, telemetry | `references/upgrade-info-misc.md` |
 | `--strict` flags, run ids, `clean`, shader lint, JSON paths | `references/conventions.md` |
-| `keyframes` | `../hyperframes/references/motion.md` (Seeing motion) |
+| `keyframes` | `references/motion.md` (Seeing motion) |
