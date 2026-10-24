@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from test_day1024_sol_roles import DEMO, cmd, login, released, snapshot, topic
 
 pytest_plugins = ("test_day1024_sol_roles",)
