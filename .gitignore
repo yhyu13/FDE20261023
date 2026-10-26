@@ -58,7 +58,9 @@ out/
 #   ③ assets/**/...     在放行目录里再排除中间产物与未授权材料
 #
 # 中文文件名现在是允许的（git 存的是 UTF-8 字节，core.quotepath=true 只影响显示）。
-#   推完要复核远端树名与本地逐字一致，见 tools/verify_asset_names.py。
+#   推完要用 GitHub tree API 把远端路径名与本地逐字对一遍——纯 git 命令看不出来，
+#   因为拿本地 ref 比对证明不了服务端存了什么。
+#   2026-10-27 复核结果：assets/ 216 条路径（含 54 条非 ASCII）本地与远端逐字一致。
 
 assets/*
 !assets/overview-preview.png
