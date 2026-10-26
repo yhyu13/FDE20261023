@@ -1,0 +1,44 @@
+/* theme: sunwin — 夜行公交 / 轨道标识
+ * 深墨蓝底 + 青绿/电光蓝双主色 + 等宽标注，贴合客车与轨道交通的「班次牌」视觉语言
+ */
+:root{
+  --bg:#071320;--bg-soft:#0b1b2b;--surface:#0e2033;--surface-2:#143049;
+  --border:rgba(126,196,224,.16);--border-strong:rgba(126,196,224,.36);
+  --text-1:#e9f4fb;--text-2:#a3c0d4;--text-3:#6d8ba3;
+  --accent:#21c3c3;--accent-2:#3d8bfd;--accent-3:#f0a44a;
+  --good:#25c08a;--warn:#e0a53a;--bad:#ef5f6b;
+  --grad:linear-gradient(120deg,#21c3c3,#3d8bfd);
+  --grad-soft:linear-gradient(120deg,rgba(33,195,195,.12),rgba(61,139,253,.09));
+  --radius:14px;--radius-sm:9px;--radius-lg:22px;
+  --shadow:0 18px 44px rgba(2,10,20,.46);
+  --shadow-lg:0 28px 70px rgba(2,10,20,.6);
+  --font-sans:'Inter','Noto Sans SC',-apple-system,sans-serif;
+  --font-display:'Space Grotesk','Noto Sans SC',sans-serif;
+  --font-mono:'JetBrains Mono','IBM Plex Mono',monospace;
+}
+html,body{background:
+  radial-gradient(1200px 720px at 6% -12%,rgba(33,195,195,.13),transparent 62%),
+  radial-gradient(980px 620px at 94% -8%,rgba(61,139,253,.14),transparent 62%),
+  repeating-linear-gradient(0deg,rgba(126,196,224,.04) 0 1px,transparent 1px 48px),
+  repeating-linear-gradient(90deg,rgba(126,196,224,.04) 0 1px,transparent 1px 48px),
+  #040d17;}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  border:1px solid var(--border);backdrop-filter:blur(2px)}
+.card-soft{background:var(--surface-2)}
+.kicker{font-family:var(--font-mono);color:var(--accent);letter-spacing:.22em;font-size:13px}
+.eyebrow{font-family:var(--font-mono);letter-spacing:.2em}
+h1.title,h2.title,.h1,.h2{font-family:var(--font-display);font-weight:700}
+.lede{color:var(--text-2)}
+.pill{background:rgba(33,195,195,.08);border-color:rgba(33,195,195,.3);color:#7fe3e3}
+.pill-accent{background:rgba(33,195,195,.12);color:var(--accent);border-color:rgba(33,195,195,.35)}
+.divider-accent{background:var(--grad);height:3px;width:64px;border-radius:2px}
+.t th{color:var(--text-3);border-bottom-color:var(--border-strong)}
+.t td{border-bottom-color:var(--border)}
+.t tr:hover td{background:rgba(33,195,195,.05)}
+.mono{font-family:var(--font-mono)}
+.gradient-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.progress-bar{height:3px;background:rgba(126,196,224,.12)}
+.progress-bar > span{background:var(--grad);box-shadow:0 0 12px rgba(33,195,195,.5)}
+.overview{background:rgba(4,13,23,.94)}
+.overview .thumb{background:var(--surface);border:1px solid var(--border)}
+.overview .thumb .n,.overview .thumb .t{color:#e9f4fb}

@@ -1,0 +1,95 @@
+{
+  "fps": 24,
+  "scenes": [
+    {
+      "id": 1,
+      "audio": "scene_01.wav",
+      "files": [
+        "scene_01.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 2,
+      "audio": "scene_02.wav",
+      "files": [
+        "scene_02.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "audio": "scene_03.wav",
+      "files": [
+        "scene_03.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 4,
+      "audio": "scene_04.wav",
+      "files": [
+        "scene_04.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "audio": "scene_05.wav",
+      "files": [
+        "scene_05.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 6,
+      "audio": "scene_06.wav",
+      "files": [
+        "scene_06.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 7,
+      "audio": "scene_07.wav",
+      "files": [
+        "scene_07.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "audio": "scene_08.wav",
+      "files": [
+        "scene_08.png"
+      ],
+      "weights": [
+        1
+      ]
+    },
+    {
+      "id": 9,
+      "audio": "scene_09.wav",
+      "files": [
+        "scene_09.png"
+      ],
+      "weights": [
+        1
+      ]
+    }
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "scope": "new report artifacts only; not the old product",
+  "checks": [
+    {
+      "name": "Python results equal canonical recomputation",
+      "ok": true
+    },
+    {
+      "name": "85000 total / 73000 external / 4 orders",
+      "ok": true
+    },
+    {
+      "name": "software revenue is not customer spend",
+      "ok": true
+    },
+    {
+      "name": "negative cost rejected by Python",
+      "ok": true
+    },
+    {
+      "name": "zero incremental share has no finite break even",
+      "ok": true
+    },
+    {
+      "name": "no remote script/style/font resources",
+      "ok": true
+    },
+    {
+      "name": "three Mermaid figures compiled with responsive SVG variants",
+      "ok": true,
+      "detail": {
+        "figures": 3,
+        "svg_variants": 6
+      }
+    },
+    {
+      "name": "HTML canonical JSON equals model-inputs.json",
+      "ok": true
+    },
+    {
+      "name": "browser default net -10000 / ROI -11.76% / break-even 4",
+      "ok": true,
+      "detail": {
+        "valid": true,
+        "total": 85000,
+        "contribution": 75000,
+        "net": -10000,
+        "roi": -0.11764705882352941,
+        "breakEven": 4
+      }
+    },
+    {
+      "name": "rendered default displayed to user",
+      "ok": true
+    },
+    {
+      "name": "conservative button updates economics",
+      "ok": true
+    },
+    {
+      "name": "optimistic button updates economics",
+      "ok": true
+    },
+    {
+      "name": "50% incrementality shows loss 47500 and break-even 7",
+      "ok": true,
+      "detail": {
+        "valid": true,
+        "total": 85000,
+        "contribution": 37500,
+        "net": -47500,
+        "roi": -0.5588235294117647,
+        "breakEven": 7
+      }
+    },
+    {
+      "name": "zero incremental share is not Infinity",
+      "ok": true
+    },
+    {
+      "name": "zero orders shows full loss",
+      "ok": true
+    },
+    {
+      "name": "fractional customer count rejected and stale result cleared",
+      "ok": true
+    },
+    {
+      "name": "blank revenue is not silently zero",
+      "ok": true
+    },
+    {
+      "name": "zero denominator returns not calculable",
+      "ok": true
+    },
+    {
+      "name": "cost edit propagates without double counting",
+      "ok": true
+    },
+    {
+      "name": "exact decimal break-even boundary is 2 not 3",
+      "ok": true,
+      "detail": {
+        "valid": true,
+        "total": 14500,
+        "contribution": 21750,
+        "net": 7250,
+        "roi": 0.5,
+        "breakEven": 2
+      }
+    },
+    {
+      "name": "static scenarios remain explicitly default",
+      "ok": true
+    },
+    {
+      "name": "four figures each have caption",
+      "ok": true
+    },
+    {
+      "name": "no JavaScript errors",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "no external network dependency",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "all report and media download links exist",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "mobile body has no horizontal overflow",
+      "ok": true,
+      "detail": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "name": "browser decodes 1080p video",
+      "ok": true,
+      "detail": {
+        "duration": 185.064,
+        "width": 1920,
+        "height": 1080,
+        "readyState": 4,
+        "error": null
+      }
+    },
+    {
+      "name": "seek renders content at 14.8",
+      "ok": true,
+      "detail": {
+        "mean": 219.3791666666969,
+        "colors": 319
+      }
+    },
+    {
+      "name": "seek renders content at 92.5",
+      "ok": true,
+      "detail": {
+        "mean": 221.17773148151647,
+        "colors": 398
+      }
+    },
+    {
+      "name": "seek renders content at 170.3",
+      "ok": true,
+      "detail": {
+        "mean": 228.8949768518847,
+        "colors": 389
+      }
+    },
+    {
+      "name": "video playback actually advances",
+      "ok": true
+    },
+    {
+      "name": "final browser console has no resource errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    "html-validation\\desktop-overview.png",
+    "html-validation\\desktop-economics.png",
+    "html-validation\\desktop-critique.png",
+    "html-validation\\desktop-skills.png",
+    "html-validation\\mobile-overview.png",
+    "html-validation\\mobile-economics.png",
+    "html-validation\\browser-video.png"
+  ],
+  "video": {
+    "metadata": {
+      "duration": 185.064,
+      "width": 1920,
+      "height": 1080,
+      "readyState": 4,
+      "error": null
+    },
+    "seek_samples": [
+      {
+        "time": 14.80512,
+        "mean": 219.3791666666969,
+        "colors": 319
+      },
+      {
+        "time": 92.532,
+        "mean": 221.17773148151647,
+        "colors": 398
+      },
+      {
+        "time": 170.25888,
+        "mean": 228.8949768518847,
+        "colors": 389
+      }
+    ],
+    "delivery": "local file; no public HTTP deployment"
+  },
+  "all_checks_passed": true,
+  "check_count": 32,
+  "video_included": true
+}

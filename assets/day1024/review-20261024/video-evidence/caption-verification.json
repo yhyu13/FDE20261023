@@ -1,0 +1,436 @@
+{
+  "source_text_exact_ignoring_whitespace": true,
+  "event_count": 41,
+  "event_overlap_count": 0,
+  "scene_identity_check": "passed",
+  "all_event_midpoint_burn_and_safety": [
+    {
+      "event": 1,
+      "scene": 1,
+      "time": 1.8333333333333335,
+      "band_mae": 17.967437744140625,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 2,
+      "scene": 1,
+      "time": 6.4375,
+      "band_mae": 28.5679931640625,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 3,
+      "scene": 1,
+      "time": 11.0,
+      "band_mae": 17.053937911987305,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 4,
+      "scene": 1,
+      "time": 14.6875,
+      "band_mae": 18.048805236816406,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 5,
+      "scene": 2,
+      "time": 19.666666666666664,
+      "band_mae": 27.811986923217773,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 6,
+      "scene": 2,
+      "time": 24.520833333333336,
+      "band_mae": 22.598134994506836,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 7,
+      "scene": 2,
+      "time": 30.0625,
+      "band_mae": 31.148332595825195,
+      "caption_y_bounds": [
+        834,
+        953
+      ]
+    },
+    {
+      "event": 8,
+      "scene": 3,
+      "time": 34.66666666666667,
+      "band_mae": 7.955753326416016,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 9,
+      "scene": 3,
+      "time": 37.54166666666667,
+      "band_mae": 20.250694274902344,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 10,
+      "scene": 3,
+      "time": 41.8125,
+      "band_mae": 24.8700008392334,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 11,
+      "scene": 3,
+      "time": 46.625,
+      "band_mae": 24.86050033569336,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 12,
+      "scene": 3,
+      "time": 51.875,
+      "band_mae": 24.74003791809082,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 13,
+      "scene": 4,
+      "time": 56.625,
+      "band_mae": 19.004100799560547,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 14,
+      "scene": 4,
+      "time": 61.22916666666667,
+      "band_mae": 30.468284606933594,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 15,
+      "scene": 4,
+      "time": 64.5625,
+      "band_mae": 6.909583568572998,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 16,
+      "scene": 4,
+      "time": 67.5625,
+      "band_mae": 25.478836059570312,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 17,
+      "scene": 4,
+      "time": 73.08333333333334,
+      "band_mae": 28.75435447692871,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 18,
+      "scene": 5,
+      "time": 79.125,
+      "band_mae": 32.06418228149414,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 19,
+      "scene": 5,
+      "time": 84.45833333333334,
+      "band_mae": 28.23834991455078,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 20,
+      "scene": 5,
+      "time": 87.64583333333334,
+      "band_mae": 8.004490852355957,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 21,
+      "scene": 5,
+      "time": 90.27083333333334,
+      "band_mae": 19.47066307067871,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 22,
+      "scene": 5,
+      "time": 94.02083333333334,
+      "band_mae": 17.095361709594727,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 23,
+      "scene": 5,
+      "time": 98.5625,
+      "band_mae": 25.692554473876953,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 24,
+      "scene": 6,
+      "time": 102.60416666666666,
+      "band_mae": 11.194184303283691,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 25,
+      "scene": 6,
+      "time": 107.3125,
+      "band_mae": 34.44324493408203,
+      "caption_y_bounds": [
+        834,
+        953
+      ]
+    },
+    {
+      "event": 26,
+      "scene": 6,
+      "time": 113.66666666666667,
+      "band_mae": 28.043832778930664,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 27,
+      "scene": 6,
+      "time": 119.39583333333334,
+      "band_mae": 28.12969970703125,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 28,
+      "scene": 7,
+      "time": 123.70833333333334,
+      "band_mae": 11.556915283203125,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 29,
+      "scene": 7,
+      "time": 128.02083333333331,
+      "band_mae": 31.169700622558594,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 30,
+      "scene": 7,
+      "time": 131.875,
+      "band_mae": 7.932731628417969,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 31,
+      "scene": 7,
+      "time": 134.4375,
+      "band_mae": 20.27698516845703,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 32,
+      "scene": 7,
+      "time": 139.54166666666666,
+      "band_mae": 32.69075393676758,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 33,
+      "scene": 8,
+      "time": 145.20833333333334,
+      "band_mae": 24.75722885131836,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 34,
+      "scene": 8,
+      "time": 148.75,
+      "band_mae": 12.304427146911621,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 35,
+      "scene": 8,
+      "time": 151.83333333333331,
+      "band_mae": 16.90119743347168,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 36,
+      "scene": 8,
+      "time": 156.1875,
+      "band_mae": 26.036781311035156,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 37,
+      "scene": 8,
+      "time": 161.5,
+      "band_mae": 30.68333625793457,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 38,
+      "scene": 9,
+      "time": 166.72916666666666,
+      "band_mae": 24.164257049560547,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 39,
+      "scene": 9,
+      "time": 172.29166666666666,
+      "band_mae": 31.20052719116211,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    },
+    {
+      "event": 40,
+      "scene": 9,
+      "time": 178.79166666666666,
+      "band_mae": 29.567556381225586,
+      "caption_y_bounds": [
+        834,
+        953
+      ]
+    },
+    {
+      "event": 41,
+      "scene": 9,
+      "time": 183.52083333333331,
+      "band_mae": 13.502239227294922,
+      "caption_y_bounds": [
+        880,
+        953
+      ]
+    }
+  ],
+  "empty_gap_counterexamples": [
+    {
+      "time": 0.0,
+      "band_mae": 0.012078125029802322,
+      "caption_y_bounds": null
+    },
+    {
+      "time": 16.75,
+      "band_mae": 0.004502604249864817,
+      "caption_y_bounds": null
+    },
+    {
+      "time": 33.66666666666667,
+      "band_mae": 0.005839409772306681,
+      "caption_y_bounds": null
+    }
+  ],
+  "note": "Supplements check_subs.py's warning: gaps under 0.6s exist and were sampled explicitly."
+}

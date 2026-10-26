@@ -1,0 +1,92 @@
+<template>
+  <style>
+    #root{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;
+      padding:44px 64px;font-family:"Noto Sans JP",sans-serif;color:#0d1526}
+    .kicker{font-family:"JetBrains Mono",monospace;font-size:13px;color:#98a2b3;letter-spacing:.7px}
+    h1{margin:14px 0 0;font-size:52px;line-height:1.1;letter-spacing:-1px}
+    h1 em{font-style:normal;background:linear-gradient(135deg,#12a465,#0a86bd);
+      -webkit-background-clip:text;background-clip:text;color:transparent}
+    .pipe{display:flex;align-items:stretch;gap:6px;margin-top:20px}
+    .pipe .st{flex:1;border:1px solid rgba(15,23,42,.11);border-radius:10px;padding:8px 10px;background:#fff}
+    .pipe .st .no{font-family:"JetBrains Mono",monospace;font-size:9px;color:#98a2b3;letter-spacing:.5px}
+    .pipe .st .t{font-size:13px;font-weight:600;margin-top:2px}
+    .pipe .st .num{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:#5a6679;margin-top:2px}
+    .pipe .st.hi{border-color:rgba(18,164,101,.55);background:rgba(18,164,101,.07)}
+    .pipe .st.hi .t{color:#0b7d4b}
+    .pipe .st.hi .num{color:#12a465;font-weight:700}
+    .pipe .ar{display:flex;align-items:center;color:#98a2b3;font-size:14px;font-weight:600}
+    .survey{margin-top:20px;border:1px solid rgba(15,23,42,.11);border-radius:14px;padding:16px 22px;
+      background:linear-gradient(180deg,#fff,#fbfcfd)}
+    .survey .t{font-family:"JetBrains Mono",monospace;font-size:12px;color:#98a2b3;letter-spacing:.9px}
+    .survey .row{display:flex;align-items:center;gap:26px;margin-top:10px}
+    .st b{font-family:"JetBrains Mono",monospace;font-size:30px;display:block;line-height:1}
+    .st span{font-size:14px;color:#5a6679}
+    .st.g b{color:#0a7a4a}.st.y b{color:#a8600a}.st.r b{color:#cf2a1c}
+    .quote{flex:1;font-size:17px;line-height:1.6;border-left:4px solid #12a465;padding-left:16px}
+    .abils{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+    .abil{border:1px solid rgba(15,23,42,.11);border-radius:16px;padding:20px 24px;position:relative;
+      overflow:hidden;background:#fff}
+    .rail{position:absolute;left:0;top:0;bottom:0;width:5px;background:#12a465}
+    .abil.b .rail{background:#0a86bd}
+    .no{font-family:"JetBrains Mono",monospace;font-size:12px;color:#98a2b3;letter-spacing:1px}
+    .abil h3{margin:9px 0 7px;font-size:26px}
+    .abil p{margin:0;color:#5a6679;font-size:14.5px;line-height:1.65}
+    .meta{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+    .meta span{font-size:13px;background:rgba(13,21,38,.05);border-radius:6px;padding:5px 11px;color:#5a6679}
+    .meta span b{color:#0d1526;font-family:"JetBrains Mono",monospace}
+    .foot{margin-top:auto;font-size:12px;color:#98a2b3}
+    #caps{position:absolute;left:0;right:0;bottom:104px;display:flex;justify-content:center;pointer-events:none}
+    .cap{font-size:19px;line-height:1.45;padding:7px 16px;border-radius:10px;background:rgba(13,21,38,.06)}
+  </style>
+  <div id="root" data-composition-id="s1" data-width="1280" data-height="720">
+    <div class="kicker clip" id="s1-kicker" data-start="0.3" data-duration="24">BOOTH DEMO · 展位演示 · 数据源：客户问题与客群.xlsx / 公开资料卡 S01–S11 / 审核意见 REV01–05 / 第一轮传播反馈 FB01–04</div>
+    <h1 class="clip" id="s1-title" data-start="0.6" data-duration="24">先弄清客户在问什么，<em>再据此把客户找出来</em></h1>
+    <div class="pipe clip" id="s1-pipe" data-start="{{CUE_pipe}}" data-duration="{{CUEEND_pipe}}">
+      <div class="st"><div class="no">STEP 01</div><div class="t">内容资产引擎</div><div class="num">m2.4</div></div><span class="ar">›</span>
+      <div class="st hi"><div class="no">STEP 02</div><div class="t">行业问题库</div><div class="num">12 条 CQ</div></div><span class="ar">›</span>
+      <div class="st hi"><div class="no">STEP 03</div><div class="t">找客户模型</div><div class="num">27 轮迭代</div></div><span class="ar">›</span>
+      <div class="st"><div class="no">STEP 04</div><div class="t">客户画像</div><div class="num">92.4%</div></div><span class="ar">›</span>
+      <div class="st"><div class="no">STEP 05</div><div class="t">营销内容</div><div class="num">5 类渠道</div></div><span class="ar">›</span>
+      <div class="st"><div class="no">STEP 06</div><div class="t">全渠道获客</div><div class="num">7 数据源</div></div><span class="ar">›</span>
+      <div class="st"><div class="no">STEP 07</div><div class="t">自动化营销</div><div class="num">7×24</div></div>
+    </div>
+    <div class="survey clip" id="s1-survey" data-start="{{CUE_survey}}" data-duration="{{CUEEND_survey}}">
+      <div class="t">客户调研结论 · 12 个真实提问的事实盘点</div>
+      <div class="row">
+        <div class="st g"><b>12</b><span>个真实提问</span></div>
+        <div class="st g"><b>8</b><span>个有可用事实（S 编号）</span></div>
+        <div class="st y"><b>3</b><span>个要说清「还没到哪一步」</span></div>
+        <div class="st r"><b>1</b><span>个明确无依据（CQ04）</span></div>
+        <div class="quote">三类客群没有一个在问「这条内容火不火」，他们问的是<b>「我能不能信你」</b>——边界表达占三分之一。</div>
+      </div>
+    </div>
+    <div class="abils">
+      <div class="abil clip" id="s1-ab1" data-start="{{CUE_cards}}" data-duration="{{CUEEND_cards}}">
+        <span class="rail"></span>
+        <div class="no">ABILITY 01 · STEP 02</div>
+        <h3>CQ 行业问题库</h3>
+        <p>公交运营商、海外客户、行业伙伴的真实提问收拢成条目，每条标注可用事实编号、投放渠道与必须守住的边界；内容资产引擎对分级做抽样复核。</p>
+        <div class="meta"><span>提问 <b>12</b> 条</span><span>客群 <b>3</b> 类</span><span>渠道 <b>4</b> 类</span><span>事实卡 <b>S01–S11</b></span></div>
+      </div>
+      <div class="abil b clip" id="s1-ab2" data-start="{{CUE_cards}}" data-duration="{{CUEEND_cards}}">
+        <span class="rail"></span>
+        <div class="no">ABILITY 02 · STEP 03</div>
+        <h3>找客户模型定制</h3>
+        <p>输入产品品类、技术卖点、应用场景、目标区域与排除对象，生成筛选规则集；预计目标企业与三档匹配分布同步输出。</p>
+        <div class="meta"><span>筛选规则 <b>10</b> 条</span><span>预计企业 <b>4,820</b></span><span>精度 <b>86.2%</b></span><span>快 <b>40×</b></span></div>
+      </div>
+    </div>
+    <div class="foot clip" id="s1-foot" data-start="0.6" data-duration="24">画面数据均为演示用模拟数据 · 企业事实 ⚠️ 待 Day1 现场确认</div>
+    <div id="caps" data-track-kind="captions">/*CAPTIONS*/null</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s1-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+    tl.fromTo("#s1-title", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.6);
+    tl.fromTo("#s1-pipe", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_pipe}});
+    tl.fromTo("#s1-survey", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_survey}});
+    tl.fromTo("#s1-ab1", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_cards}});
+    tl.fromTo("#s1-ab2", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_cards}} + 0.08);
+    window.__timelines["s1"] = tl;
+  </script>
+</template>

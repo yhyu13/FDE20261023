@@ -1,0 +1,56 @@
+{
+  "status": "教学情景；不是客户预算、供应商报价、收入预测或已验证效果",
+  "currency": "CNY",
+  "horizon_days": 90,
+  "market": "未选定；单一市场",
+  "product": "未确认；100000元只是教学用单笔净收入，不是客车报价",
+  "customer_costs": [
+    {"id": "media", "label": "媒体净消耗", "amount": 30000},
+    {"id": "creator", "label": "达人制作与发布", "amount": 12000},
+    {"id": "localization", "label": "本地化与其他内容制作", "amount": 8000},
+    {"id": "events", "label": "活动与客户会议", "amount": 5000},
+    {"id": "software", "label": "软件与试点服务费", "amount": 15000},
+    {"id": "customer_data", "label": "客户直接采购的数据工具", "amount": 3000},
+    {"id": "internal_labor", "label": "客户归属人工（分摊成本）", "amount": 12000}
+  ],
+  "vendor_service_revenue": 15000,
+  "vendor_direct_costs": [
+    {"id": "model", "label": "模型调用", "amount": 500},
+    {"id": "data", "label": "软件方自购数据与工具", "amount": 1000},
+    {"id": "cloud", "label": "基础设施", "amount": 500},
+    {"id": "implementation", "label": "实施工时", "amount": 5000},
+    {"id": "review", "label": "审核与返工工时", "amount": 4000},
+    {"id": "support", "label": "支持工时", "amount": 1500}
+  ],
+  "net_revenue_per_order": 100000,
+  "pre_marketing_contribution_rate": 0.25,
+  "incremental_share": 1.0,
+  "scenarios": [
+    {"id": "conservative", "label": "保守", "qualified_leads": 60, "sales_accepted": 12, "new_customers": 1},
+    {"id": "base", "label": "基准", "qualified_leads": 100, "sales_accepted": 25, "new_customers": 3},
+    {"id": "optimistic", "label": "乐观", "qualified_leads": 160, "sales_accepted": 48, "new_customers": 6}
+  ],
+  "source_numbers_for_arithmetic_only": {
+    "opportunity_amounts_wan": [2140, 3920, 1180],
+    "overseas_amount_wan": 3920,
+    "touches": 1180,
+    "opportunities": 86,
+    "reply_rate_percent": 19.4,
+    "manual_baseline_percent": 6.1,
+    "r16_percent": 7.4,
+    "unverified_monthly_marketing": 300000,
+    "unverified_agency_share": 0.7
+  },
+  "limitations": [
+    "全部费用与转化输入均为任意教学假设，不能据此批准支出。",
+    "净收入假设为同一不含流转税、扣退货口径；不是回款。实际须与财务统一口径。",
+    "贡献率已扣产品或服务履约变动成本，尚未扣营销成本；不是会计净利率。",
+    "成交均为去重新客户，且暂假设100%增量；没有对照时不能认定真实增量。",
+    "90天是教学窗口，不是已批准试点期限。成交观察须覆盖实际销售周期。",
+    "成本口径仅含已列项目；遗漏销售跟进、差旅或佣金时必须补入，不能声称完整CAC。",
+    "73000元为假设外付项合计，不代表实际付款、可取消支出或现金节约。",
+    "客户直接数据费与软件方数据费假设为不同合同，不重复计费；真实采购需去重。",
+    "未假设平台代收代付。若代收，代付款不得冒充自有服务收入。",
+    "软件方贡献未扣销售获客、研发、管理、融资、税等，不是净利润。"
+  ]
+}

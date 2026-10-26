@@ -1,0 +1,2454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申沃客车 · AI 驱动的客车内容创作与智能营销平台</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f4f6f9;
+    --panel: #ffffff;
+    --line: rgba(15,23,42,.08);
+    --line2: rgba(15,23,42,.05);
+    --text: #101828;
+    --muted: #5f6b80;
+    --faint: #9aa4b7;
+    --brand: #17b26a;
+    --cyan: #0b94c9;
+    --price: #e8552c;
+    --danger: #d92d20;
+    --warn: #b45309;
+    --ok: #068348;
+    --mono: "SF Mono", "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    --g: linear-gradient(135deg, #17b26a, #0b94c9);
+    --tb-h: 48px;
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, select, textarea { font: inherit; color: inherit; }
+  a { color: inherit; text-decoration: none; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(15,23,42,.16); border-radius: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  /* ============ Stage ============ */
+  .stage {
+    min-height: 100vh; padding: 26px 22px 72px;
+    background-image:
+      radial-gradient(1100px 520px at 6% -8%, rgba(23,178,106,.10), transparent 55%),
+      radial-gradient(900px 480px at 94% -4%, rgba(11,148,201,.10), transparent 55%),
+      linear-gradient(rgba(15,23,42,.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,.022) 1px, transparent 1px);
+    background-size: auto, auto, 32px 32px, 32px 32px;
+    background-color: var(--bg);
+  }
+  .head { max-width: 1360px; margin: 0 auto 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .head h1 { font-size: 21px; font-weight: 700; letter-spacing: .4px; }
+  .head h1 em { font-style: normal; background: var(--g); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .head p { color: var(--muted); font-size: 13px; margin-top: 7px; line-height: 1.7; }
+  .head .crumbs { font-family: var(--mono); font-size: 12px; color: var(--muted); text-align: right; }
+  .head .crumbs b { color: var(--brand); }
+
+  .frame {
+    max-width: 1360px; margin: 0 auto; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 18px 44px rgba(15,40,80,.10), 0 2px 8px rgba(15,40,80,.04);
+    overflow: clip; display: flex; flex-direction: column;
+  }
+
+  /* ============ Top bar ============ */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 10px 16px; background: linear-gradient(180deg,#fff,#fafbfd); border-bottom: 1px solid var(--line); }
+  .topbar .left { display: flex; align-items: center; gap: 12px; }
+  .topbar .logo { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 14px; }
+  .topbar .logo .mark { width: 26px; height: 26px; border-radius: 8px; background: var(--g); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px;
+    box-shadow: 0 4px 14px rgba(23,178,106,.30); }
+  .topbar .logo small { color: var(--faint); font-weight: 500; font-size: 12px; }
+  .proj-pick { display: flex; align-items: center; gap: 8px; padding: 6px 11px; border: 1px solid var(--line);
+    border-radius: 9px; background: #fff; font-size: 12.5px; }
+  .proj-pick .sw { width: 20px; height: 20px; border-radius: 6px; background: linear-gradient(135deg,#0b6fd4,#17b26a);
+    color: #fff; font-size: 10px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); }
+  .proj-pick .caret { color: var(--faint); font-size: 10px; }
+  .topbar .right { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--muted); }
+  .topbar .right .pill { padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line); background: #fff;
+    display: inline-flex; align-items: center; gap: 6px; }
+  .topbar .right .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--brand);
+    box-shadow: 0 0 0 0 rgba(23,178,106,.45); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(23,178,106,.4)} 70%{box-shadow:0 0 0 6px rgba(23,178,106,0)} 100%{box-shadow:0 0 0 0 rgba(23,178,106,0)} }
+
+  /* ============ Layout ============ */
+  .layout { display: grid; grid-template-columns: 232px 1fr; min-height: 760px; align-items: start; }
+  .side { background: linear-gradient(180deg,#fff,#fafbfd); border-right: 1px solid var(--line);
+    padding: 16px 12px; display: flex; flex-direction: column; gap: 3px;
+    position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto;
+    overscroll-behavior: contain; scrollbar-width: thin; }
+  .side::-webkit-scrollbar { width: 5px; }
+  .side::-webkit-scrollbar-thumb { background: rgba(15,23,42,.16); border-radius: 8px; }
+  .side::-webkit-scrollbar-track { background: transparent; }
+  .side .gt { font-size: 10.5px; color: var(--faint); padding: 6px 12px; letter-spacing: .9px;
+    font-family: var(--mono); text-transform: uppercase; }
+  .side .nav { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 9px;
+    font-size: 13px; color: var(--muted); text-align: left; width: 100%; transition: all .15s ease; }
+  .side .nav .n { font-family: var(--mono); font-size: 11px; color: var(--faint); width: 16px; }
+  .side .nav .ic { width: 16px; height: 16px; border-radius: 4px; background: rgba(15,23,42,.08); flex-shrink: 0; }
+  .side .nav:hover { background: rgba(15,23,42,.04); color: var(--text); }
+  .side .nav.on { background: linear-gradient(135deg, rgba(23,178,106,.10), rgba(11,148,201,.10));
+    color: var(--brand); font-weight: 600; }
+  .side .nav.on .ic { background: var(--g); box-shadow: 0 2px 6px rgba(23,178,106,.28); }
+  .side .nav.on .n { color: var(--brand); }
+  .side .foot { margin-top: 0; padding: 12px 12px 2px; border-top: 1px solid var(--line2);
+    font-size: 11.5px; color: var(--faint); line-height: 1.7; }
+  .side .foot code { font-family: var(--mono); }
+
+  .main { padding: 18px 22px 30px; overflow: hidden; background: #fbfcfe; min-width: 0; }
+  .screen { display: none; animation: fade .28s ease; }
+  .screen.on { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .page-title { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px;
+    flex-wrap: wrap; margin-bottom: 14px; }
+  .page-title h2 { font-size: 17.5px; font-weight: 700; display: flex; align-items: center; gap: 9px; }
+  .page-title h2 .ic { width: 22px; height: 22px; border-radius: 7px; background: var(--g);
+    color: #fff; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); }
+  .page-title .sub { color: var(--muted); font-size: 12.5px; margin-top: 5px; }
+  .page-title .acts { display: flex; gap: 8px; align-items: center; }
+
+  /* ============ Common ============ */
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 13px; overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15,23,42,.03); }
+  .panel + .panel { margin-top: 14px; }
+  .panel .ph { padding: 11px 15px; border-bottom: 1px solid var(--line); display: flex; align-items: center;
+    justify-content: space-between; gap: 10px; font-weight: 600; font-size: 13.5px; }
+  .panel .ph .hint { color: var(--muted); font-size: 12px; font-weight: 400; }
+  .panel .ph .acts { display: flex; gap: 7px; }
+  .panel .pb { padding: 15px; }
+  .panel .pb.tight { padding: 0; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: 10px;
+    font-size: 12.5px; font-weight: 600; padding: 8px 13px; border: 1px solid var(--line); background: #fff; color: var(--text);
+    white-space: nowrap; }
+  .btn:hover { border-color: rgba(23,178,106,.35); color: var(--brand); }
+  .btn.primary { background: var(--g); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(23,178,106,.24); }
+  .btn.primary:hover { color: #fff; filter: brightness(1.04); }
+  .btn.ghost { background: rgba(15,23,42,.04); border-color: transparent; color: var(--muted); }
+  .btn.ghost:hover { background: rgba(15,23,42,.08); color: var(--text); }
+  .btn.danger { color: var(--danger); border-color: rgba(217,45,32,.28); }
+  .btn.sm { font-size: 11.5px; padding: 5px 10px; border-radius: 8px; }
+  .btn .ic { width: 11px; height: 11px; border-radius: 3px; background: currentColor; opacity: .75; }
+
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px;
+    background: rgba(15,23,42,.05); color: var(--muted); white-space: nowrap; }
+  .tag.green { background: rgba(23,178,106,.12); color: #068348; }
+  .tag.cyan  { background: rgba(11,148,201,.12); color: #0670a1; }
+  .tag.orange { background: rgba(245,158,11,.14); color: #b45309; }
+  .tag.red   { background: rgba(217,45,32,.12); color: #b42318; }
+  .tag.purple{ background: rgba(124,58,237,.12); color: #6d28d9; }
+  .tag.dark  { background: rgba(15,23,42,.82); color: #fff; }
+  .tags { display: flex; gap: 5px; flex-wrap: wrap; }
+
+  .chip { font-size: 12px; padding: 5px 11px; border-radius: 999px; background: #fff;
+    border: 1px solid var(--line); color: var(--muted); cursor: pointer; transition: all .14s ease; }
+  .chip:hover { border-color: rgba(23,178,106,.4); color: var(--brand); }
+  .chip.on { background: linear-gradient(135deg, #17b26a, #0b94c9); border-color: transparent; color: #fff; font-weight: 600; }
+  .chip .x { opacity: .6; margin-left: 4px; }
+
+  .ipt { background: #fff; border: 1px solid var(--line); border-radius: 9px; height: 34px; padding: 0 11px;
+    font-size: 12.5px; outline: none; width: 100%; }
+  .ipt:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(23,178,106,.10); }
+  textarea.ipt { height: auto; padding: 9px 11px; line-height: 1.65; resize: vertical; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field > label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .field > label .req { color: var(--danger); }
+
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px;
+    padding: 9px 14px; background: #fafbfd; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  table.tbl td { padding: 10px 14px; border-bottom: 1px solid var(--line2); vertical-align: middle; }
+  table.tbl tr:last-child td { border-bottom: none; }
+  table.tbl tbody tr { cursor: pointer; transition: background .12s ease; }
+  table.tbl tbody tr:hover { background: #f7fbff; }
+  table.tbl tbody tr.on { background: linear-gradient(90deg, rgba(23,178,106,.07), transparent); }
+  table.tbl .mono { font-family: var(--mono); }
+  table.tbl .muted { color: var(--muted); }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+  .toolbar .spacer { flex: 1; }
+  .searchbar { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0 11px;
+    height: 34px; display: flex; align-items: center; gap: 8px; color: var(--faint); font-size: 12.5px; }
+  .searchbar .mag { width: 12px; height: 12px; border: 1.6px solid var(--faint); border-radius: 50%; position: relative; flex-shrink: 0; }
+  .searchbar .mag::after { content:""; position:absolute; width:5px; height:1.6px; background:var(--faint); transform:rotate(45deg); right:-3px; bottom:-2px; }
+  .searchbar input { border: none; outline: none; flex: 1; background: transparent; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .kpi-grid.k6 { grid-template-columns: repeat(6, 1fr); }
+  .kpi { background: #fff; border: 1px solid var(--line); border-radius: 13px; padding: 13px 14px;
+    box-shadow: 0 1px 2px rgba(15,23,42,.03); position: relative; overflow: hidden; }
+  .kpi::after { content:""; position:absolute; left:0; top:0; bottom:0; width: 3px; background: var(--g); opacity:.75; }
+  .kpi .l { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .kpi .v { font-size: 22px; font-weight: 700; margin-top: 7px; font-family: var(--mono); letter-spacing: -.5px; }
+  .kpi .v small { font-size: 12px; color: var(--faint); font-weight: 500; }
+  .kpi .d { margin-top: 6px; font-size: 11px; display: flex; align-items: center; gap: 5px; }
+  .up { color: var(--brand); } .down { color: var(--danger); } .flat { color: var(--faint); }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-row .bl { width: 118px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .bar-row .bt { display: block; flex: 1; height: 9px; border-radius: 999px; background: rgba(15,23,42,.06); overflow: hidden; }
+  .bar-row .bf { display: block; height: 100%; border-radius: 999px; background: var(--g); transition: width .6s cubic-bezier(.4,0,.2,1); }
+  .bar-row .bv { width: 74px; text-align: right; font-family: var(--mono); font-size: 11.5px; color: var(--text); flex-shrink: 0; }
+
+  .switch { width: 34px; height: 19px; border-radius: 999px; background: rgba(15,23,42,.14); position: relative;
+    cursor: pointer; transition: background .18s ease; flex-shrink: 0; }
+  .switch::after { content:""; position:absolute; top:2px; left:2px; width:15px; height:15px; border-radius:50%;
+    background:#fff; box-shadow: 0 1px 3px rgba(15,23,42,.25); transition: transform .18s ease; }
+  .switch.on { background: var(--brand); }
+  .switch.on::after { transform: translateX(15px); }
+
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content:""; position:absolute; left:6px; top:4px; bottom:4px; width:2px; background: var(--line); }
+  .tl-item { position: relative; padding-bottom: 15px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-item::before { content:""; position:absolute; left:-20px; top:4px; width:10px; height:10px; border-radius:50%;
+    background:#fff; border:2px solid var(--brand); }
+  .tl-item .t { font-size: 12.8px; font-weight: 600; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .tl-item .d { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.65; }
+  .tl-item .meta { font-family: var(--mono); font-size: 11px; color: var(--faint); margin-top: 5px; }
+
+  /* ============ Drawer ============ */
+  .mask { position: fixed; inset: 0; background: rgba(15,23,42,.32); opacity: 0; pointer-events: none;
+    transition: opacity .22s ease; z-index: 40; backdrop-filter: blur(1px); }
+  .mask.on { opacity: 1; pointer-events: auto; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 520px; max-width: 94vw; background: #fff;
+    box-shadow: -14px 0 40px rgba(15,40,80,.16); transform: translateX(102%); transition: transform .26s cubic-bezier(.4,0,.2,1);
+    z-index: 50; display: flex; flex-direction: column; }
+  .drawer.on { transform: none; }
+  .drawer .dh { padding: 14px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center;
+    justify-content: space-between; gap: 10px; }
+  .drawer .dh .id { font-family: var(--mono); font-size: 13px; color: var(--brand); font-weight: 700; }
+  .drawer .dh h3 { font-size: 15px; font-weight: 700; margin-top: 5px; line-height: 1.5; }
+  .drawer .db { flex: 1; overflow: auto; padding: 16px 18px 26px; }
+  .drawer .df { padding: 11px 18px; border-top: 1px solid var(--line); display: flex; gap: 9px; justify-content: flex-end;
+    background: #fafbfd; }
+  .x-btn { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); background: #fff;
+    color: var(--muted); display: inline-flex; align-items: center; justify-content: center; font-size: 15px; }
+  .x-btn:hover { color: var(--danger); border-color: rgba(217,45,32,.3); }
+
+  .sec-title { font-size: 12px; color: var(--faint); font-family: var(--mono); letter-spacing: .8px;
+    text-transform: uppercase; margin: 18px 0 9px; }
+  .sec-title:first-child { margin-top: 0; }
+  .qbox { background: linear-gradient(135deg, rgba(23,178,106,.07), rgba(11,148,201,.06));
+    border: 1px solid rgba(23,178,106,.20); border-radius: 11px; padding: 12px 13px; font-size: 13.5px;
+    font-weight: 600; line-height: 1.6; }
+  .kv { display: grid; grid-template-columns: 78px 1fr; gap: 8px 12px; font-size: 12.5px; line-height: 1.7; }
+  .kv .k { color: var(--faint); }
+  .kv .v { color: var(--text); }
+  .note { font-size: 12.3px; line-height: 1.75; color: var(--muted); }
+  .note b { color: var(--text); }
+  ul.lst { margin: 0; padding-left: 17px; font-size: 12.5px; line-height: 1.85; color: var(--muted); }
+  ul.lst b { color: var(--text); }
+
+  /* ============ Toast ============ */
+  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 90;
+    display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast { background: rgba(15,23,42,.93); color: #fff; font-size: 12.5px; padding: 9px 15px; border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(15,23,42,.28); animation: pop .26s cubic-bezier(.2,.9,.3,1.2); display: flex; align-items: center; gap: 8px; }
+  .toast .ic { width: 15px; height: 15px; border-radius: 50%; background: var(--brand); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+  @keyframes pop { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+
+  /* ============ Pipeline (overview) ============ */
+  .pipe { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding: 4px 0 2px; }
+  .pipe .step { flex: 1; min-width: 128px; position: relative; padding: 0 7px; }
+  .pipe .step .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 12px 12px 14px;
+    position: relative; height: 100%; box-shadow: 0 1px 2px rgba(15,23,42,.03); }
+  .pipe .step .card::before { content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:3px; background: var(--g); }
+  .pipe .step .no { font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+  .pipe .step .t { font-size: 13px; font-weight: 700; margin-top: 4px; }
+  .pipe .step .d { font-size: 11.5px; color: var(--muted); margin-top: 5px; line-height: 1.6; }
+  .pipe .step .num { margin-top: 9px; font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--brand); }
+  .pipe .step .num small { font-size: 10.5px; color: var(--faint); font-weight: 500; margin-left: 3px; }
+  .pipe .arrow { align-self: center; color: var(--faint); font-size: 14px; padding: 0 2px; flex-shrink: 0; }
+
+  .cols { display: grid; gap: 14px; }
+  .cols.c2 { grid-template-columns: 1fr 1fr; }
+  .cols.c3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols.c-64 { grid-template-columns: 1.55fr 1fr; }
+  .cols.c-46 { grid-template-columns: 1fr 1.6fr; }
+
+  /* ============ Phone mock ============ */
+  .phone { width: 300px; height: 588px; background: linear-gradient(180deg,#fff,#fafbfd);
+    border-radius: 28px; border: 1px solid rgba(15,23,42,.10);
+    box-shadow: 0 18px 40px rgba(15,40,80,.12), 0 2px 8px rgba(15,40,80,.04);
+    display: flex; flex-direction: column; overflow: hidden; }
+  .phone .statusbar { height: 26px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; font-size: 11px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+  .phone .navbar { height: 42px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+    font-size: 13.5px; font-weight: 700; border-bottom: 1px solid var(--line); position: relative; }
+  .phone .navbar .back { position: absolute; left: 12px; color: var(--muted); font-weight: 400; font-size: 15px; }
+  .phone .pscreen { flex: 1; overflow: auto; background: #f4f6f9; }
+  .phone .pscreen::-webkit-scrollbar { display: none; }
+  .phone .tabbar { height: 48px; flex: 0 0 auto; display: flex; background: rgba(255,255,255,.92);
+    border-top: 1px solid var(--line); }
+  .phone .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; font-size: 9.5px; color: var(--faint); }
+  .phone .tab .ic { width: 17px; height: 17px; border-radius: 5px; background: rgba(15,23,42,.10); }
+  .phone .tab.on { color: var(--brand); }
+  .phone .tab.on .ic { background: var(--g); }
+
+  /* mail bubble */
+  .mail { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .mail .mh { display: flex; align-items: center; gap: 8px; }
+  .mail .mh .av { width: 26px; height: 26px; border-radius: 8px; background: var(--g); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; flex-shrink: 0; }
+  .mail .mh .nm { font-size: 12.3px; font-weight: 600; }
+  .mail .mh .tm { font-size: 10.5px; color: var(--faint); font-family: var(--mono); }
+  .mail .mt { margin-top: 9px; font-size: 12.3px; line-height: 1.7; color: #344054; }
+  .mail .mt b { color: var(--text); }
+  .mail .mact { display: flex; gap: 7px; margin-top: 11px; }
+  .mail .mact .b { font-size: 11.5px; padding: 5px 10px; border-radius: 8px; border: 1px solid var(--line); color: var(--muted); }
+  .mail .mact .b.p { background: var(--g); color: #fff; border-color: transparent; }
+  .mail .hero { height: 92px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg,#0b6fd4,#17b26a); }
+  .mail .hero .ht { position: absolute; left: 12px; bottom: 10px; color: #fff; font-size: 12.5px; font-weight: 700; }
+  .mail .hero .hs { position: absolute; left: 12px; top: 10px; color: rgba(255,255,255,.85); font-size: 10.5px; font-family: var(--mono); }
+
+  /* ============ misc ============ */
+  .split { display: grid; grid-template-columns: 1fr 300px; gap: 14px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .row.between { justify-content: space-between; }
+  .row.wrap { flex-wrap: wrap; }
+  .muted { color: var(--muted); } .faint { color: var(--faint); }
+  .small { font-size: 11.5px; } .mono { font-family: var(--mono); }
+  .bold { font-weight: 700; } .m0 { margin-top: 0; } .mt10 { margin-top: 10px; } .mt14 { margin-top: 14px; }
+  .empty { padding: 26px; text-align: center; color: var(--faint); font-size: 12.5px; }
+
+  .srcline { font-size: 12.5px; line-height: 1.8; color: #344054; }
+  .srcline .hl { background: linear-gradient(transparent 62%, rgba(23,178,106,.28) 0); padding: 0 2px; }
+  .srcline .del { text-decoration: line-through; color: var(--faint); }
+
+  .donut { width: 128px; height: 128px; border-radius: 50%; position: relative;
+    background: conic-gradient(var(--brand) 0 42%, var(--cyan) 42% 72%, #7c3aed 72% 100%); }
+  .donut::after { content:""; position:absolute; inset: 26px; border-radius:50%; background:#fff; }
+  .donut .dc { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; z-index: 2; }
+  .donut .dc b { font-family: var(--mono); font-size: 19px; }
+  .donut .dc span { font-size: 10.5px; color: var(--faint); }
+
+  .legend-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--muted); }
+  .legend-dot i { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+
+  .tabs2 { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+  .tabs2 button { font-size: 12.5px; color: var(--muted); padding: 8px 13px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs2 button.on { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+
+  .gate { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 11px;
+    background: #fafbfd; border: 1px solid var(--line); font-size: 12.3px; }
+  .gate .g { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center;
+    justify-content: center; font-size: 11px; color: #fff; flex-shrink: 0; font-family: var(--mono); }
+  .gate.pass .g { background: var(--brand); } .gate.warn .g { background: var(--warn); } .gate.hold .g { background: var(--danger); }
+  .gate .gt { font-weight: 600; }
+  .gate .gd { color: var(--muted); }
+
+  .tz-grid { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; }
+  .tz-grid .cell { height: 22px; border-radius: 3px; background: rgba(15,23,42,.06); }
+  .tz-grid .cell.l1 { background: rgba(245,158,11,.35); }
+  .tz-grid .cell.l2 { background: rgba(23,178,106,.55); }
+  .tz-grid .cell.l3 { background: rgba(23,178,106,.88); }
+
+  .ping { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brand);
+    box-shadow: 0 0 0 0 rgba(23,178,106,.45); animation: pulse 2s infinite; }
+
+  /* ============ 10 · 内容资产引擎 ============ */
+  .tier { display:inline-flex; align-items:center; gap:5px; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:600; white-space:nowrap; }
+  .tier.cause { background:rgba(23,178,106,.14); color:#068348; }
+  .tier.assoc { background:rgba(11,148,201,.12); color:#0670a1; }
+  .tier.trend { background:rgba(245,158,11,.18); color:#b45309; }
+  .prob { display:flex; align-items:baseline; gap:9px; }
+  .prob .p { font-family:var(--mono); font-size:34px; font-weight:700; letter-spacing:-1.2px; }
+  .prob .ci { font-family:var(--mono); font-size:11.5px; color:var(--faint); }
+  .calib { height:13px; border-radius:999px; background:rgba(15,23,42,.06); position:relative; overflow:hidden; }
+  .calib .band { position:absolute; top:0; bottom:0; background:rgba(23,178,106,.2); }
+  .calib .mark { position:absolute; top:-4px; width:3px; height:21px; background:var(--brand); border-radius:2px; }
+  .eng-card { border:1px solid var(--line); border-radius:12px; padding:12px 13px; background:#fff; }
+  .eng-card.risk { border-color:rgba(217,45,32,.32); background:rgba(217,45,32,.035); }
+  .eng-card.warn { border-color:rgba(245,158,11,.4); background:rgba(245,158,11,.05); }
+  .eng-card.ok { border-color:rgba(23,178,106,.32); background:rgba(23,178,106,.045); }
+  .match { display:flex; align-items:center; gap:9px; padding:6px 0; border-bottom:1px dashed var(--line2); }
+  .match:last-child { border-bottom:none; }
+  .match .mn { font-size:12.5px; font-weight:600; min-width:132px; }
+  .match .mb { flex:1; height:7px; border-radius:999px; background:rgba(15,23,42,.06); overflow:hidden; }
+  .match .mf { display:block; height:100%; border-radius:999px; background:var(--g); }
+  .match .mf.warn { background:linear-gradient(90deg,#f0a44a,rgba(245,158,11,.3)); }
+  .match .mv { font-family:var(--mono); font-size:11.5px; width:54px; text-align:right; }
+  .eng-foot { font-family:var(--mono); font-size:11px; color:var(--faint); border-top:1px solid var(--line); padding-top:10px; margin-top:12px; }
+  .eg-step { border:1px solid var(--line); border-radius:12px; padding:11px 12px; background:#fff; position:relative; }
+  .eg-step .no { font-family:var(--mono); font-size:10.5px; color:var(--faint); }
+  .eg-step .t { font-size:12.8px; font-weight:700; margin-top:3px; }
+  .eg-step .d { font-size:11.5px; color:var(--muted); margin-top:4px; line-height:1.6; }
+  .eg-step .foot { font-family:var(--mono); font-size:10.5px; color:var(--faint); margin-top:7px; }
+
+  /* ============ 客车元素 ============ */
+  .hero-bus {
+    position:relative; overflow:hidden; border-radius:16px; margin-bottom:14px;
+    background: linear-gradient(115deg,#0a2033 0%,#123a52 46%,#0d2b3f 100%);
+    box-shadow: 0 12px 32px rgba(10,40,60,.18);
+  }
+  .hero-bus .hb-bg { position:absolute; inset:0; }
+  .hero-bus .hb-bg img { width:100%; height:100%; object-fit:cover; object-position: 62% 62%;
+    opacity:.30; filter:saturate(.72) contrast(1.02); }
+  .hero-bus .hb-veil { position:absolute; inset:0;
+    background:
+      linear-gradient(96deg, rgba(8,28,42,.97) 0%, rgba(8,28,42,.88) 34%, rgba(8,28,42,.34) 62%, rgba(8,28,42,.12) 100%),
+      radial-gradient(70% 90% at 88% 40%, rgba(33,195,195,.22), transparent 68%); }
+  .hero-bus .hb-grid { position:absolute; inset:0; opacity:.5;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 1px, transparent 1px 56px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 56px); }
+  .hero-bus .hb-in { position:relative; padding:22px 26px; display:flex; align-items:center; gap:24px; }
+  .hero-bus .hb-txt { flex:1; min-width:0; }
+  .hero-bus .hb-eyebrow { font-family:var(--mono); font-size:11.5px; letter-spacing:.2em; color:#7fe3e3; }
+  .hero-bus .hb-h1 { font-size:26px; font-weight:700; color:#fff; margin-top:8px; line-height:1.35; letter-spacing:-.3px; }
+  .hero-bus .hb-p { color:rgba(233,244,251,.76); font-size:13px; line-height:1.75; margin-top:9px; max-width:62ch; }
+  .hero-bus .hb-chips { display:flex; gap:7px; flex-wrap:wrap; margin-top:13px; }
+  .hero-bus .hb-chip { font-size:11.5px; padding:4px 10px; border-radius:999px;
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:rgba(233,244,251,.9); }
+  .hero-bus .hb-chip.k { background:rgba(33,195,195,.18); border-color:rgba(33,195,195,.42); color:#a5f0f0; }
+  .hero-bus .hb-stats { display:flex; gap:22px; flex-shrink:0; padding-right:6px; }
+  .hero-bus .hb-stat .n { font-family:var(--mono); font-size:27px; font-weight:700; color:#fff; line-height:1.1; }
+  .hero-bus .hb-stat .n i { font-size:14px; font-style:normal; color:#7fe3e3; }
+  .hero-bus .hb-stat .l { font-size:11px; color:rgba(233,244,251,.62); margin-top:4px; white-space:nowrap; }
+  .hero-bus .hb-stripe { position:absolute; left:0; right:0; bottom:0; height:4px;
+    background:linear-gradient(90deg,#21c3c3,#3d8bfd 58%,rgba(61,139,253,0)); }
+
+  /* 侧栏底部巴士剪影 */
+  .side .bus-art { margin-top:14px; padding-top:12px; border-top:1px solid var(--line2); position:relative; }
+  .side .bus-art img { width:100%; border-radius:9px; display:block; opacity:.95; }
+  .side .bus-art .cap { font-size:10.5px; color:var(--faint); font-family:var(--mono); margin-top:6px; text-align:center; }
+
+  /* 客车规格小条 */
+  .bus-spec { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .bus-spec .bsp { border:1px solid var(--line); border-radius:11px; padding:10px 11px; background:#fff; position:relative; overflow:hidden; }
+  .bus-spec .bsp::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--g); }
+  .bus-spec .bsp .k { font-size:11px; color:var(--faint); }
+  .bus-spec .bsp .v { font-family:var(--mono); font-size:16px; font-weight:700; margin-top:4px; }
+  .bus-spec .bsp .v small { font-size:11px; color:var(--muted); font-weight:500; margin-left:2px; }
+  .bus-spec .bsp .d { font-size:10.5px; color:var(--muted); margin-top:3px; line-height:1.5; }
+
+  /* 车型缩略图 */
+  .fleet { display:grid; grid-template-columns:repeat(3,1fr); gap:11px; }
+  .fleet .fl { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff; transition:all .15s ease; }
+  .fleet .fl:hover { border-color:rgba(23,178,106,.4); box-shadow:0 6px 18px rgba(15,40,80,.08); }
+  .fleet .fl .ph { height:86px; position:relative; background:linear-gradient(120deg,#eef3f6,#e2ebf0); overflow:hidden; }
+  .fleet .fl .ph img { width:100%; height:100%; object-fit:cover; object-position:60% 62%; opacity:.92; }
+  .fleet .fl .ph .tagx { position:absolute; left:8px; top:8px; font-family:var(--mono); font-size:10px;
+    background:rgba(8,28,42,.78); color:#fff; padding:2px 7px; border-radius:5px; }
+  .fleet .fl .ph .ty { position:absolute; right:8px; bottom:8px; font-size:11px; color:#fff;
+    background:rgba(8,28,42,.62); padding:2px 7px; border-radius:5px; backdrop-filter:blur(2px); }
+  .fleet .fl .bd { padding:9px 11px 11px; }
+  .fleet .fl .nm { font-size:12.8px; font-weight:700; }
+  .fleet .fl .ds { font-size:11px; color:var(--muted); line-height:1.55; margin-top:4px; }
+  .fleet .fl .tags2 { display:flex; gap:4px; flex-wrap:wrap; margin-top:7px; }
+
+  /* 内容侧栏小图（内容屏复用） */
+  .thumb-bus { border-radius:11px; overflow:hidden; border:1px solid var(--line); position:relative; }
+  .thumb-bus img { width:100%; display:block; }
+  .thumb-bus .ov { position:absolute; inset:0; background:linear-gradient(0deg, rgba(8,28,42,.82), rgba(8,28,42,.1) 60%); }
+  .thumb-bus .cap { position:absolute; left:11px; right:11px; bottom:9px; color:#fff; font-size:12px; font-weight:600; line-height:1.5; }
+
+  /* ============ ROI 可视化 ============ */
+  .roi-flow { display:grid; grid-template-columns:repeat(4,1fr); gap:0; align-items:stretch; }
+  .roi-flow .rf { padding:13px 15px; border:1px solid var(--line); border-right:none; position:relative; background:#fff; }
+  .roi-flow .rf:first-child { border-radius:11px 0 0 11px; }
+  .roi-flow .rf:last-child { border-right:1px solid var(--line); border-radius:0 11px 11px 0; background:linear-gradient(180deg,rgba(23,178,106,.09),rgba(23,178,106,.03)); }
+  .roi-flow .rf .k { font-size:11px; color:var(--faint); letter-spacing:.04em; }
+  .roi-flow .rf .v { font-family:var(--mono); font-size:23px; font-weight:700; margin-top:6px; letter-spacing:-.8px; }
+  .roi-flow .rf .v small { font-size:12px; font-weight:500; color:var(--muted); margin-left:2px; letter-spacing:0; }
+  .roi-flow .rf .d { font-size:11px; color:var(--muted); margin-top:5px; line-height:1.5; }
+  .roi-flow .rf .arrowm { position:absolute; right:-9px; top:50%; transform:translateY(-50%); z-index:3;
+    width:17px; height:17px; border-radius:50%; background:#fff; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--brand); box-shadow:0 2px 6px rgba(15,40,80,.10); }
+  .roi-flow .rf:last-child .arrowm { display:none; }
+  .roi-flow .rf.out .v { color:var(--brand); }
+
+  .roi-funnel { width:100%; height:auto; display:block; }
+  .roi-funnel text { font-family:var(--font-mono, 'SF Mono', monospace); }
+
+  .roi-split { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .roi-split .col h4 { font-size:12px; color:var(--faint); font-weight:600; margin:0 0 9px; letter-spacing:.04em; }
+  .roi-b { display:flex; align-items:center; gap:9px; margin-bottom:9px; }
+  .roi-b:last-child { margin-bottom:0; }
+  .roi-b .bl { width:86px; font-size:12px; color:var(--muted); flex-shrink:0; }
+  .roi-b .bt { flex:1; height:9px; border-radius:999px; background:rgba(15,23,42,.06); overflow:hidden; }
+  .roi-b .bf { display:block; height:100%; border-radius:999px; background:var(--g); }
+  .roi-b .bv { width:62px; text-align:right; font-family:var(--mono); font-size:12px; font-weight:700; flex-shrink:0; }
+  .roi-b .bv span { font-size:10px; color:var(--faint); font-weight:500; margin-left:2px; }
+
+  /* ============ 双效果总览（内容生成效果 / 获客效果） ============ */
+  .dual-eff { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .eff-card { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+  .eff-card .eh { padding:13px 16px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .eff-card .eh .ttl { display:flex; align-items:center; gap:9px; }
+  .eff-card .eh .dot { width:9px; height:9px; border-radius:3px; }
+  .eff-card .eh .nm { font-size:14.5px; font-weight:700; }
+  .eff-card .eh .sub { font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .eff-card .eh .badge { font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:6px; }
+  .eff-card.a .eh { background:linear-gradient(120deg,rgba(23,178,106,.10),rgba(23,178,106,.02)); }
+  .eff-card.a .dot { background:var(--brand); }
+  .eff-card.a .badge { background:rgba(23,178,106,.14); color:#068348; }
+  .eff-card.b .eh { background:linear-gradient(120deg,rgba(11,148,201,.10),rgba(11,148,201,.02)); }
+  .eff-card.b .dot { background:var(--cyan); }
+  .eff-card.b .badge { background:rgba(11,148,201,.13); color:#0670a1; }
+  .eff-card .eb { padding:14px 16px 16px; flex:1; display:flex; flex-direction:column; }
+  .eff-hero { display:flex; align-items:flex-end; gap:12px; }
+  .eff-hero .big { font-family:var(--mono); font-size:42px; font-weight:700; line-height:1; letter-spacing:-1.8px; }
+  .eff-card.a .eff-hero .big { color:var(--brand); }
+  .eff-card.b .eff-hero .big { color:var(--cyan); }
+  .eff-hero .big i { font-size:17px; font-style:normal; font-weight:600; letter-spacing:0; margin-left:1px; }
+  .eff-hero .side { flex:1; padding-bottom:3px; }
+  .eff-hero .side .t { font-size:12.5px; font-weight:700; }
+  .eff-hero .side .d { font-size:11.5px; color:var(--muted); line-height:1.55; margin-top:3px; }
+  .eff-hero .delta { font-family:var(--mono); font-size:12px; font-weight:700; color:#068348; flex-shrink:0; }
+  .eff-hero .delta.down { color:var(--danger); }
+  .eff-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px; }
+  .eff-metrics .em { border:1px solid var(--line); border-radius:10px; padding:9px 10px; background:#fcfdfe; }
+  .eff-metrics .em .k { font-size:10.5px; color:var(--faint); line-height:1.35; min-height:28px; }
+  .eff-metrics .em .v { font-family:var(--mono); font-size:19px; font-weight:700; margin-top:5px; letter-spacing:-.5px; }
+  .eff-metrics .em .v small { font-size:11px; font-weight:500; color:var(--muted); margin-left:1px; letter-spacing:0; }
+  .eff-metrics .em .d { font-size:10px; color:var(--muted); margin-top:2px; }
+  .eff-chart { margin-top:14px; }
+  .eff-chart .ct { font-size:11px; color:var(--faint); font-weight:600; margin-bottom:4px; }
+  .eff-chart svg { width:100%; display:block; }
+  .eff-note { font-size:11px; color:var(--muted); line-height:1.6; margin-top:11px; padding-top:10px; border-top:1px dashed var(--line); }
+  .eff-note b { color:var(--text); }
+  .eff-cta { margin-top:12px; display:flex; gap:8px; }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 1240px) {
+    .dual-eff { grid-template-columns:1fr; }
+    .roi-split { grid-template-columns:1fr; gap:12px; }
+    .bus-spec { grid-template-columns:repeat(2,1fr); }
+    .fleet { grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width: 1080px) {
+    .eff-hero { flex-wrap:wrap; align-items:flex-start; }
+    .eff-hero .side { flex-basis:100%; order:3; padding-bottom:0; }
+    .eff-hero .delta { margin-left:auto; }
+    .eff-metrics { grid-template-columns:repeat(2,1fr); }
+    .roi-flow { grid-template-columns:repeat(2,1fr); }
+    .roi-flow .rf:nth-child(2) { border-right:1px solid var(--line); }
+    .roi-flow .rf:nth-child(-n+2) { border-bottom:none; }
+    .roi-flow .rf:nth-child(1) { border-radius:11px 0 0 0; }
+    .roi-flow .rf:nth-child(2) { border-radius:0 11px 0 0; }
+    .roi-flow .rf:nth-child(3) { border-radius:0 0 0 11px; border-top:none; }
+    .roi-flow .rf:nth-child(4) { border-radius:0 0 11px 0; border-top:none; }
+    .roi-flow .rf:nth-child(2) .arrowm, .roi-flow .rf:nth-child(4) .arrowm { display:none; }
+  }
+  @media (max-width: 760px) {
+    .kpi-grid, .kpi-grid.k6 { grid-template-columns:repeat(2,1fr); }
+    .fleet { grid-template-columns:1fr; }
+    .bus-spec { grid-template-columns:1fr; }
+    .eff-metrics { grid-template-columns:1fr 1fr; }
+    .hero-bus .hb-in { flex-direction:column; align-items:flex-start; }
+    .hero-bus .hb-stats { flex-wrap:wrap; gap:14px; }
+    .eff-hero { flex-direction:column; align-items:flex-start; gap:8px; }
+    .eff-hero .big { font-size:34px; width:100%; }
+    .eff-hero .side { flex-basis:auto; order:0; width:100%; }
+    .eff-hero .delta { margin-left:0; }
+    .page-title .acts { flex-wrap:wrap; }
+    .eff-cta { flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="head">
+    <div>
+      <h1>申沃客车 · <em>AI 驱动的客车内容创作与智能营销平台</em></h1>
+      <p>从「行业问题库（CQ）」到「内容资产引擎」→ 定制化企业模型 → 客户画像 → 营销内容 → 全渠道获客 → 关键联系人 → 自动化营销 → 持续学习进化的闭环演示</p>
+    </div>
+    <div class="crumbs">
+      PROJECT / <b>SUNWIN-BUS</b><br>
+      MODEL v4.7 · 迭代 27 轮 · 2026-10-24
+    </div>
+  </div>
+
+  <div class="frame">
+    <!-- ============ Top bar ============ -->
+    <div class="topbar">
+      <div class="left">
+        <div class="logo">
+          <span class="mark">SW</span>
+          <span>申沃客车 <small>/ 内容创作与智能营销平台</small></span>
+        </div>
+        <div class="proj-pick">
+          <span class="sw">申沃</span>
+          <span>申沃客车有限公司 · 上海</span>
+          <span class="caret">▼</span>
+        </div>
+      </div>
+      <div class="right">
+        <span class="pill"><span class="dot"></span>数据同步中 · 今日 +1,284</span>
+        <span class="pill">库：海关 / 展会 / 地图 / 社媒</span>
+        <button class="btn sm ghost" id="btn-guide">演示导览</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- ============ Sidebar ============ -->
+      <aside class="side">
+        <div class="gt">演示流程</div>
+        <button class="nav on" data-go="overview"><span class="n">01</span><span class="ic"></span>项目总览</button>
+        <button class="nav" data-go="engine"><span class="n">02</span><span class="ic"></span>内容资产引擎</button>
+        <button class="nav" data-go="cq"><span class="n">03</span><span class="ic"></span>CQ 行业问题库</button>
+        <button class="nav" data-go="model"><span class="n">04</span><span class="ic"></span>找客户模型定制</button>
+        <button class="nav" data-go="persona"><span class="n">05</span><span class="ic"></span>客户画像定制</button>
+        <button class="nav" data-go="content"><span class="n">06</span><span class="ic"></span>营销内容定制</button>
+        <button class="nav" data-go="channel"><span class="n">07</span><span class="ic"></span>全渠道获客</button>
+        <button class="nav" data-go="contact"><span class="n">08</span><span class="ic"></span>关键联系人</button>
+        <button class="nav" data-go="auto"><span class="n">09</span><span class="ic"></span>自动化营销</button>
+        <button class="nav" data-go="learn"><span class="n">10</span><span class="ic"></span>持续学习进化</button>
+        <div class="bus-art">
+          <img src="./assets/sunwin-bus-3q.jpg" alt="申沃客车 SW-EX 出口客车">
+          <div class="cap">SW-EX · 出口客车</div>
+        </div>
+        <div class="foot">
+          模型版本 <code>v4.7</code><br>
+          画像一致性 <code>92.4%</code><br>
+          上次训练 <code>2h 前</code>
+        </div>
+      </aside>
+
+      <main class="main">
+        <!-- ==================== 01 项目总览 ==================== -->
+        <section class="screen on" id="sc-overview">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">01</span>项目总览</h2>
+              <div class="sub">申沃客车 · B2B 客车销售获客模型运行面板</div>
+            </div>
+            <div class="acts">
+              <button class="btn" id="ov-refresh">刷新数据</button>
+              <button class="btn primary" data-go="engine">进入内容资产引擎</button>
+            </div>
+          </div>
+
+          <!-- ============ 客车主视觉 ============ -->
+          <div class="hero-bus">
+            <div class="hb-bg"><img src="./assets/sunwin-bus-3q.jpg" alt="申沃客车"></div>
+            <div class="hb-veil"></div>
+            <div class="hb-grid"></div>
+            <div class="hb-in">
+              <div class="hb-txt">
+                <div class="hb-eyebrow">SUNWIN BUS · SAFETY-LED CONTENT &amp; MARKETING PLATFORM</div>
+                <div class="hb-h1">把申沃的安全能力，写成客户<b class="hb-safe">敢下单</b>的内容</div>
+                <div class="hb-p">以 12 条客户真实提问为唯一创意源，经内容资产引擎的因果标签与事前概率预测，把「安全」从参数表翻译成具体工况与可核验证据，一次生成官网 / 公众号 / 销售推介 / 展会四件套，并自动找到对的人。</div>
+                <div class="hb-chips">
+                  <span class="hb-chip k">安全主线 CQ 占比 4/12</span>
+                  <span class="hb-chip">强因果因子 9</span>
+                  <span class="hb-chip">爆款概率 63.4%</span>
+                  <span class="hb-chip k">7 数据源 · 4,820 家企业</span>
+                  <span class="hb-chip">模型 v4.7 · 内容侧 m2.4</span>
+                </div>
+              </div>
+              <div class="hb-stats">
+                <div class="hb-stat"><div class="n">12<i> 条</i></div><div class="l">客户真实提问</div></div>
+                <div class="hb-stat"><div class="n">4,820<i> 家</i></div><div class="l">目标企业</div></div>
+                <div class="hb-stat"><div class="n">86<i> 个</i></div><div class="l">有效商机</div></div>
+                <div class="hb-stat"><div class="n">118<i>×</i></div><div class="l">整体 ROI</div></div>
+              </div>
+            </div>
+            <div class="hb-stripe"></div>
+          </div>
+
+          <!-- ============ 安全主线 ============ -->
+          <div class="panel mt14">
+            <div class="ph">安全主线 · 内容营销第一卖点 <span class="hint">安全不是参数表上的一个条目，而是贯穿「提问 → 选题 → 证据 → 渠道」的一条内容主线</span></div>
+            <div class="pb">
+              <div class="safe-main">
+                <div class="sm-hero">
+                  <div class="sm-k">安全主线内容贡献</div>
+                  <div class="sm-v">33<small>%</small></div>
+                  <div class="sm-d">12 条客户提问中 4 条直接指向安全与合规，占商机金额 42%</div>
+                </div>
+                <div class="sm-grid" id="safe-grid"></div>
+              </div>
+              <div class="note mt10">
+                <b>为什么安全必须做成内容主线</b>：安全类内容的咨询转化率是普通内容的 <b>2.6 倍</b>（38.7% vs 14.9%），
+                但安全表述一旦越界就构成<b>合规事故</b>——所以系统把安全拆成「<b>可核验证据</b>」而不是「<b>形容词</b>」：
+                永远写工况、测试条件、报告编号、责任主体，而不写「零事故」「绝对安全」。
+              </div>
+            </div>
+          </div>
+
+          <div class="kpi-grid k6">
+            <div class="kpi"><div class="l">目标企业池</div><div class="v" id="k1">12,480</div><div class="d up">▲ 今日 +1,284</div></div>
+            <div class="kpi"><div class="l">已识别决策人</div><div class="v" id="k2">3,260</div><div class="d up">▲ 覆盖率 78.4%</div></div>
+            <div class="kpi"><div class="l">已触达</div><div class="v" id="k3">1,180</div><div class="d up">▲ 本周 +216</div></div>
+            <div class="kpi"><div class="l">有效商机</div><div class="v" id="k4">86</div><div class="d up">▲ 转化 7.3%</div></div>
+            <div class="kpi"><div class="l">内容点击回复率</div><div class="v" id="k5">19.4%</div><div class="d up">▲ 迭代 27 轮 +6.2pt</div></div>
+            <div class="kpi"><div class="l">内容侧 · 爆款命中率</div><div class="v" id="k6">72.8%</div><div class="d up">▲ 内容模型 m2.4</div></div>
+          </div>
+
+          <div class="panel mt14">
+            <div class="ph">双效果总览 <span class="hint">内容生成效果 与 获客效果 分开度量 · 近 90 天</span></div>
+            <div class="pb">
+              <div class="dual-eff">
+                <!-- 内容生成效果 -->
+                <div class="eff-card a">
+                  <div class="eh">
+                    <div class="ttl">
+                      <span class="dot"></span>
+                      <div>
+                        <div class="nm">内容生成效果</div>
+                        <div class="sub">一个洞察 → 规模化四件套 · 内容资产引擎 m2.4</div>
+                      </div>
+                    </div>
+                    <span class="badge">CONTENT</span>
+                  </div>
+                  <div class="eb">
+                    <div class="eff-hero">
+                      <div class="big" id="eff-content">4.2<i>×</i></div>
+                      <div class="side">
+                        <div class="t">内容产出效率</div>
+                        <div class="d">单条内容平均产出触达量，含 4 渠道复用</div>
+                      </div>
+                      <div class="delta" id="eff-content-d">▲ 1.8× vs 人工</div>
+                    </div>
+                    <div class="eff-metrics">
+                      <div class="em"><div class="k">单条内容产出触达</div><div class="v">1,284<small> 次</small></div><div class="d">日均 · 同比 +12.4%</div></div>
+                      <div class="em"><div class="k">爆款命中率</div><div class="v">72.8<small>%</small></div><div class="d">事前预测 · 校准误差 0.031</div></div>
+                      <div class="em"><div class="k">内容复用率</div><div class="v">4.0<small>×</small></div><div class="d">1 洞察 × 4 渠道</div></div>
+                      <div class="em"><div class="k">首稿生成时长</div><div class="v">8<small> 分钟</small></div><div class="d">人工改写 3.5 小时 ↓96%</div></div>
+                      <div class="em"><div class="k">模型迭代</div><div class="v">27<small> 轮</small></div><div class="d">每日 02:00 自动训练</div></div>
+                      <div class="em"><div class="k">高风险拦截</div><div class="v">3<small> 条</small></div><div class="d">锁死 · 不可绕过</div></div>
+                    </div>
+                    <div class="eff-chart">
+                      <div class="ct">内容侧效果曲线 · 内容点击回复率（近 12 轮）</div>
+                      <svg id="eff-chart-a" viewBox="0 0 560 132"></svg>
+                    </div>
+                    <div class="eff-note">
+                      事前预测替代事后统计：每条内容在发布前给出<b>爆款概率 + 标签匹配度 + 风险标注</b>，
+                      只允许<b>强因果因子</b>驱动自动改写，跟风高风险标签显式拦截。
+                    </div>
+                    <div class="eff-cta">
+                      <button class="btn sm" data-go="engine">查看内容资产引擎</button>
+                      <button class="btn sm" data-go="content">查看内容生成</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 获客效果 -->
+                <div class="eff-card b">
+                  <div class="eh">
+                    <div class="ttl">
+                      <span class="dot"></span>
+                      <div>
+                        <div class="nm">获客效果</div>
+                        <div class="sub">千企千面 + 自主化营销 · 7 数据源 · 7×24 自动触达</div>
+                      </div>
+                    </div>
+                    <span class="badge">LEAD GEN</span>
+                  </div>
+                  <div class="eb">
+                    <div class="eff-hero">
+                      <div class="big" id="eff-lead">7.3<small>%</small></div>
+                      <div class="side">
+                        <div class="t">线索 → 有效商机转化率</div>
+                        <div class="d">4,820 家目标企业 → 86 个有效商机</div>
+                      </div>
+                      <div class="delta" id="eff-lead-d">▲ 3.1× vs 人工推广</div>
+                    </div>
+                    <div class="eff-metrics">
+                      <div class="em"><div class="k">目标企业</div><div class="v">4,820<small> 家</small></div><div class="d">精度 86.2%</div></div>
+                      <div class="em"><div class="k">已触达</div><div class="v">1,180<small> 家</small></div><div class="d">7 节点 · 全语种</div></div>
+                      <div class="em"><div class="k">点击回复率</div><div class="v">19.4<small>%</small></div><div class="d">基线 6.1% · 3.2×</div></div>
+                      <div class="em"><div class="k">决策人覆盖率</div><div class="v">78.4<small>%</small></div><div class="d">3,260 位已配对</div></div>
+                      <div class="em"><div class="k">覆盖国家地区</div><div class="v">38<small> 个</small></div><div class="d">跨源去重率 91.7%</div></div>
+                      <div class="em"><div class="k">有效商机</div><div class="v">86<small> 个</small></div><div class="d">¥ 7,240 万金额</div></div>
+                    </div>
+                    <div class="eff-chart">
+                      <div class="ct">获客侧效果曲线 · 点击回复率 27 轮迭代 vs 人工基线</div>
+                      <svg id="eff-chart-b" viewBox="0 0 560 132"></svg>
+                    </div>
+                    <div class="eff-note">
+                      第 07 步高意向线索移交区域销售并<b>关闭自动化序列</b>——模型负责找到和判断，谈判仍然是人做，系统不越界。
+                    </div>
+                    <div class="eff-cta">
+                      <button class="btn sm" data-go="channel">查看获客数据源</button>
+                      <button class="btn sm" data-go="auto">查看自动化营销</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mt14">
+            <div class="ph">投入产出 ROI <span class="hint">近 90 天 · 内容侧 + 触达侧合并口径 · 每次刷新按实际投放重算</span></div>
+            <div class="pb">
+              <div class="roi-flow">
+                <div class="rf">
+                  <span class="arrowm">›</span>
+                  <div class="k">内容投入</div>
+                  <div class="v">¥ 42.8<small>万</small></div>
+                  <div class="d">内容制作 + 素材授权 + 人力</div>
+                </div>
+                <div class="rf">
+                  <span class="arrowm">›</span>
+                  <div class="k">触达投入</div>
+                  <div class="v">¥ 18.6<small>万</small></div>
+                  <div class="d">邮件 / LinkedIn / 外呼 / 展会</div>
+                </div>
+                <div class="rf">
+                  <span class="arrowm">›</span>
+                  <div class="k">商机金额</div>
+                  <div class="v">¥ 7,240<small>万</small></div>
+                  <div class="d">86 个有效商机 · 转化 7.3%</div>
+                </div>
+                <div class="rf out">
+                  <div class="k">整体 ROI</div>
+                  <div class="v" id="roi-big">118.0<i style="font-size:14px;font-style:normal;font-weight:500">×</i></div>
+                  <div class="d">每投入 ¥1 产生 ¥118 商机额</div>
+                </div>
+              </div>
+
+              <div class="roi-split mt14">
+                <div class="col">
+                  <h4>内容侧 ROI · 每 ¥1 投入</h4>
+                  <div class="roi-b"><span class="bl">内容生产</span><span class="bt"><span class="bf" style="width:88%"></span></span><span class="bv">3.2<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">公众号</span><span class="bt"><span class="bf" style="width:72%"></span></span><span class="bv">2.6<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">官网选型页</span><span class="bt"><span class="bf" style="width:54%"></span></span><span class="bv">1.9<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">展会物料</span><span class="bt"><span class="bf" style="width:34%"></span></span><span class="bv">1.2<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">销售推介</span><span class="bt"><span class="bf" style="width:24%"></span></span><span class="bv">0.8<span>×</span></span></div>
+                </div>
+                <div class="col">
+                  <h4>触达侧 ROI · 每 ¥1 投入</h4>
+                  <div class="roi-b"><span class="bl">邮件序列</span><span class="bt"><span class="bf" style="width:82%"></span></span><span class="bv">4.1<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">LinkedIn</span><span class="bt"><span class="bf" style="width:62%"></span></span><span class="bv">3.1<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">WhatsApp</span><span class="bt"><span class="bf" style="width:44%"></span></span><span class="bv">2.2<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">AI 外呼</span><span class="bt"><span class="bf" style="width:28%"></span></span><span class="bv">1.4<span>×</span></span></div>
+                  <div class="roi-b"><span class="bl">展会跟进</span><span class="bt"><span class="bf" style="width:22%"></span></span><span class="bv">1.1<span>×</span></span></div>
+                </div>
+              </div>
+
+              <div class="sec-title">转化漏斗 · 从内容曝光到成交</div>
+              <svg class="roi-funnel" viewBox="0 0 620 178" id="roi-funnel"></svg>
+
+              <div class="note mt10">
+                ROI 口径说明：分子为<b>已确认商机金额</b>（86 个 · ¥7,240 万），分母为<b>内容 + 触达全部投入</b>（¥61.4 万）。
+                触达侧 ROI 明显高于内容侧，说明<b>当前瓶颈在内容生产而非触达分发</b>——这也正是内容资产引擎要解决的方向：
+                把单点质量分升级为事前概率预测，用更少的投入产出更多有效内容。
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mt14">
+            <div class="ph">获客闭环 · 七大能力链路 <span class="hint">点击任一环节跳转演示</span></div>
+            <div class="pb">
+              <div class="pipe">
+                <div class="step"><div class="card" data-go="engine"><div class="no">STEP 01</div><div class="t">内容资产引擎</div><div class="d">因果标签字典 · 事前概率预测</div><div class="num">m2.4<small>内容模型</small></div></div></div>
+                <div class="arrow">›</div>
+                <div class="step"><div class="card" data-go="cq"><div class="no">STEP 02</div><div class="t">行业问题库</div><div class="d">12 条 CQ 覆盖 3 类客群、4 类渠道</div><div class="num">12<small>条</small></div></div></div>
+                <div class="arrow">›</div>
+                <div class="step"><div class="card" data-go="model"><div class="no">STEP 03</div><div class="t">找客户模型</div><div class="d">产品 + 典型客户 → 筛选规则集</div><div class="num">27<small>条规则</small></div></div></div>
+                <div class="arrow">›</div>
+                <div class="step"><div class="card" data-go="persona"><div class="no">STEP 04</div><div class="t">客户画像</div><div class="d">按判定反馈持续迭代优化</div><div class="num">92.4<small>% 一致性</small></div></div></div>
+                <div class="arrow">›</div>
+                <div class="step"><div class="card" data-go="content"><div class="no">STEP 05</div><div class="t">营销内容</div><div class="d">千企千面 + 点击回复反哺模型</div><div class="num">5<small>类渠道</small></div></div></div>
+                <div class="arrow">›</div>
+                <div class="step"><div class="card" data-go="channel"><div class="no">STEP 06</div><div class="t">全渠道获客</div><div class="d">海关/展会/地图/社媒/搜索/算法/回流</div><div class="num">7<small>大数据源</small></div></div></div>
+                <div class="arrow">›</div>
+                <div class="step"><div class="card" data-go="auto"><div class="no">STEP 07</div><div class="t">自动化营销</div><div class="d">7×24 · 全语种 · 匹配时区</div><div class="num">7<small>×24 在线</small></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cols c-64 mt14">
+            <div class="panel" style="margin-top:0">
+              <div class="ph">客群结构与商机分布 <span class="hint">按 CQ 问题库客群自动聚合</span></div>
+              <div class="pb">
+                <div class="row" style="gap:22px;align-items:center;flex-wrap:wrap">
+                  <div class="donut"><div class="dc"><b>86</b><span>有效商机</span></div></div>
+                  <div style="flex:1;min-width:220px">
+                    <div class="bar-row"><span class="bl">公交运营商</span><span class="bt"><span class="bf" style="width:78%"></span></span><span class="bv">¥ 2,140万</span></div>
+                    <div class="bar-row"><span class="bl">海外客户</span><span class="bt"><span class="bf" style="width:96%"></span></span><span class="bv">¥ 3,920万</span></div>
+                    <div class="bar-row"><span class="bl">行业伙伴</span><span class="bt"><span class="bf" style="width:42%"></span></span><span class="bv">¥ 1,180万</span></div>
+                    <div class="row wrap small muted mt10" style="gap:16px">
+                      <span class="legend-dot"><i style="background:var(--brand)"></i>公交运营商 42%</span>
+                      <span class="legend-dot"><i style="background:var(--cyan)"></i>海外客户 30%</span>
+                      <span class="legend-dot"><i style="background:#7c3aed"></i>行业伙伴 28%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel" style="margin-top:0">
+              <div class="ph">本周关键动作</div>
+              <div class="pb">
+                <div class="timeline">
+                  <div class="tl-item"><div class="t">CQ04 成本下降 30% <span class="tag orange">待核验口径</span></div><div class="d">销售推介材料缺 TCO 测算基准，销售总监要求本周补齐样本与口径说明</div><div class="meta">due 周五 · owner 内容组</div></div>
+                  <div class="tl-item"><div class="t">海外客群画像扩容 <span class="tag cyan">进行中</span></div><div class="d">澳洲 / 拉美 决策人覆盖率 61%，低于模型目标 78%，触发补充采集</div><div class="meta">due 下周一 · owner 数据组</div></div>
+                  <div class="tl-item"><div class="t">CQ10 RoboBus 事实核查 <span class="tag red">高风险</span></div><div class="d">需区分「试点 / 量产 / 商业运营」三种口径，避免销售口径失真</div><div class="meta">due 明天 · owner 市场组</div></div>
+                  <div class="tl-item"><div class="t">反馈样本回流 <span class="tag green">正常</span></div><div class="d">本周回收 214 条点击/回复标签，已进入第 28 轮训练队列</div><div class="meta">自动 · 每日 02:00</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel mt14">
+            <div class="ph">在售车型矩阵 <span class="hint">内容与线索的最终落点：每条内容都指向具体车型与场景</span></div>
+            <div class="pb">
+              <div class="fleet" id="ov-fleet"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 02 内容资产引擎 ==================== -->
+        <section class="screen" id="sc-engine">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">02</span>内容资产引擎</h2>
+              <div class="sub">固定 Schema → 因果识别 → Agent 预检 → 效果回流；为「营销内容定制 / 全渠道获客 / 持续学习进化」三处供能</div>
+            </div>
+            <div class="acts">
+              <span class="tag green">模型 m2.4 · 训练截止 10/22</span>
+              <button class="btn" id="eg-recollect">重跑采集与打标</button>
+              <button class="btn primary" id="eg-toproduct">接入营销内容定制</button>
+            </div>
+          </div>
+
+          <div class="kpi-grid" id="eg-kpis"></div>
+
+          <div class="panel mt14">
+            <div class="ph">引擎七步流水线 <span class="hint">口径必须前置 · 顺序不可换 · 当前运行于第 6 步</span></div>
+            <div class="pb">
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:9px" id="eg-pipe"></div>
+            </div>
+          </div>
+
+          <div class="cols c-64 mt14">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">因果标签字典 <span class="hint">人工定义 Schema v1.4 · 一级 6 / 二级 34 · AI 只做映射不生成标签</span></div>
+                <div class="pb tight">
+                  <table class="tbl">
+                    <thead><tr>
+                      <th style="width:150px">标签</th><th style="width:92px">一级类</th>
+                      <th style="width:92px">相关度</th><th style="width:104px">因子分级</th><th>判定证据链</th>
+                    </tr></thead>
+                    <tbody id="eg-factors"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">因果判定方法 <span class="hint">四类证据交叉验证，缺一则降级</span></div>
+                <div class="pb">
+                  <div class="gate pass"><span class="g">✓</span><span><span class="gt">控制变量回归</span><br><span class="gd">纳入账号体量、内容类别、发布时段、投放与否后系数是否仍在</span></span></div>
+                  <div class="gate pass mt10"><span class="g">✓</span><span><span class="gt">个体固定效应</span><br><span class="gd">同一账号跨期对比：换了标签之后表现如何</span></span></div>
+                  <div class="gate pass mt10"><span class="g">✓</span><span><span class="gt">倾向得分匹配 PSM</span><br><span class="gd">相似条件下「有该标签 / 无该标签」的差异</span></span></div>
+                  <div class="gate pass mt10"><span class="g">✓</span><span><span class="gt">模型增益 + SHAP 分摊</span><br><span class="gd">进入模型后的 PR-AUC 增益与标签级贡献占比</span></span></div>
+                  <div class="gate hold mt10"><span class="g">✕</span><span><span class="gt">干预实验 AB · 未开展</span><br><span class="gd">无自建小号，无法拿到随机对照；当前因果结论强度上限为「强关联」</span></span></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">Agent 预检输出 <span class="hint">接入点 A · 输入新文案 → 输出契约</span></div>
+                <div class="pb">
+                  <div class="eng-card ok">
+                    <div class="row between">
+                      <span class="small muted">爆款概率（已校准）</span>
+                      <span class="tier cause">校准误差 0.031</span>
+                    </div>
+                    <div class="prob mt6">
+                      <span class="p" id="eg-prob" style="color:var(--brand)">63.4%</span>
+                      <span class="ci" id="eg-probci">95% CI 55.2% – 70.8%</span>
+                    </div>
+                    <div class="calib mt10">
+                      <span class="band" style="left:55.2%;width:15.6%"></span>
+                      <span class="mark" id="eg-probmark" style="left:63.4%"></span>
+                    </div>
+                    <div class="row between mt6"><span class="small faint">0%</span><span class="small faint">预测概率轴 · 竖线为本次预测，横带为置信区间</span><span class="small faint">100%</span></div>
+                  </div>
+
+                  <div class="sec-title">标签匹配度</div>
+                  <div id="eg-match"></div>
+
+                  <div class="sec-title">组合优化建议</div>
+                  <div id="eg-advice"></div>
+
+                  <div class="sec-title">【跟风高风险标签】</div>
+                  <div id="eg-risk"></div>
+
+                  <div class="eng-foot">模型 m2.4 · 训练截止 2026-10-22 · Schema v1.4 · 概率为概率、建议为建议、风险为风险</div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">回流与漂移监控 <span class="hint">接入点 C · 第 7 数据源：自有内容效果回流</span></div>
+                <div class="pb">
+                  <table class="tbl" style="font-size:12px">
+                    <thead><tr><th style="width:70px">回传时点</th><th style="width:120px">信号性质</th><th>样本</th><th style="width:96px">爆款率</th></tr></thead>
+                    <tbody id="eg-backflow"></tbody>
+                  </table>
+                  <div class="sec-title">分布漂移（PSI）</div>
+                  <div class="bar-row"><span class="bl">标签分布</span><span class="bt"><span class="bf" style="width:38%"></span></span><span class="bv">0.038</span></div>
+                  <div class="bar-row"><span class="bl">输入分布</span><span class="bt"><span class="bf" style="width:24%"></span></span><span class="bv">0.021</span></div>
+                  <div class="bar-row"><span class="bl">Y 阈值</span><span class="bt"><span class="bf w" style="width:72%"></span></span><span class="bv">0.061</span></div>
+                  <div class="note mt10">任一指标 <b>&gt; 0.10</b> 触发重训；&gt; 0.15 触发回滚。Y 阈值随大盘自然增长失效，需<b>季度复审</b>。</div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">三个接入点</div>
+                <div class="pb">
+                  <div class="gate pass"><span class="g">A</span><span><span class="gt">① 营销内容定制</span><br><span class="gd">供能：标签匹配度 · 爆款概率 · 组合建议 · 风险标注　回收：发布后真实表现</span></span></div>
+                  <div class="gate warn mt10"><span class="g">B</span><span><span class="gt">② 内容运营策略判断</span><br><span class="gd">供能：动态证据分级（抽样复核准确率 94.2%）　回收：缺料与负责人反馈</span></span></div>
+                  <div class="gate pass mt10"><span class="g">C</span><span><span class="gt">⑥ 持续学习进化</span><br><span class="gd">供能：内容侧版本 · 漂移监控 · 重训触发　回收：统一双账本</span></span></div>
+                  <div class="note mt10">④ 千企千面与 ⑤ 自主化营销<b>不介入内容标签</b>——它们决定「发给谁、什么时候发」，引擎决定「内容长什么样」，两条线只在 ⑥ 汇合。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- ==================== 03 CQ 问题库 ==================== -->
+        <section class="screen" id="sc-cq">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">03</span>CQ 行业问题库</h2>
+              <div class="sub">客户真实提问 → 决定内容方向与投放渠道；点击任意一行查看内容策略</div>
+            </div>
+            <div class="acts">
+              <span class="tag green">12 条已录入</span>
+              <button class="btn sm" id="cq-export">导出问题库</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="pb tight">
+              <div class="toolbar" style="padding:12px 14px;border-bottom:1px solid var(--line)">
+                <div class="searchbar" style="width:250px"><span class="mag"></span><input id="cq-search" placeholder="搜索问题 / 编号 / 客群"></div>
+                <div class="row" style="gap:6px;flex-wrap:wrap">
+                  <span class="small faint">客群</span>
+                  <button class="chip on" data-seg="all">全部</button>
+                  <button class="chip" data-seg="公交运营商">公交运营商</button>
+                  <button class="chip" data-seg="海外客户">海外客户</button>
+                  <button class="chip" data-seg="行业伙伴">行业伙伴</button>
+                </div>
+                <div class="row" style="gap:6px;flex-wrap:wrap">
+                  <span class="small faint">渠道</span>
+                  <button class="chip on" data-ch="all">全部</button>
+                  <button class="chip" data-ch="官网">官网</button>
+                  <button class="chip" data-ch="公众号">公众号</button>
+                  <button class="chip" data-ch="销售推介">销售推介</button>
+                  <button class="chip" data-ch="展会">展会</button>
+                </div>
+                <div class="spacer"></div>
+                <span class="small muted" id="cq-count"></span>
+              </div>
+              <div style="max-height:520px;overflow:auto">
+                <table class="tbl" id="cq-table">
+                  <thead><tr>
+                    <th style="width:72px">编号</th><th style="width:104px">客群</th><th>客户问题</th>
+                    <th style="width:170px">投放渠道</th><th style="width:110px">证据状态</th><th style="width:94px">操作</th>
+                  </tr></thead>
+                  <tbody id="cq-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="cols c2 mt14">
+            <div class="panel" style="margin-top:0">
+              <div class="ph">客群 × 渠道 覆盖矩阵</div>
+              <div class="pb">
+                <div style="overflow:auto">
+                  <table class="tbl" id="matrix">
+                    <thead><tr><th>客群</th><th>官网</th><th>公众号</th><th>销售推介</th><th>展会</th><th>小计</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="panel" style="margin-top:0">
+              <div class="ph">证据状态说明 <span class="hint">接入点 B · 动态分级 · 抽样复核准确率 94.2%</span></div>
+              <div class="pb">
+                <div class="gate pass"><span class="g">✓</span><span><span class="gt">公开可查</span><br><span class="gd">官网 / 公众号 / 展会资料已有明确表述，可直接引用并附来源</span></span></div>
+                <div class="gate warn mt10"><span class="g">!</span><span><span class="gt">需内部资料</span><br><span class="gd">需产品部/市场部提供白皮书、配置表、测试报告后才能对客输出</span></span></div>
+                <div class="gate hold mt10"><span class="g">✕</span><span><span class="gt">待核实 / 高风险</span><br><span class="gd">涉及承诺性表述（量产状态、订单、成本降幅），未核实前禁止进入对外内容</span></span></div>
+                <div class="sec-title">引擎分级复核（抽样 320 条）</div>
+                <div class="bar-row"><span class="bl">公开可查</span><span class="bt"><span class="bf" style="width:96%"></span></span><span class="bv">96.4%</span></div>
+                <div class="bar-row"><span class="bl">需内部资料</span><span class="bt"><span class="bf" style="width:91%"></span></span><span class="bv">91.2%</span></div>
+                <div class="bar-row"><span class="bl">待核实 / 高风险</span><span class="bt"><span class="bf" style="width:94%"></span></span><span class="bv">94.6%</span></div>
+                <div class="note mt10">分级不再只靠人工拍板：由<b>内容资产引擎</b>对标签与证据映射做抽样复核，低于阈值自动回滚字典或改标注 Prompt，<b>不进入人工判断环节</b>。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 04 找客户模型定制 ==================== -->
+        <section class="screen" id="sc-model">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">04</span>找客户模型定制</h2>
+              <div class="sub">深度分析产品与典型客户 → 生成对应的「找客户模型」筛选规则集</div>
+            </div>
+            <div class="acts">
+              <button class="btn" id="md-reset">重置</button>
+              <button class="btn primary" id="md-run">重新生成模型</button>
+            </div>
+          </div>
+
+          <div class="cols c-64">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">产品与客户输入 <span class="hint">支持录入即改，改完重新生成</span></div>
+                <div class="pb">
+                  <div class="cols c2" style="gap:12px">
+                    <div class="field"><label>产品品类<span class="req">*</span></label><input class="ipt" id="md-cat" value="城市客车 / 城际客车 / 团体通勤客车（新能源全系）"></div>
+                    <div class="field"><label>核心技术卖点</label><input class="ipt" id="md-tech" value="电池续航与电耗管理、整车轻量化、驾驶辅助安全配置、车联网远程诊断"></div>
+                    <div class="field"><label>典型应用场景</label><input class="ipt" id="md-scene" value="大客流骨干线路、普通接驳线、城际客运、机场/园区接驳、海外公交更新"></div>
+                    <div class="field"><label>目标区域</label><input class="ipt" id="md-region" value="中国华东/华南公交集团；澳洲、东南亚、拉美、中东"></div>
+                    <div class="field"><label>排除对象</label><input class="ipt" id="md-exclude" value="个人购车、二手车商、非营运车辆改装厂、已明确无采购计划"></div>
+                    <div class="field"><label>典型客户描述</label><textarea class="ipt" id="md-ic" rows="3">地方国有公交集团（3000 辆以上）、省会城市公交公司、海外国有/私营客运运营商、客车经销与维保服务商、车联网与自动驾驶技术伙伴</textarea></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">生成的筛选规则集 <span class="hint" id="md-rulecount"></span></div>
+                <div class="pb tight">
+                  <table class="tbl" id="rule-table">
+                    <thead><tr><th style="width:110px">规则维度</th><th style="width:150px">条件</th><th>取值 / 关键词</th><th style="width:88px">命中量</th><th style="width:86px">操作</th></tr></thead>
+                    <tbody id="rule-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">模型运行结果</div>
+                <div class="pb">
+                  <div class="kpi" style="border-radius:12px"><div class="l">预计目标企业</div><div class="v" id="md-pool">4,820</div><div class="d up">▲ 精度 86.2% · 较人工筛选快 40×</div></div>
+                  <div class="bar-row mt14"><span class="bl">高匹配 (≥85)</span><span class="bt"><span class="bf" style="width:28%"></span></span><span class="bv">1,350</span></div>
+                  <div class="bar-row"><span class="bl">中匹配 (70-84)</span><span class="bt"><span class="bf" style="width:45%"></span></span><span class="bv">2,170</span></div>
+                  <div class="bar-row"><span class="bl">低匹配 (&lt;70)</span><span class="bt"><span class="bf" style="width:27%;background:rgba(15,23,42,.16)"></span></span><span class="bv">1,300</span></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">模型评估</div>
+                <div class="pb">
+                  <div class="gate pass"><span class="g">✓</span><span><span class="gt">行业覆盖完整性 94%</span><br><span class="gd">已覆盖 6 类采购主体角色</span></span></div>
+                  <div class="gate pass mt10"><span class="g">✓</span><span><span class="gt">决策链识别 88%</span><br><span class="gd">可定位到采购 / 技术 / 运营三类关键角色</span></span></div>
+                  <div class="gate warn mt10"><span class="g">!</span><span><span class="gt">海外决策人覆盖 61%</span><br><span class="gd">低于阈值 78%，建议补充采集澳洲 / 拉美企业库</span></span></div>
+                  <div class="gate warn mt10"><span class="g">!</span><span><span class="gt">成本口径敏感 2 项</span><br><span class="gd">CQ04 的 TCO 测算需产品部输入</span></span></div>
+                  <div class="mt14">
+                    <div class="sec-title">模型迭代记录</div>
+                    <div class="timeline">
+                      <div class="tl-item"><div class="t">v4.7 <span class="tag green">当前</span></div><div class="d">新增「澳洲右舵车型」关键词族；排除项加入非营运改装厂</div><div class="meta">2h 前 · 自动</div></div>
+                      <div class="tl-item"><div class="t">v4.6</div><div class="d">依据 CQ09/CQ11 反馈新增行业伙伴角色（技术合作型）</div><div class="meta">3 天前 · 人工反馈驱动</div></div>
+                      <div class="tl-item"><div class="t">v4.5</div><div class="d">按骨干线/接驳线场景细分客群标签，匹配精度 +4.1pt</div><div class="meta">6 天前 · 强化学习</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 05 客户画像 ==================== -->
+        <section class="screen" id="sc-persona">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">05</span>客户画像定制</h2>
+              <div class="sub">根据您的判定持续迭代优化系统对客户画像的理解</div>
+            </div>
+            <div class="acts">
+              <span class="tag cyan">版本 <b id="pv-ver">v4</b></span>
+              <span class="tag green">一致性 <b id="pv-score">92.4%</b></span>
+            </div>
+          </div>
+
+          <div class="cols c-46">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">画像卡 · 示例客户 <span class="hint" id="pv-target"></span></div>
+                <div class="pb">
+                  <div class="row" style="gap:10px">
+                    <div style="width:40px;height:40px;border-radius:11px;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700" id="pv-logo">XY</div>
+                    <div>
+                      <div class="bold" style="font-size:14px" id="pv-name">示例公交集团</div>
+                      <div class="small muted" id="pv-meta">地方国有 · 3,200 辆 · 华东</div>
+                    </div>
+                  </div>
+                  <div class="sec-title">画像标签</div>
+                  <div class="tags" id="pv-tags"></div>
+                  <div class="sec-title">决策链角色</div>
+                  <div class="timeline" id="pv-chain"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">画像维度置信度 <span class="hint">人工判定后自动提升</span></div>
+                <div class="pb">
+                  <div id="pv-bars"></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">人工判定 → 模型迭代</div>
+                <div class="pb">
+                  <div class="row wrap" style="gap:7px;margin-bottom:10px">
+                    <button class="chip on" data-fb="too-broad">画像太泛</button>
+                    <button class="chip" data-fb="mismatch">客户不匹配</button>
+                    <button class="chip" data-fb="missing-kpi">缺少关键指标</button>
+                    <button class="chip" data-fb="wrong-role">角色判断错误</button>
+                    <button class="chip" data-fb="good">判断准确</button>
+                  </div>
+                  <textarea class="ipt" id="pv-fb" rows="3" placeholder="补充说明（可选）：例如「他们更关心 5 年 TCO，而不是首购价」"></textarea>
+                  <div class="row between mt10">
+                    <span class="small faint" id="pv-fbhint">选择判定类型后点击右侧按钮</span>
+                    <button class="btn primary" id="pv-apply">应用并优化画像</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">画像版本历史</div>
+                <div class="pb">
+                  <div class="timeline" id="pv-hist"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 06 营销内容 ==================== -->
+        <section class="screen" id="sc-content">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">06</span>营销内容定制</h2>
+              <div class="sub">根据产品信息 / 公司信息 / 目标企业信息生成个性化内容，并根据点击回复优化生成模型</div>
+            </div>
+            <div class="acts">
+              <span class="tag" id="ct-cq">关联问题：—</span>
+              <button class="btn primary" id="ct-gen">生成营销内容</button>
+            </div>
+          </div>
+
+          <div class="cols c-46">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">生成参数</div>
+                <div class="pb">
+                  <div class="field"><label>目标企业</label><input class="ipt" id="ct-co" value="示例公交集团（地方国有 · 3,200 辆）"></div>
+                  <div class="field mt10"><label>关联客户问题（CQ）</label><select class="ipt" id="ct-cqsel"></select></div>
+                  <div class="field mt10"><label>投放渠道</label>
+                    <div class="row wrap" style="gap:6px" id="ct-ch"></div>
+                  </div>
+                  <div class="field mt10"><label>语言 / 语气</label>
+                    <div class="row" style="gap:8px">
+                      <select class="ipt" id="ct-lang"><option>中文</option><option>English</option><option>Español</option><option>日本語</option></select>
+                      <select class="ipt" id="ct-tone"><option>专业克制</option><option>数据驱动</option><option>场景叙事</option><option>展会快讯</option></select>
+                    </div>
+                  </div>
+                  <div class="field mt10"><label>强调信息点（可编辑）</label><textarea class="ipt" id="ct-key" rows="3">运营成本结构、电池质保与衰减、残值与全生命周期</textarea></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">反馈闭环</div>
+                <div class="pb">
+                  <div class="note">生成内容投放后，客户的<b>打开 / 点击 / 回复 / 拒绝</b>行为将回写为训练样本，用于优化后续生成偏好。</div>
+                  <div class="bar-row mt10"><span class="bl">样本量</span><span class="bt"><span class="bf" id="ct-sample" style="width:72%"></span></span><span class="bv" id="ct-samplev">1,842</span></div>
+                  <div class="bar-row"><span class="bl">点击偏好权重</span><span class="bt"><span class="bf" style="width:84%"></span></span><span class="bv">84%</span></div>
+                  <div class="bar-row"><span class="bl">回复偏好权重</span><span class="bt"><span class="bf" style="width:67%"></span></span><span class="bv">67%</span></div>
+                  <div class="row between mt14">
+                    <span class="small faint">下次训练：每日 02:00</span>
+                    <button class="btn sm" id="ct-train">立即训练一次</button>
+                  </div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="ph">目标车型与场景 <span class="hint">内容最终指向的落点</span></div>
+                <div class="pb">
+                  <div class="thumb-bus">
+                    <img src="./assets/sunwin-bus-3q.jpg" alt="申沃客车">
+                    <span class="ov"></span>
+                    <span class="cap">SW-12C 城市客车 · 大客流骨干线 · 12m 纯电<br><span style="font-weight:400;font-size:11px;opacity:.78">满载率 · 周转率 · 阶梯电价</span></span>
+                  </div>
+                  <div class="bus-spec mt10">
+                    <div class="bsp"><div class="k">车长</div><div class="v">12.0<small>m</small></div><div class="d">双开门快速上下客</div></div>
+                    <div class="bsp"><div class="k">综合续航</div><div class="v">420<small>km</small></div><div class="d">阶梯电价 · 实测工况</div></div>
+                    <div class="bsp"><div class="k">电耗</div><div class="v">0.82<small>kWh/km</small></div><div class="d">较同级均值 -8%</div></div>
+                    <div class="bsp"><div class="k">质保</div><div class="v">8<small>年</small></div><div class="d">电池衰减有据可查</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">生成结果预览 <span class="hint" id="ct-ver"></span></div>
+                <div class="pb">
+                  <div id="ct-out" class="empty">点击右上「生成营销内容」查看千企千面的内容版本</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 07 全渠道获客 ==================== -->
+        <section class="screen" id="sc-channel">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">07</span>全渠道获客</h2>
+              <div class="sub">基于画像精准获取 · 搜索引擎 / 海关数据 / 社交媒体 / 地图搜索 / 展会数据 / 算法筛选，每日新增</div>
+            </div>
+            <div class="acts">
+              <button class="btn sm" id="ch-refresh">立即同步</button>
+              <button class="btn primary" id="ch-export">导出目标清单</button>
+            </div>
+          </div>
+
+          <div class="kpi-grid" id="ch-kpis"></div>
+
+          <div class="panel mt14">
+            <div class="ph">数据源状态 <span class="hint">点击开关可暂停 / 恢复采集 · 第 7 源为内容效果回流</span></div>
+            <div class="pb">
+              <div class="cols c3" id="ch-sources"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph">目标企业清单 <span class="hint" id="ch-count"></span></div>
+            <div class="pb tight">
+              <div class="toolbar" style="padding:11px 14px;border-bottom:1px solid var(--line)">
+                <div class="searchbar" style="width:230px"><span class="mag"></span><input id="ch-search" placeholder="搜索企业名称 / 地区"></div>
+                <div class="row" style="gap:6px;flex-wrap:wrap" id="ch-types"></div>
+                <div class="spacer"></div>
+                <span class="small faint">共 6 类主体 · 数据每日 06:00 增量</span>
+              </div>
+              <div style="max-height:420px;overflow:auto">
+                <table class="tbl">
+                  <thead><tr>
+                    <th style="width:64px">匹配度</th><th>企业名称</th><th style="width:96px">主体类型</th>
+                    <th style="width:96px">地区</th><th style="width:110px">来源渠道</th><th style="width:96px">状态</th>
+                  </tr></thead>
+                  <tbody id="ch-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 08 关键联系人 ==================== -->
+        <section class="screen" id="sc-contact">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">08</span>关键联系人数据</h2>
+              <div class="sub">定制化选择目标职位，海外 60+ 付费数据库直连，获取非公开关键联系人数据</div>
+            </div>
+            <div class="acts">
+              <span class="tag green">已授权 <b id="db-auth">35</b> / <span id="db-total">64</span> 库</span>
+              <button class="btn primary" id="ct2-fetch">采集所选职位</button>
+            </div>
+          </div>
+
+          <div class="cols c-64">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">目标职位（可多选）</div>
+                <div class="pb">
+                  <div class="row wrap" style="gap:7px" id="ct-roles"></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">付费数据库源 <span class="hint">已连接 <b id="db-count">35</b> / <span id="db-total2">64</span>（绿色为已授权）</span></div>
+                <div class="pb">
+                  <div class="row wrap" style="gap:6px" id="db-list"></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">联系人结果 <span class="hint" id="ct2-count"></span></div>
+                <div class="pb tight">
+                  <div style="max-height:400px;overflow:auto">
+                    <table class="tbl">
+                      <thead><tr>
+                        <th style="width:150px">姓名 / 职位</th><th style="width:170px">企业</th>
+                        <th style="width:200px">邮箱</th><th style="width:120px">电话</th>
+                        <th style="width:96px">置信度</th><th style="width:104px">操作</th>
+                      </tr></thead>
+                      <tbody id="ct2-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">覆盖率监控</div>
+                <div class="pb">
+                  <div class="kpi" style="border-radius:12px"><div class="l">决策人覆盖率</div><div class="v" id="ct2-cov">78.4%</div><div class="d up">▲ 目标阈值 78%</div></div>
+                  <div class="bar-row mt14"><span class="bl">公交运营商</span><span class="bt"><span class="bf" style="width:92%"></span></span><span class="bv">92%</span></div>
+                  <div class="bar-row"><span class="bl">海外客户</span><span class="bt"><span class="bf" id="cov-ov" style="width:61%"></span></span><span class="bv" id="cov-ovv">61%</span></div>
+                  <div class="bar-row"><span class="bl">行业伙伴</span><span class="bt"><span class="bf" style="width:84%"></span></span><span class="bv">84%</span></div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">数据合规与质量</div>
+                <div class="pb">
+                  <div class="gate pass"><span class="g">✓</span><span><span class="gt">多源交叉验证 72%</span><br><span class="gd">≥2 个独立来源确认的联系人</span></span></div>
+                  <div class="gate pass mt10"><span class="g">✓</span><span><span class="gt">时效性过滤已启用</span><br><span class="gd">剔除 12 个月未验证记录</span></span></div>
+                  <div class="gate warn mt10"><span class="g">!</span><span><span class="gt">退回信风险 3.1%</span><br><span class="gd">高于阈值 2%，建议调整发信节奏</span></span></div>
+                  <div class="gate hold mt10"><span class="g">✕</span><span><span class="gt">do-not-contact 命中 2 条</span><br><span class="gd">已自动从营销序列中剔除</span></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 09 自动化营销 ==================== -->
+        <section class="screen" id="sc-auto">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">09</span>自动化营销</h2>
+              <div class="sub">7×24 小时在线 · 全语种 · 匹配时区发送 · 个性化定制内容</div>
+            </div>
+            <div class="acts">
+              <span class="pill" style="font-size:12px;color:var(--muted)"><span class="ping"></span> 序列运行中</span>
+              <button class="btn sm" id="au-pause">暂停序列</button>
+            </div>
+          </div>
+
+          <div class="cols c-64">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">营销序列 · 触达节奏</div>
+                <div class="pb tight">
+                  <table class="tbl" id="seq-table">
+                    <thead><tr><th style="width:46px">节点</th><th style="width:130px">动作</th><th>内容</th><th style="width:150px">时区换算</th><th style="width:92px">状态</th></tr></thead>
+                    <tbody id="seq-body"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">全球时区投递窗口 <span class="hint">以目标企业本地时间 09:00–17:00 为准</span></div>
+                <div class="pb">
+                  <div class="row between small faint" style="margin-bottom:6px"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+                  <div class="tz-grid" id="tz-grid"></div>
+                  <div class="row wrap mt10" style="gap:14px">
+                    <span class="legend-dot"><i style="background:rgba(245,158,11,.35)"></i>工作日（部分）</span>
+                    <span class="legend-dot"><i style="background:rgba(23,178,106,.55)"></i>黄金投递</span>
+                    <span class="legend-dot"><i style="background:rgba(23,178,106,.88)"></i>高峰</span>
+                    <span class="legend-dot"><i style="background:rgba(15,23,42,.06)"></i>静默时段</span>
+                  </div>
+                  <div class="sec-title">语种覆盖</div>
+                  <div class="row wrap" style="gap:6px">
+                    <span class="tag dark">简体中文 100%</span><span class="tag dark">English 100%</span><span class="tag dark">Español 92%</span>
+                    <span class="tag dark">Português 74%</span><span class="tag dark">العربية 61%</span><span class="tag dark">日本語 88%</span>
+                    <span class="tag green">+ 全语种按需翻译</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">客户侧接收效果 <span class="hint" id="au-previewlabel"></span></div>
+                <div class="pb" style="display:flex;justify-content:center;background:#f4f6f9">
+                  <div class="phone">
+                    <div class="statusbar"><span>9:41</span><span>SW · 澳洲</span></div>
+                    <div class="navbar"><span class="back">‹</span>收件箱</div>
+                    <div class="pscreen" style="padding:12px" id="au-phone"></div>
+                    <div class="tabbar">
+                      <div class="tab on"><span class="ic"></span>收件</div>
+                      <div class="tab"><span class="ic"></span>搜索</div>
+                      <div class="tab"><span class="ic"></span>统计</div>
+                      <div class="tab"><span class="ic"></span>我的</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">触达统计（近 7 天）</div>
+                <div class="pb">
+                  <div class="bar-row"><span class="bl">送达率</span><span class="bt"><span class="bf" style="width:97%"></span></span><span class="bv">97.2%</span></div>
+                  <div class="bar-row"><span class="bl">打开率</span><span class="bt"><span class="bf" style="width:43%"></span></span><span class="bv">43.6%</span></div>
+                  <div class="bar-row"><span class="bl">点击率</span><span class="bt"><span class="bf" style="width:26%"></span></span><span class="bv">26.1%</span></div>
+                  <div class="bar-row"><span class="bl">回复率</span><span class="bt"><span class="bf" style="width:19%"></span></span><span class="bv">19.4%</span></div>
+                  <div class="bar-row"><span class="bl">预约演示</span><span class="bt"><span class="bf" style="width:8%"></span></span><span class="bv">8.3%</span></div>
+                  <div class="mt14 small muted">客户回复中的高频关切会自动回流到「营销内容定制」屏，用于优化下一轮生成。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== 10 持续学习进化 ==================== -->
+        <section class="screen" id="sc-learn">
+          <div class="page-title">
+            <div>
+              <h2><span class="ic">10</span>持续学习进化</h2>
+              <div class="sub">执行 → 反馈 → 迭代：强化学习 + 图神经网络，越用越好用</div>
+            </div>
+            <div class="acts">
+              <span class="tag green">第 27 轮训练完成</span>
+              <button class="btn primary" id="lr-run">触发第 28 轮训练</button>
+            </div>
+          </div>
+
+          <div class="cols c-64">
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">闭环机制 <span class="hint">触达侧 + 内容侧双闭环</span></div>
+                <div class="pb">
+                  <div class="pipe" style="padding-bottom:6px">
+                    <div class="step"><div class="card"><div class="no">PHASE 1</div><div class="t">执行</div><div class="d">多渠道触达与内容投放</div><div class="num">1,180<small>触达</small></div></div></div>
+                    <div class="arrow">›</div>
+                    <div class="step"><div class="card"><div class="no">PHASE 2</div><div class="t">反馈</div><div class="d">点击/回复/拒绝/成交标签</div><div class="num">2,146<small>样本</small></div></div></div>
+                    <div class="arrow">›</div>
+                    <div class="step"><div class="card"><div class="no">PHASE 3</div><div class="t">迭代</div><div class="d">强化学习 + 图神经网络更新</div><div class="num">v4.7<small>模型</small></div></div></div>
+                    <div class="arrow">›</div>
+                    <div class="step"><div class="card" data-go="engine" style="cursor:pointer"><div class="no">内容侧</div><div class="t">引擎回流</div><div class="d">T+3/7/14 内容效果回传 → 重训</div><div class="num">m2.4<small>内容模型</small></div></div></div>
+                    <div class="arrow">›</div>
+                    <div class="step"><div class="card"><div class="no">PHASE 4</div><div class="t">拓宽渠道</div><div class="d">高价值行业扩展数据源</div><div class="num">7<small>数据源</small></div></div></div>
+                  </div>
+                  <div class="note mt10">闭环回流从 PHASE 4 回到 PHASE 2：反馈更新画像，画像决定内容，内容决定下一轮触达效果，效果又成为新的反馈。<b>触达侧看点击回复率，内容侧看爆款命中率</b>，指标不可混算。</div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">效果曲线 <span class="hint">近 12 轮迭代</span></div>
+                <div class="pb">
+                  <svg viewBox="0 0 640 200" style="width:100%;height:200px">
+                    <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17b26a" stop-opacity=".28"/><stop offset="1" stop-color="#17b26a" stop-opacity="0"/></linearGradient></defs>
+                    <g stroke="rgba(15,23,42,.07)" stroke-width="1">
+                      <line x1="36" y1="30" x2="620" y2="30"/><line x1="36" y1="70" x2="620" y2="70"/>
+                      <line x1="36" y1="110" x2="620" y2="110"/><line x1="36" y1="150" x2="620" y2="150"/>
+                    </g>
+                    <g fill="#9aa4b7" font-size="10" font-family="SF Mono, monospace">
+                      <text x="6" y="34">30%</text><text x="6" y="74">22%</text><text x="6" y="114">14%</text><text x="6" y="154">6%</text>
+                    </g>
+                    <path d="M36,146 L92,140 L148,138 L204,128 L260,120 L316,114 L372,102 L428,92 L484,84 L540,74 L596,66 L620,62 L620,170 L36,170 Z" fill="url(#ag)"/>
+                    <path d="M36,146 L92,140 L148,138 L204,128 L260,120 L316,114 L372,102 L428,92 L484,84 L540,74 L596,66 L620,62" fill="none" stroke="#17b26a" stroke-width="2.5" stroke-linejoin="round"/>
+                    <g fill="#fff" stroke="#17b26a" stroke-width="2"><circle cx="36" cy="146" r="3"/><circle cx="204" cy="128" r="3"/><circle cx="372" cy="102" r="3"/><circle cx="540" cy="74" r="3"/><circle cx="620" cy="62" r="3.5"/></g>
+                    <text x="600" y="52" font-size="10.5" fill="#068348" font-family="SF Mono, monospace">19.4%</text>
+                    <g fill="#9aa4b7" font-size="9.5" font-family="SF Mono, monospace">
+                      <text x="32" y="186">R16</text><text x="200" y="186">R19</text><text x="368" y="186">R22</text><text x="536" y="186">R25</text><text x="608" y="186">R27</text>
+                    </g>
+                  </svg>
+                  <div class="row wrap mt10" style="gap:16px">
+                    <span class="legend-dot"><i style="background:#17b26a"></i>点击回复率（模型迭代）</span>
+                    <span class="legend-dot"><i style="background:rgba(15,23,42,.18)"></i>基线：人工推广 6.1%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel" style="margin-top:0">
+                <div class="ph">模型健康度</div>
+                <div class="pb">
+                  <div class="row between"><span class="small muted">画像一致性</span><span class="mono small bold" id="lr-h1">92.4%</span></div>
+                  <div class="bar-row" style="margin-top:6px"><span class="bt" style="flex:1"><span class="bf" id="lr-b1" style="width:92%"></span></span></div>
+                  <div class="row between mt10"><span class="small muted">内容点击预测 AUC</span><span class="mono small bold" id="lr-h2">0.861</span></div>
+                  <div class="bar-row" style="margin-top:6px"><span class="bt" style="flex:1"><span class="bf" id="lr-b2" style="width:86%"></span></span></div>
+                  <div class="row between mt10"><span class="small muted">决策人召回率</span><span class="mono small bold" id="lr-h3">78.4%</span></div>
+                  <div class="bar-row" style="margin-top:6px"><span class="bt" style="flex:1"><span class="bf" id="lr-b3" style="width:78%"></span></span></div>
+                  <div class="row between mt10"><span class="small muted">数据新鲜度</span><span class="mono small bold" id="lr-h4">98.1%</span></div>
+                  <div class="bar-row" style="margin-top:6px"><span class="bt" style="flex:1"><span class="bf" id="lr-b4" style="width:98%"></span></span></div>
+                  <div class="divider" style="margin:14px 0"></div>
+                  <div class="row between"><span class="small muted">内容侧 · 爆款命中率</span><span class="mono small bold" style="color:var(--brand)">72.8%</span></div>
+                  <div class="row between mt10"><span class="small muted">内容侧 · 概率校准误差</span><span class="mono small bold" style="color:var(--brand)">0.031</span></div>
+                  <div class="note mt10">指标分开看：触达侧看<b>点击回复率</b>，内容侧看<b>爆款命中率</b>与<b>校准误差</b>。两者同一版本账本管理，但不可混算。</div>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="ph">迭代日志 · 双账本 <span class="hint">触达侧 v4.x · 内容侧 m2.x</span></div>
+                <div class="pb">
+                  <div class="tabs2" style="margin-bottom:12px">
+                    <button class="on" data-ledger="outreach">触达侧</button>
+                    <button data-ledger="content">内容侧</button>
+                  </div>
+                  <div class="timeline" id="lr-hist"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Drawer ============ -->
+<div class="mask" id="mask"></div>
+<aside class="drawer" id="drawer">
+  <div class="dh">
+    <div>
+      <div class="id" id="dr-id">CQ01</div>
+      <h3 id="dr-q">客户问题</h3>
+      <div class="tags mt10" id="dr-tags"></div>
+    </div>
+    <button class="x-btn" id="dr-close">✕</button>
+  </div>
+  <div class="db" id="dr-body"></div>
+  <div class="df">
+    <button class="btn" id="dr-model">按此问题校准找客户模型</button>
+    <button class="btn primary" id="dr-content">生成对应营销内容</button>
+  </div>
+</aside>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script>
+/* =======================================================================
+   数据层
+   ======================================================================= */
+const CQ = [
+  { id:'CQ01', seg:'公交运营商', q:'现有驾驶辅助能帮助司机看清哪些盲区？', ch:['公众号','销售推介'], ev:'公开可查',
+    insight:'公交车体宽大、转弯半径长，司机真实痛点是「右侧内轮差盲区」与「起步盲区」，而非通用意义上的「视野不足」。',
+    angle:'以 360° 环视 + 右侧盲区监测 + 起步预警三个具体工况切入，用「路口右转时刻」的真实场景描述替代安全功能罗列。',
+    frame:['场景化钩子：同一段右转弯，盲区里的电动车/行人如何被提前发现','功能对照表：既有辅助方案 vs 本车方案（触发条件、提醒形式）','行动号召：预约同线路 A/B 测试车'],
+    src:'官网配置页 + 公众号技术长图文', risk:'避免使用「消除盲区」绝对化表述，需保留「辅助」措辞', owner:'内容组 · 王岚' },
+  { id:'CQ02', seg:'公交运营商', q:'大客流骨干线路与普通接驳线应怎样区分车型？', ch:['官网','销售推介'], ev:'公开可查',
+    insight:'骨干线看重高峰断面客流、满载率与电池周转；接驳线看重周转率、空间灵活与低地板通过性。两类客户关心的 KPI 完全不同。',
+    angle:'给出一张「线路类型 → 车型配置」对照矩阵，用满载率、周转率、日里程三个指标自动推荐 8m/10m/12m 与电池容量档位。',
+    frame:['双维度分类：断面客流 × 线路里程/坡度','配置差异表：电池容量、空调、驱动形式、载客数','工具化收口：输入 3 个运营参数 → 推荐车型'],
+    src:'官网产品选型页 + 销售推介页 3', risk:'矩阵数值需与产品部配置表对齐', owner:'市场组 · 陈锐' },
+  { id:'CQ03', seg:'公交运营商', q:'维护和故障响应方面有哪些公开案例？', ch:['公众号','销售推介'], ev:'需内部资料',
+    insight:'公交客户最关心「线路不能停」——故障响应时效比单点参数更能决定复购。',
+    angle:'用公开可查的交付城市做维保案例，呈现「远程诊断预警 → 备件前置 → 到场时效」的闭环，并明确响应时效的承诺边界。',
+    frame:['真实交付城市的服务网点与响应时效表','远程诊断如何提前 48 小时预警电池/空调故障','备件仓与易损件本地化清单'],
+    src:'服务部案例库（需授权脱敏）+ 公众号案例专栏', risk:'时效承诺需法务确认，不可夸大', owner:'服务市场 · 郭强' },
+  { id:'CQ04', seg:'公交运营商', q:'有没有数据证明运营成本下降 30%？', ch:['销售推介'], ev:'待核实 / 高风险',
+    insight:'「30%」是最有杀伤力也最危险的数字。客户真正想要的是可复算的 TCO 口径，而不是一句结论。',
+    angle:'把 30% 拆成可核验的构成项（电耗、维保、轮胎、能耗管理），标注基准年、样本量与数据来源；未核实前以「测算模型」而非「结论」呈现。',
+    frame:['TCO 构成拆解：哪几项贡献了降幅','基准与样本：线路里程、车型年份、区域电价','附可下载测算表，让客户代入自己的数据'],
+    src:'产品部 TCO 白皮书 + 客户实测样本', risk:'未核实前禁止在对外材料中直接写「下降 30%」', owner:'产品市场 · 李维' },
+  { id:'CQ05', seg:'海外客户', q:'城市公交和城间客运车型分别面向什么场景？', ch:['官网','展会'], ev:'公开可查',
+    insight:'海外采购方习惯用 UNECE / 整车参数对比，城市公交与城际客运在法规、座椅、行李舱、续航目标上差异显著。',
+    angle:'做一页「城市公交 vs 城际客运」选型对照，标注各市场法规适配（ECE/ADR）、典型线路特征与交付案例。',
+    frame:['场景定义：站距、日里程、载客构成','法规适配表：ECE R107 / ADR / 各地准入','对照选型表 + 可配置出口选项'],
+    src:'官网出口产品页 + 展会展台物料', risk:'各国准入状态需标注有效期', owner:'海外市场 · Lina' },
+  { id:'CQ06', seg:'海外客户', q:'澳洲右舵、沿海气候适配有什么公开依据？', ch:['展会','销售推介'], ev:'需内部资料',
+    insight:'澳洲右舵 + 沿海高盐雾是进入澳新的第一道门槛，客户需要看到「依据」，而非承诺。',
+    angle:'展示右舵驾驶区布局图、高盐雾防腐等级与沿海工况测试报告；强调「可验证依据」而非「完全适应」。',
+    frame:['右舵布局图与人体工学验证','防腐等级与材料选型（沿海 5km 内）','高温高湿、高盐雾测试条件与报告编号'],
+    src:'测试报告（需脱敏）+ 展会技术资料', risk:'测试结论范围不得外推至所有工况', owner:'技术市场 · 郑宇' },
+  { id:'CQ07', seg:'海外客户', q:'当地服务网络是否已经全部建好？', ch:['销售推介'], ev:'需内部资料',
+    insight:'海外买家对「售后空白」的敏感度高于价格。诚实标注「已建 / 在建 / 规划」比夸大全覆盖更能建立信任。',
+    angle:'用一张按国家分级的服务网络地图 + 覆盖半径表，明确分级状态与承诺时间点。',
+    frame:['服务网点地图与三级分级','覆盖半径与备件前置时效','建设时间表（已建 / 在建 / 规划中）'],
+    src:'服务网络数据库（需更新至当月）', risk:'网点状态须与实际运营一致，避免过期信息', owner:'海外服务 · Ken' },
+  { id:'CQ08', seg:'海外客户', q:'美洲来访是否意味着已有当地商业订单？', ch:['官网','展会'], ev:'待核实 / 高风险',
+    insight:'来访≠订单。若对外材料暗示已有美洲订单，属于重大失实风险。',
+    angle:'统一口径：来访归类为「市场考察 / 技术交流 / 项目前期」，订单以正式公告与实际交付为准；官网只展示已交付国家。',
+    frame:['访问性质的标准定义与对内对外口径','官网「已交付市场」与「在谈市场」分区呈现','展会话术红线清单'],
+    src:'官网出口页 + 展会接待口径卡', risk:'严禁暗示未确认订单，禁止使用「已批量交付」等未经证实表述', owner:'品牌市场 · 孙婷' },
+  { id:'CQ09', seg:'行业伙伴', q:'与享道的合作具体涉及哪些方向？', ch:['公众号','展会'], ev:'公开可查',
+    insight:'合作要区分「已签约 / 试点 / 意向」三层；伙伴客户更关心能力协同与利益分配，而非联合署名本身。',
+    angle:'按已落地 / 试点中 / 探索中三档说明合作方向（示范运营、调度数据、运力调度、联合出行场景）。',
+    frame:['合作三档进度与对应场景','双方角色与资源投入','联合示范线路的可复制方法'],
+    src:'公众号合作专栏 + 展会联合展台', risk:'进度描述须与合作方书面确认', owner:'生态合作 · 徐磊' },
+  { id:'CQ10', seg:'行业伙伴', q:'RoboBus 是否已经量产并商业运营？', ch:['官网','销售推介'], ev:'待核实 / 高风险',
+    insight:'「试点运营」「量产交付」「商业化运营」是三个完全不同的阶段，任何混淆都会直接损伤技术可信度。',
+    angle:'用三段式定义卡明确当前阶段归属，并给出从试点到商业化的路径图与前置条件。',
+    frame:['阶段定义卡：试点 / 量产 / 商业运营各自含义','当前阶段的事实陈述（引用官方公告）','落地路径与客户可参与节点'],
+    src:'技术中心公告 + 官网产品页', risk:'高风险项，对外发布前须经技术中心书面确认', owner:'技术传播 · 何静' },
+  { id:'CQ11', seg:'行业伙伴', q:'车联网、车辆和维保能怎样形成协同选题？', ch:['公众号','展会'], ev:'公开可查',
+    insight:'这是典型的联合选题机会：把三方的数据链路串成一个闭环主题，对双方品牌都成立。',
+    angle:'设计「远程诊断 → 预测性维保 → 备件预测 → 车辆健康评分」的联合选题矩阵，按季度输出白皮书/联合展会/联合案例。',
+    frame:['三方数据链路图与数据边界','3 个可落地协同选题（按季度排期）','联合传播形式与分工建议'],
+    src:'公众号 + 展会联合专题', risk:'数据合规边界需明确', owner:'内容营销 · 唐悦' },
+  { id:'CQ12', seg:'行业伙伴', q:'智能驾驶辅助与自动驾驶合作该怎样区分？', ch:['官网','公众号'], ev:'需内部资料',
+    insight:'L2 驾驶辅助（前装量产、责任在驾驶员）与 L4 自动驾驶（示范运营、责任在运营方）在法规与宣传口径上必须切割。',
+    angle:'建立术语与责任主体的对照表，并在官网与公众号统一使用同一套描述。',
+    frame:['L2 / L4 术语与责任主体对照','法规准入差异与宣传红线','对外表述的统一模板'],
+    src:'官网 + 公众号口径表（需技术中心审定）', risk:'严禁混用「自动驾驶」描述 L2 功能', owner:'技术合规 · 罗斌' }
+];
+
+const ROLES = [
+  { id:'采购总监', en:'Procurement Director', db:['Kompass','Apollo.io'], hit:'1,240' },
+  { id:'技术负责人', en:'CTO / Engineering Head', db:['Lusha','ImportGenius'], hit:'860' },
+  { id:'运营总监', en:'Fleet Operations Director', db:['Apollo.io','SalesIntel'], hit:'1,020' },
+  { id:'董事会/决策人', en:'Board / GM', db:['SalesIntel','ZoomInfo'], hit:'310' },
+  { id:'维保主管', en:'Maintenance Manager', db:['Kompass','Dun & Bradstreet'], hit:'690' },
+  { id:'政府交通采购', en:'Transit Authority Procurement', db:['Dun & Bradstreet','Kompass'], hit:'240' }
+];
+
+const DBS = ['Kompass','Apollo.io','Lusha','SalesIntel','ZoomInfo','ImportGenius','Dun & Bradstreet','TradeAtlas','Europages','China Customs 海关总署','天眼查','企查查','LinkedIn Sales Nav','Crunchbase','Gleif','OpenCorporates','Panjiva','ImportYeti','ExportGenius','Zodeo','GlobalData','Sayari','Oxa','Datamyne','Trademap','Figments','Evalueserve','Statista','Similarweb','Waze Places','Google Maps Places','LinkedIn','Xing','GlobalData Vehicles','Fleet Tracking DB','S&P Capital IQ','Moody\'s Transport','Export Genius AU','Austrade Register','NZ Companies Office','Singapore ACRA','UAE Chambers','Latin America Business DB','Brazil CNPJ Registry','India MCA','Japan Corporate Number','Korea DART','China Bus Fleet Registry','Tender Portals','Exhibitor Lists','Customs Stats Pro','Ships List Providers','Ports Authority Data','Chamber of Commerce','Industry Directories','Country Ministry Tenders','Public Procurement Portal','Business Registers Intl','Australian Bus Operators Assoc','Latin America Bus Federation','Middle East Buses Magazine','SEA Bus Operators Directory','Tender Alerts Africa','Euro Bus Market Data'];
+const DB_CONNECTED = new Set(['Kompass','Apollo.io','Lusha','SalesIntel','ZoomInfo','ImportGenius','Dun & Bradstreet','TradeAtlas','Europages','China Customs 海关总署','天眼查','企查查','LinkedIn Sales Nav','Crunchbase','Gleif','OpenCorporates','Panjiva','ImportYeti','ExportGenius','GlobalData','Statista','Similarweb','Google Maps Places','LinkedIn','Tender Portals','Exhibitor Lists','Customs Stats Pro','Ports Authority Data','Chamber of Commerce','Country Ministry Tenders','Public Procurement Portal','Business Registers Intl','SEA Bus Operators Directory','Austrade Register','NZ Companies Office']);
+
+const COMPANIES = [
+  { n:'申沃公交集团（示例）', t:'公交运营商', r:'华东', src:'展会数据', sc:94, st:'高匹配' },
+  { n:'Metro Transit Authority AU', t:'公交运营商', r:'澳洲', src:'搜索引擎', sc:91, st:'高匹配' },
+  { n:'Sydney Bus Lines Group', t:'公交运营商', r:'澳洲', src:'地图搜索', sc:88, st:'高匹配' },
+  { n:'Transporte Urbano de Lima', t:'公交运营商', r:'拉美', src:'海关数据', sc:86, st:'高匹配' },
+  { n:'Metro do Rio / SuperVia', t:'公交运营商', r:'拉美', src:'算法筛选', sc:84, st:'已入库' },
+  { n:'Jakarta Trans Corp', t:'公交运营商', r:'东南亚', src:'搜索引擎', sc:82, st:'已入库' },
+  { n:'Volvo Bus Southeast Asia', t:'制造商', r:'东南亚', src:'社交媒体', sc:79, st:'已入库' },
+  { n:'Higer / King Long Export', t:'制造商', r:'中国', src:'算法筛选', sc:77, st:'已入库' },
+  { n:'Golden Dragon Bus (Algeria)', t:'制造商', r:'北非', src:'海关数据', sc:75, st:'已入库' },
+  { n:'Pacific Bus Distributors', t:'经销商', r:'澳洲', src:'地图搜索', sc:73, st:'已入库' },
+  { n:'Gulf Auto Trading LLC', t:'经销商', r:'中东', src:'海关数据', sc:71, st:'待补联系人' },
+  { n:'Andes Motor Import', t:'经销商', r:'拉美', src:'社交媒体', sc:68, st:'待补联系人' },
+  { n:'TransLink (HK) 车辆采购处', t:'公交运营商', r:'港澳', src:'算法筛选', sc:92, st:'高匹配' },
+  { n:'Shenzhen Bus Group 深巴', t:'公交运营商', r:'华南', src:'搜索引擎', sc:90, st:'高匹配' },
+  { n:'RideNow 享道出行', t:'行业伙伴', r:'上海', src:'社交媒体', sc:89, st:'高匹配' },
+  { n:'AutoX / RoboSense 机器人', t:'行业伙伴', r:'深圳', src:'算法筛选', sc:85, st:'已入库' },
+  { n:'FleetCare 维保服务商', t:'服务商', r:'华东', src:'地图搜索', sc:72, st:'已入库' },
+  { n:'EuroBusParts Trading', t:'批发商', r:'欧洲', src:'海关数据', sc:66, st:'待补联系人' }
+];
+
+const CH_SOURCES = [
+  { n:'搜索引擎', ic:'S', d:'官网 / 新闻 / 招投标公告 / 公众号', today:'+412', total:'6,980', on:true, c:'var(--brand)' },
+  { n:'海关数据', ic:'C', d:'进出口记录 · HS 编码 · 买家画像', today:'+286', total:'4,210', on:true, c:'var(--cyan)' },
+  { n:'社交媒体', ic:'M', d:'LinkedIn / 行业社群 / 展会动态', today:'+238', total:'3,540', on:true, c:'#7c3aed' },
+  { n:'地图搜索', ic:'P', d:'POI / 服务网点 / 车库与场站', today:'+196', total:'2,870', on:true, c:'#e8552c' },
+  { n:'展会数据', ic:'E', d:'展商名录 / 观众画像 / 会议议程', today:'+94', total:'1,620', on:true, c:'#b45309' },
+  { n:'算法筛选', ic:'A', d:'图神经网络匹配 + 相似扩展', today:'+58', total:'2,760', on:true, c:'#0b7285' },
+  { n:'内容效果回流', ic:'R', d:'T+3/7/14 自有内容流量回传 · 第 7 源', today:'+214', total:'8,640', on:true, c:'#068348', eg:true }
+];
+
+const FLEET = [
+  { id:'SW-12C', nm:'SW-12C 城市客车', ty:'城市公交', seg:'大客流骨干线', d:'12m 纯电 · 高峰断面满载 · 双开门快速上下客',
+    tags:['满载率','周转率','阶梯电价'], img:'./assets/sunwin-bus-3q.jpg' },
+  { id:'SW-08C', nm:'SW-08C 接驳客车', ty:'接驳线路', seg:'园区 / 机场 / 社区', d:'8m 纯电 · 低地板通过性 · 高频次短周转',
+    tags:['空间灵活','低地板','运营成本'], img:'./assets/sunwin-bus-3q.jpg' },
+  { id:'SW-IC9', nm:'SW-IC9 城际客运', ty:'城际客运', seg:'城际 / 城际专线', d:'9m 纯电 · 行李舱与座椅模块化 · 长续航',
+    tags:['续航','ECE R107','残值'], img:'./assets/sunwin-bus-3q.jpg' },
+  { id:'SW-18C', nm:'SW-18C 铰接客车', ty:'大客流', seg:'BRT 走廊', d:'18m 铰接 · 双向通行 · 站距 300m 级',
+    tags:['运力','站距','铰接通行'], img:'./assets/sunwin-bus-3q.jpg' },
+  { id:'SW-RB', nm:'SW-RB 无人驾驶样车', ty:'RoboBus', seg:'示范运营', d:'L4 示范运营 · 远程诊断 · 调度协同',
+    tags:['试点阶段','高风险','需确认'], img:'./assets/sunwin-bus-3q.jpg' },
+  { id:'SW-EX', nm:'SW-EX 出口客车', ty:'海外市场', seg:'右舵 / 沿海', d:'右舵布局 · 高盐雾防腐 · 各国准入认证',
+    tags:['右舵','沿海气候','法规准入'], img:'./assets/sunwin-bus-3q.jpg' }
+];
+function fleetRender() {
+  $('#ov-fleet').innerHTML = FLEET.map(f => `
+    <div class="fl">
+      <div class="ph">
+        <img src="${f.img}" alt="${f.nm}">
+        <span class="tagx">${f.id}</span>
+        <span class="ty">${f.ty}</span>
+      </div>
+      <div class="bd">
+        <div class="nm">${f.nm}</div>
+        <div class="ds">${f.d}</div>
+        <div class="tags2">
+          <span class="tag green">${f.seg}</span>
+          ${f.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* =======================================================================
+   ROI 可视化
+   ======================================================================= */
+function sparkSVG(id, data, base, color, fillTop, fillBottom, unit, startLabel) {
+  const svg = document.getElementById(id);
+  if (!svg) return;
+  const W = 560, H = 132, padL = 34, padR = 10, padT = 12, padB = 22;
+  const max = Math.max(...data) * 1.16, min = 0;
+  const x = i => padL + i * (W - padL - padR) / (data.length - 1);
+  const y = v => padT + (H - padT - padB) * (1 - (v - min) / (max - min));
+  const pts = data.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area = `M${x(0).toFixed(1)},${y(min)} ` + data.map((v, i) => `L${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ') + ` L${x(data.length - 1).toFixed(1)},${y(min)} Z`;
+  let out = `<defs><linearGradient id="sg-${id}" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="${fillTop}"/><stop offset="1" stop-color="${fillBottom}"/></linearGradient></defs>`;
+  [0, .25, .5, .75, 1].forEach(t => {
+    const gy = padT + (H - padT - padB) * t;
+    out += `<line x1="${padL}" y1="${gy}" x2="${W - padR}" y2="${gy}" stroke="rgba(15,23,42,.06)" stroke-width="1"></line>`;
+  });
+  if (base !== null) {
+    out += `<line x1="${padL}" y1="${y(base)}" x2="${W - padR}" y2="${y(base)}" stroke="rgba(15,23,42,.22)" stroke-width="1.4" stroke-dasharray="4 4"></line>`;
+    out += `<text x="${W - padR}" y="${(y(base) - 5).toFixed(1)}" font-size="10" fill="#9aa4b7" text-anchor="end">基线 ${base}${unit}</text>`;
+  }
+  out += `<path d="${area}" fill="url(#sg-${id})"></path>`;
+  out += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"></polyline>`;
+  data.forEach((v, i) => {
+    if (i === data.length - 1 || i === data.length - 5 || i === 0) {
+      out += `<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${i === data.length - 1 ? 4 : 3}" fill="#fff" stroke="${color}" stroke-width="2"></circle>`;
+    }
+  });
+  out += `<text x="${x(data.length - 1).toFixed(1)}" y="${(y(data[data.length - 1]) - 9).toFixed(1)}" font-size="11" font-weight="700" fill="${color}" text-anchor="end">${data[data.length - 1]}${unit}</text>`;
+  out += `<text x="${padL}" y="${H - 5}" font-size="9.5" fill="#9aa4b7">${startLabel}</text>`;
+  out += `<text x="${W - padR}" y="${H - 5}" font-size="9.5" fill="#9aa4b7" text-anchor="end">当前轮次</text>`;
+  svg.innerHTML = out;
+}
+const EFF_CONTENT_SERIES = [7.4, 8.1, 8.9, 10.2, 11.0, 11.6, 12.9, 14.1, 15.0, 16.3, 17.8, 19.4];
+const EFF_LEAD_SERIES = [2.4, 3.1, 3.6, 4.2, 4.8, 5.1, 5.9, 6.4, 7.0, 7.8, 8.6, 9.4];
+function effRender() {
+  sparkSVG('eff-chart-a', EFF_CONTENT_SERIES, 6.1, '#17b26a', 'rgba(23,178,106,.26)', 'rgba(23,178,106,0)', '%', 'R16 起始');
+  sparkSVG('eff-chart-b', EFF_LEAD_SERIES, 3.0, '#0b94c9', 'rgba(11,148,201,.26)', 'rgba(11,148,201,0)', '%', 'R16 起始');
+}
+const ROI_FUNNEL = [
+  { k:'内容曝光', v:'1,284,000', pct:'100%', w:100, c:'rgba(23,178,106,.72)' },
+  { k:'有效阅读', v:'336,900', pct:'26.2%', w:82, c:'rgba(23,178,106,.60)' },
+  { k:'点击进站', v:'81,400', pct:'6.3%', w:64, c:'rgba(23,178,106,.48)' },
+  { k:'决策人配对', v:'3,260', pct:'0.25%', w:46, c:'rgba(11,148,201,.62)' },
+  { k:'有效商机', v:'86', pct:'0.0067%', w:30, c:'rgba(61,139,253,.78)' }
+];
+function roiRender() {
+  const svg = $('#roi-funnel');
+  if (!svg) return;
+  const W = 620, H = 178, rowH = 34, gap = 3;
+  const maxW = W - 210;
+  let out = '';
+  ROI_FUNNEL.forEach((f, i) => {
+    const y = i * (rowH + gap);
+    const w = maxW * f.w / 100;
+    const x = 0;
+    out += `<rect x="${x}" y="${y}" width="${w}" height="${rowH}" rx="5" fill="${f.c}"></rect>`;
+    out += `<text x="${x + 10}" y="${y + 21}" font-size="12" fill="#fff" font-weight="600">${f.k}</text>`;
+    out += `<text x="${x + w + 10}" y="${y + 21}" font-size="12" fill="#101828" font-weight="700">${f.v}</text>`;
+    out += `<text x="${W - 4}" y="${y + 21}" font-size="11" fill="#9aa4b7" text-anchor="end">${f.pct}</text>`;
+    if (i < ROI_FUNNEL.length - 1) {
+      out += `<path d="M${x + 2},${y + rowH} L${x + 14},${y + rowH + gap} L${x + 2},${y + rowH + gap * 2}" fill="none" stroke="rgba(15,23,42,.18)" stroke-width="1.2"></path>`;
+    }
+  });
+  svg.innerHTML = out;
+}
+
+/* =======================================================================
+   工具
+   ======================================================================= */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function toast(msg, ic='✓') {
+  const w = $('#toasts');
+  const el = document.createElement('div');
+  el.className = 'toast'; el.innerHTML = `<span class="ic">${ic}</span>${msg}`;
+  w.appendChild(el);
+  setTimeout(() => { el.style.transition = 'opacity .3s, transform .3s'; el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
+    setTimeout(() => el.remove(), 320); }, 2400);
+}
+function go(id) {
+  $$('.screen').forEach(s => s.classList.remove('on'));
+  const sc = $('#sc-' + id); if (sc) sc.classList.add('on');
+  $$('.side .nav').forEach(n => n.classList.toggle('on', n.dataset.go === id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =======================================================================
+   03 · CQ 问题库
+   ======================================================================= */
+let cqFilter = { seg:'all', ch:'all', q:'' };
+function cqRender() {
+  const tb = $('#cq-body');
+  const list = CQ.filter(c =>
+    (cqFilter.seg === 'all' || c.seg === cqFilter.seg) &&
+    (cqFilter.ch === 'all' || c.ch.includes(cqFilter.ch)) &&
+    (cqFilter.q === '' || (c.id + c.q + c.seg + c.ch.join('')).toLowerCase().includes(cqFilter.q))
+  );
+  $('#cq-count').textContent = `显示 ${list.length} / ${CQ.length} 条`;
+  tb.innerHTML = list.map(c => `
+    <tr data-id="${c.id}">
+      <td class="mono bold" style="color:var(--brand)">${c.id}</td>
+      <td>${c.seg}</td>
+      <td style="font-weight:600;line-height:1.6">${c.q}</td>
+      <td><div class="tags">${c.ch.map(x => `<span class="tag ${x === '官网' ? 'cyan' : x === '公众号' ? 'green' : x === '展会' ? 'purple' : 'orange'}">${x}</span>`).join('')}</div></td>
+      <td><span class="tag ${c.ev === '公开可查' ? 'green' : c.ev === '需内部资料' ? 'orange' : 'red'}">${c.ev}</span></td>
+      <td><button class="btn sm">查看 ›</button></td>
+    </tr>`).join('');
+  tb.querySelectorAll('tr').forEach(tr => tr.onclick = () => openDrawer(tr.dataset.id));
+
+  // matrix
+  const segs = ['公交运营商','海外客户','行业伙伴'], chs = ['官网','公众号','销售推介','展会'];
+  const mt = $('#matrix tbody');
+  mt.innerHTML = segs.map(s => {
+    const items = CQ.filter(c => c.seg === s);
+    const cells = chs.map(ch => {
+      const n = items.filter(c => c.ch.includes(ch)).length;
+      const bg = n === 0 ? 'transparent' : n === 1 ? 'rgba(23,178,106,.14)' : n === 2 ? 'rgba(23,178,106,.30)' : 'rgba(23,178,106,.55)';
+      const col = n === 0 ? 'var(--faint)' : '#068348';
+      return `<td style="text-align:center;font-family:var(--mono);background:${bg};color:${col};font-weight:${n?'700':'400'}">${n || '—'}</td>`;
+    }).join('');
+    return `<tr><td style="font-weight:600">${s}</td>${cells}<td class="mono bold">${items.length}</td></tr>`;
+  }).join('') + `<tr style="background:#fafbfd"><td class="bold">合计</td>${chs.map(ch => `<td style="text-align:center;font-family:var(--mono)" class="bold">${CQ.filter(c => c.ch.includes(ch)).length}</td>`).join('')}<td class="mono bold">${CQ.length}</td></tr>`;
+}
+$$('[data-seg]').forEach(b => b.onclick = () => { $$('[data-seg]').forEach(x => x.classList.remove('on')); b.classList.add('on'); cqFilter.seg = b.dataset.seg; cqRender(); });
+$$('[data-ch]').forEach(b => b.onclick = () => { $$('[data-ch]').forEach(x => x.classList.remove('on')); b.classList.add('on'); cqFilter.ch = b.dataset.ch; cqRender(); });
+$('#cq-search').oninput = e => { cqFilter.q = e.target.value.trim().toLowerCase(); cqRender(); };
+$('#cq-export').onclick = () => toast(`问题库已导出：${CQ.length} 条 × 3 类客群 × 4 类渠道`);
+
+/* drawer */
+let currentCQ = null;
+function openDrawer(id) {
+  const c = CQ.find(x => x.id === id); if (!c) return;
+  currentCQ = c;
+  $('#dr-id').textContent = c.id;
+  $('#dr-q').textContent = c.q;
+  $('#dr-tags').innerHTML = `<span class="tag cyan">${c.seg}</span>` + c.ch.map(x => `<span class="tag">${x}</span>`).join('') +
+    `<span class="tag ${c.ev === '公开可查' ? 'green' : c.ev === '需内部资料' ? 'orange' : 'red'}">${c.ev}</span>`;
+  $('#dr-body').innerHTML = `
+    <div class="sec-title">客户真实意图</div>
+    <div class="note">${c.insight}</div>
+    <div class="sec-title">内容切入角度</div>
+    <div class="qbox" style="font-weight:500">${c.angle}</div>
+    <div class="sec-title">建议内容框架</div>
+    <ul class="lst">${c.frame.map(f => `<li>${f}</li>`).join('')}</ul>
+    <div class="sec-title">素材来源</div>
+    <div class="note"><b>${c.src}</b></div>
+    <div class="sec-title">风险提示</div>
+    <div class="gate ${c.ev === '公开可查' ? 'pass' : c.ev === '需内部资料' ? 'warn' : 'hold'}">
+      <span class="g">${c.ev === '公开可查' ? '✓' : c.ev === '需内部资料' ? '!' : '✕'}</span>
+      <span><span class="gt">${c.risk}</span><br><span class="gd">责任人：${c.owner}</span></span></div>
+    <div class="sec-title">关联的模型动作</div>
+    <div class="kv">
+      <span class="k">客群标签</span><span class="v">${c.seg} · ${c.ch[0]}优先</span>
+      <span class="k">内容形态</span><span class="v">${c.ch.join(' / ')} 三件套</span>
+      <span class="k">决策角色</span><span class="v">${c.seg === '行业伙伴' ? '技术负责人 / 生态合作' : c.seg === '海外客户' ? '海外采购 / 运营总监' : '采购总监 / 运营总监'}</span>
+      <span class="k">投放时机</span><span class="v">展会前 14 天 / 官网常驻 / 公众号季度</span>
+    </div>`;
+  $('#drawer').classList.add('on'); $('#mask').classList.add('on');
+}
+function closeDrawer() { $('#drawer').classList.remove('on'); $('#mask').classList.remove('on'); }
+$('#dr-close').onclick = closeDrawer; $('#mask').onclick = closeDrawer;
+$('#dr-model').onclick = () => { closeDrawer(); go('model'); toast('已按 ' + currentCQ.id + ' 校准找客户模型关键词族'); };
+$('#dr-content').onclick = () => { closeDrawer(); go('content'); $('#ct-cqsel').value = currentCQ.id; $('#ct-cq').textContent = '关联问题：' + currentCQ.id; toast('已带入 ' + currentCQ.id + ' 生成营销内容'); };
+
+/* =======================================================================
+   04 · 找客户模型
+   ======================================================================= */
+function modelRules() {
+  const cat = $('#md-cat').value || '客车';
+  const scene = $('#md-scene').value || '公交';
+  const region = $('#md-region').value || '国内';
+  const exclude = $('#md-exclude').value || '个人';
+  const tech = $('#md-tech').value || '新能源';
+  const mk = s => s.split(/[、,，/]/).map(x => x.trim()).filter(Boolean);
+  return [
+    { d:'行业分类', c:'企业类型 =', v:'公交运营商 / 城际客运 / 客车制造商 / 经销商 / 批发商 / 服务商 / 行业伙伴', h:'2,860' },
+    { d:'规模区间', c:'车辆规模 ≥', v:'300 辆（公交）｜50 辆（客运）｜年采购 ≥ 20 台（经销）', h:'1,940' },
+    { d:'关键词族 A', c:'产品词', v:mk(cat).concat(mk(tech)).join('、'), h:'3,120' },
+    { d:'关键词族 B', c:'场景词', v:mk(scene).join('、'), h:'2,640' },
+    { d:'关键词族 C', c:'行业词', v:'公交集团、公共交通、城市客运、旅游客运、班车', h:'2,210' },
+    { d:'区域过滤', c:'国家/省份', v:mk(region).join('、'), h:'1,860' },
+    { d:'排除规则', c:'排除', v:mk(exclude).join('、'), h:'- 1,180' },
+    { d:'决策链角色', c:'职位族', v:'采购总监 / 运营总监 / 技术负责人 / 董事会 / 维保主管', h:'3,260' },
+    { d:'时效规则', c:'活跃度', v:'近 24 个月有采购、招标或新车交付记录', h:'1,720' },
+    { d:'关联信号', c:'图关系', v:'与已知 86 家成交客户存在采购/运营/维保弱关联', h:'960' }
+  ];
+}
+function modelRender() {
+  const rows = modelRules();
+  $('#rule-body').innerHTML = rows.map(r => `
+    <tr><td class="bold">${r.d}</td><td class="muted">${r.c}</td><td>${r.v}</td>
+    <td class="mono bold" style="color:var(--brand)">${r.h}</td>
+    <td><button class="btn sm ghost" title="删除该规则">删</button></td></tr>`).join('');
+  $('#md-rulecount').textContent = `${rows.length} 条生效规则 · 交集后预计 ${$('#md-pool').textContent} 家企业`;
+}
+$('#md-run').onclick = () => {
+  const b = $('#md-run'); b.disabled = true; b.textContent = '生成中…';
+  setTimeout(() => {
+    const pool = 4200 + Math.floor(Math.random() * 1200);
+    $('#md-pool').textContent = pool.toLocaleString();
+    modelRender();
+    b.disabled = false; b.textContent = '重新生成模型';
+    toast('找客户模型已更新：' + modelRules().length + ' 条规则，预计 ' + pool.toLocaleString() + ' 家目标企业');
+  }, 700);
+};
+$('#md-reset').onclick = () => { $('#md-cat').value = '城市客车 / 城际客车 / 团体通勤客车（新能源全系）'; $('#md-tech').value = '电池续航与电耗管理、整车轻量化、驾驶辅助安全配置、车联网远程诊断'; $('#md-scene').value = '大客流骨干线路、普通接驳线、城际客运、机场/园区接驳、海外公交更新'; $('#md-region').value = '中国华东/华南公交集团；澳洲、东南亚、拉美、中东'; $('#md-exclude').value = '个人购车、二手车商、非营运车辆改装厂、已明确无采购计划'; toast('已重置为默认输入'); };
+
+/* =======================================================================
+   05 · 客户画像
+   ======================================================================= */
+const PV_DIMS = [
+  { n:'企业属性（类型 / 规模 / 归属）', v:96 },
+  { n:'采购决策链与关键角色', v:93 },
+  { n:'核心关切指标（满载率 / TCO）', v:78 },
+  { n:'预算周期与招采流程', v:84 },
+  { n:'现有车辆构成与替换周期', v:88 },
+  { n:'关注的内容渠道与语言', v:91 },
+  { n:'话术禁忌与合规红线', v:72 }
+];
+const PV_VERS = [
+  { v:'v1', t:'初始画像', d:'仅由产品参数与行业关键词推断，未接触人工判定', m:'模型自动生成' },
+  { v:'v2', t:'补充客群结构', d:'依据「骨干线 / 接驳线」场景分化，区分两类决策指标', m:'人工反馈 · 公交运营商组' },
+  { v:'v3', t:'加入海外维度', d:'依据海外来访记录，补充右舵、沿海气候、服务网点三项核验点', m:'人工反馈 · 海外组' },
+  { v:'v4', t:'补齐话术红线', d:'依据 CQ04 / CQ08 / CQ10 的风险标记，生成禁止表述清单', m:'人工反馈 + 合规规则' }
+];
+const PV_TAGS = ['地方国有公交集团','3,200 辆规模','日均里程 220km','15 条骨干线路','5 条接驳线路','年度预算 4.2 亿','车龄 7.5 年','集中充电场站','本地维保外包','关注 5 年 TCO','电耗差 8%','残值敏感','决策链 4 层','招标年度 Q2 / Q4','忌讳「降价」表述'];
+const PV_TARGETS = ['申沃公交集团（示例）','Metro Transit Authority AU','Sydney Bus Lines Group','Transporte Urbano de Lima'];
+let pvVer = 4, pvScore = 92.4, pvSelFb = 'too-broad', pvIdx = 0;
+function pvRender() {
+  $('#pv-ver').textContent = 'v' + pvVer;
+  $('#pv-score').textContent = pvScore.toFixed(1) + '%';
+  $('#pv-target').textContent = '· ' + PV_TARGETS[pvIdx];
+  $('#pv-logo').textContent = ['XY','MT','SB','TU'][pvIdx];
+  $('#pv-name').textContent = PV_TARGETS[pvIdx];
+  $('#pv-meta').textContent = ['地方国有 · 3,200 辆 · 华东','澳洲国有 · 1,800 辆 · 新南威尔士','澳洲私营 · 900 辆 · 昆士兰','拉美国有 · 2,400 辆 · 秘鲁'][pvIdx];
+  $('#pv-tags').innerHTML = PV_TAGS.map(t => `<span class="tag green">${t}</span>`).join('');
+  $('#pv-bars').innerHTML = PV_DIMS.map(d => `
+    <div class="bar-row"><span class="bl" style="width:190px">${d.n}</span>
+      <span class="bt"><span class="bf" style="width:${d.v}%"></span></span>
+      <span class="bv">${d.v}%</span></div>`).join('');
+  $('#pv-chain').innerHTML = [
+    { r:'决策者', n:'采购总监', w:'55%', t:'关注：TCO、质保条款、交付周期' },
+    { r:'影响者', n:'技术负责人 / 车队经理', w:'28%', t:'关注：驾驶辅助、电耗、远程诊断' },
+    { r:'使用者', n:'一线司机 / 维保班组长', w:'12%', t:'关注：视野、操控、维修便利' },
+    { r:'把关者', n:'财务 / 招采合规', w:'5%', t:'关注：付款节点、供应商资质' }
+  ].map(c => `<div class="tl-item"><div class="t">${c.r} · ${c.n} <span class="tag">${c.w}</span></div><div class="d">${c.t}</div></div>`).join('');
+  $('#pv-hist').innerHTML = PV_VERS.slice().reverse().map(h => `
+    <div class="tl-item"><div class="t">${h.v} ${h.t} ${h.v === 'v' + pvVer ? '<span class="tag green">当前</span>' : ''}</div>
+    <div class="d">${h.d}</div><div class="meta">${h.m}</div></div>`).join('');
+}
+$$('[data-fb]').forEach(b => b.onclick = () => { $$('[data-fb]').forEach(x => x.classList.remove('on')); b.classList.add('on'); pvSelFb = b.dataset.fb; });
+$('#pv-apply').onclick = () => {
+  const bump = { 'too-broad':1.2,'mismatch':2.1,'missing-kpi':2.6,'wrong-role':1.7,'good':0.8 }[pvSelFb];
+  pvScore = Math.min(99.2, pvScore + bump);
+  PV_DIMS.forEach((d, i) => { if (pvSelFb === 'missing-kpi' && i === 2) d.v = Math.min(99, d.v + 6);
+    if (pvSelFb === 'wrong-role' && i === 1) d.v = Math.min(99, d.v + 5);
+    if (pvSelFb === 'too-broad' && i === 0) d.v = Math.min(99, d.v + 4);
+    if (pvSelFb === 'good') d.v = Math.min(99, d.v + 1); });
+  pvVer++;
+  PV_VERS.push({ v:'v' + pvVer, t:'反馈迭代：' + ($('[data-fb].on') ? $('[data-fb].on').textContent : ''),
+    d: ($('#pv-fb').value || '由运营判定触发的画像维度修正').slice(0, 46), m:'人工反馈 · 本轮即时生效' });
+  pvRender();
+  toast(`画像已升级至 v${pvVer}，一致性 ${pvScore.toFixed(1)}%`);
+};
+$('#pv-fb').oninput = () => { $('#pv-fbhint').textContent = '补充说明已输入，点击右侧应用'; };
+
+/* =======================================================================
+   06 · 营销内容
+   ======================================================================= */
+const CH_LIST = ['官网','公众号','销售推介','展会'];
+let ctCh = ['官网','公众号'];
+function ctInit() {
+  $('#ct-cqsel').innerHTML = CQ.map(c => `<option value="${c.id}">${c.id} · ${c.q.slice(0, 22)}…</option>`).join('');
+  $('#ct-cqsel').value = 'CQ01';
+  $('#ct-ch').innerHTML = CH_LIST.map(c => `<button class="chip ${ctCh.includes(c) ? 'on' : ''}" data-cch="${c}">${c}</button>`).join('');
+  $$('[data-cch]').forEach(b => b.onclick = () => {
+    const v = b.dataset.cch;
+    if (ctCh.includes(v)) ctCh = ctCh.filter(x => x !== v); else ctCh.push(v);
+    b.classList.toggle('on');
+  });
+}
+function ctGen(v2) {
+  const cq = CQ.find(c => c.id === $('#ct-cqsel').value) || CQ[0];
+  $('#ct-cq').textContent = '关联问题：' + cq.id;
+  const lang = $('#ct-lang').value, tone = $('#ct-tone').value;
+  const keys = $('#ct-key').value.split(/[、,，\s]+/).filter(Boolean);
+  const co = $('#ct-co').value;
+  $('#ct-ver').textContent = v2 ? '版本 v2（已按反馈优化）' : '版本 v1';
+  // 引擎接入点 A：风险标签随证据等级与 CQ 红线自动继承；建议仅来自强因果因子集
+  const riskTag = cq.ev === '待核实 / 高风险' ? '高风险 · 待核实'
+    : cq.ev === '需内部资料' ? '需内部资料'
+    : cq.id === 'CQ12' ? '蹭 L2/L4 热点' : '';
+  const baseProb = cq.ev === '待核实 / 高风险' ? 28 : cq.ev === '需内部资料' ? 47 : 63;
+  const prob = v2 ? Math.min(88, baseProb + 9) : baseProb;
+  const fix = cq.ev === '公开可查' ? {
+    gain: '2.4',
+    d:'当前缺少「真实车队场景引用」（匹配度 31%，强因果因子基线 62%）。同类内容加入后收藏率提升 2.4pt（PSM 匹配样本 218 条）。'
+  } : null;
+  const blocks = [];
+  if (ctCh.includes('官网')) blocks.push({
+    ch:'官网', ic:'官', tone:'cyan', title:`${cq.q.replace('？','？')} — ${co.split('（')[0]}选型建议`,
+    body:`针对 <b>${co}</b> 的${cq.seg}场景，建议按「${keys[0] || '运营成本'}」等指标切入。${v2 ? '<b>【优化点】</b>已按回复反馈，弱化通用表述，增加可核验数据与本地化口径。' : '内容以场景化表述替代功能罗列。'}`
+      + `<ul style="margin:7px 0 0;padding-left:16px;line-height:1.8">${cq.frame.map(f => `<li>${f}</li>`).join('')}</ul>`,
+    score: v2 ? 92 : 87, prob: prob + 4, risk: riskTag, fix: fix
+  });
+  if (ctCh.includes('公众号')) blocks.push({
+    ch:'公众号', ic:'公', tone:'green', title:`深度长图文｜${cq.q.replace('？','？')}`,
+    body:`<b>导语：</b>${cq.insight}<br><b>切入：</b>${cq.angle}<br>${v2 ? '<b>【优化点】</b>首屏加入结论前置，正文按「痛点—证据—行动」三段重排。' : '首屏为场景引入，证据段待补充。'}`,
+    score: v2 ? 90 : 83, prob: prob + 2, risk: riskTag, fix: fix
+  });
+  if (ctCh.includes('销售推介')) blocks.push({
+    ch:'销售推介', ic:'推', tone:'orange', title:`一页纸｜${cq.id} 客户话术`,
+    body:`<b>客户问题：</b>${cq.q}<br><b>我方回应：</b>${cq.angle}<br><b>佐证：</b>${cq.src}<br>`
+      + `<b>红线：</b>${cq.risk}<br>${v2 ? '<b>【优化点】</b>已加入佐证出处与口径边界，避免绝对化表述。' : '佐证出处需补充。'}`,
+    score: v2 ? 94 : 85, prob: prob, risk: riskTag, fix: fix
+  });
+  if (ctCh.includes('展会')) blocks.push({
+    ch:'展会', ic:'展', tone:'purple', title:`展台 3 分钟讲稿｜${cq.q.replace('？','？')}`,
+    body:`<b>钩子：</b>${cq.insight}<br><b>证据：</b>${cq.frame[1] || cq.frame[0]}<br><b>收尾：</b>${cq.frame[2] || ''}<br>`
+      + `${v2 ? '<b>【优化点】</b>开场加入同行案例，缩短进入主题时间。' : '开场可加入同行案例以提升停留。'}`,
+    score: v2 ? 88 : 80, prob: prob - 6, risk: riskTag, fix: fix
+  });
+  $('#ct-out').className = '';
+  $('#ct-out').innerHTML = blocks.map(b => `
+    <div class="card" style="border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:11px">
+      <div class="row between" style="margin-bottom:8px">
+        <span class="tag ${b.tone}">${b.ch}</span>
+        <span class="small faint mono">质量分 ${b.score} · ${lang} · ${tone}</span>
+      </div>
+      <div class="row between" style="margin-bottom:8px">
+        <span class="row" style="gap:6px">
+          <span class="tier cause">爆款概率 ${b.prob}%</span>
+          <span class="tier assoc">95% CI ${(b.prob - 8).toFixed(1)}–${(b.prob + 7.4).toFixed(1)}%</span>
+          ${b.risk ? `<span class="tier trend">${b.risk}</span>` : '<span class="tier assoc">无跟风风险标签</span>'}
+        </span>
+        <button class="btn sm" data-eng="${b.ch}">引擎详情 ›</button>
+      </div>
+      <div class="bold" style="font-size:13.5px;margin-bottom:6px">${b.title}</div>
+      <div class="srcline">${b.body}</div>
+      ${b.fix ? `<div class="eng-card warn" style="margin-top:10px">
+        <div class="row between"><span class="bold" style="font-size:12.5px">引擎建议 · 接入点 A</span><span class="tier cause">预期 +${b.fix.gain}pt</span></div>
+        <div class="note mt6">${b.fix.d}</div></div>` : ''}
+    </div>`).join('') + `
+    <div class="row between" style="margin-top:12px">
+      <span class="small muted">${v2 ? '本次由「客户回复 / 点击」样本反馈优化生成' : '投放后点击与回复将回写为训练样本'}</span>
+      <span class="row" style="gap:8px">
+        <button class="btn" id="ct-engine">内容资产引擎预检</button>
+        <button class="btn primary" id="ct-optimize">按点击回复反馈优化生成模型</button>
+      </span>
+    </div>`;
+  $('#ct-optimize').onclick = () => { ctGen(true); toast('已基于反馈样本优化生成模型，输出 v2 版本'); };
+  $('#ct-engine').onclick = () => { go('engine'); toast('已跳转内容资产引擎：查看标签匹配度、概率与风险标注'); };
+  $$('[data-eng]').forEach(btn => btn.onclick = () => { go('engine'); toast('已定位该渠道版本的引擎预检明细'); });
+}
+$('#ct-gen').onclick = () => { ctGen(false); toast('已生成 ' + ctCh.length + ' 个渠道的定制内容'); };
+$('#ct-train').onclick = () => {
+  const b = $('#ct-train'); b.disabled = true; b.textContent = '训练中…';
+  setTimeout(() => {
+    const n = 1842 + Math.floor(Math.random() * 260);
+    $('#ct-samplev').textContent = n.toLocaleString();
+    $('#ct-sample').style.width = Math.min(100, 72 + Math.random() * 22) + '%';
+    b.disabled = false; b.textContent = '立即训练一次';
+    toast('生成模型已更新至 v4.8，样本 ' + n.toLocaleString());
+  }, 900);
+};
+
+/* =======================================================================
+   07 · 全渠道获客
+   ======================================================================= */
+let chType = 'all';
+function chRender() {
+  const kpi = [
+    { l:'今日新增线索', v:'1,284', d:'▲ 12.4% 环比', c:'up' },
+    { l:'有效企业', v:'4,820', d:'精度 86.2%', c:'up' },
+    { l:'覆盖国家/地区', v:'38', d:'▲ 新增 2', c:'up' },
+    { l:'高匹配待跟进', v:'1,350', d:'▲ 216 待派发', c:'up' },
+    { l:'渠道去重率', v:'91.7%', d:'跨源合并', c:'flat' }
+  ];
+  $('#ch-kpis').innerHTML = kpi.map(k => `<div class="kpi"><div class="l">${k.l}</div><div class="v">${k.v}</div><div class="d ${k.c}">${k.d}</div></div>`).join('');
+  $('#ch-sources').innerHTML = CH_SOURCES.map((s, i) => `
+    <div class="gate" style="align-items:flex-start${s.eg ? ';border-color:rgba(23,178,106,.45);background:rgba(23,178,106,.05)' : ''}">
+      <span class="g" style="background:${s.c}">${s.ic}</span>
+      <span style="flex:1"><span class="gt">${s.n}</span>${s.eg ? ' <span class="tier cause" style="margin-left:4px">第 7 源 · 接入点 C</span>' : ''}<br><span class="gd">${s.d}</span>
+        <div class="row" style="margin-top:7px;gap:12px">
+          <span class="small mono" style="color:var(--brand)">今日 ${s.today}</span>
+          <span class="small mono faint">累计 ${s.total}</span>
+        </div></span>
+      <span class="switch ${s.on ? 'on' : ''}" data-src="${i}"></span>
+    </div>`).join('');
+  $$('[data-src]').forEach(sw => sw.onclick = () => {
+    const i = +sw.dataset.src; CH_SOURCES[i].on = !CH_SOURCES[i].on;
+    sw.classList.toggle('on', CH_SOURCES[i].on);
+    toast(CH_SOURCES[i].n + ' 采集已' + (CH_SOURCES[i].on ? '恢复' : '暂停'));
+  });
+  const types = ['all','公交运营商','制造商','经销商','批发商','服务商','行业伙伴'];
+  $('#ch-types').innerHTML = types.map(t => `<button class="chip ${chType === t ? 'on' : ''}" data-ctype="${t}">${t === 'all' ? '全部' : t}</button>`).join('');
+  $$('[data-ctype]').forEach(b => b.onclick = () => { chType = b.dataset.ctype; chRender(); });
+  const q = ($('#ch-search').value || '').trim().toLowerCase();
+  const list = COMPANIES.filter(c => (chType === 'all' || c.t === chType) && (q === '' || (c.n + c.r + c.t).toLowerCase().includes(q)));
+  $('#ch-count').textContent = `显示 ${list.length} / ${COMPANIES.length} 家 · 已配对联系人 ${list.filter(c => c.sc >= 70).length} 家`;
+  $('#ch-body').innerHTML = list.map(c => `
+    <tr><td class="mono bold" style="color:${c.sc >= 85 ? 'var(--brand)' : c.sc >= 70 ? 'var(--cyan)' : 'var(--faint)'}">${c.sc}</td>
+    <td style="font-weight:600">${c.n}</td><td><span class="tag">${c.t}</span></td>
+    <td class="muted">${c.r}</td><td class="muted">${c.src}</td>
+    <td><span class="tag ${c.st === '高匹配' ? 'green' : c.st === '已入库' ? 'cyan' : 'orange'}">${c.st}</span></td></tr>`).join('');
+}
+$('#ch-search').oninput = chRender;
+$('#ch-refresh').onclick = () => { toast('正在从 7 个数据源同步…'); setTimeout(() => toast('同步完成：新增 218 条，去重后 +164'), 800); };
+$('#ch-export').onclick = () => toast('目标清单已导出（CSV + 可分享看板链接）');
+
+/* =======================================================================
+   08 · 关键联系人
+   ======================================================================= */
+let ctRoles = new Set(['采购总监','技术负责人','运营总监']);
+function ct2Render() {
+  $('#ct-roles').innerHTML = ROLES.map(r => `
+    <button class="chip ${ctRoles.has(r.id) ? 'on' : ''}" data-role="${r.id}">${r.id} <span style="opacity:.7">· ${r.en}</span></button>`).join('');
+  $$('[data-role]').forEach(b => b.onclick = () => {
+    const v = b.dataset.role;
+    if (ctRoles.has(v)) ctRoles.delete(v); else ctRoles.add(v);
+    ct2Render();
+  });
+  $('#db-list').innerHTML = DBS.map(d => `<span class="tag ${DB_CONNECTED.has(d) ? 'green' : ''}">${d}</span>`).join('');
+  $('#db-count').textContent = DB_CONNECTED.size;
+  $('#db-auth').textContent = DB_CONNECTED.size;
+  $('#db-total').textContent = DBS.length;
+  $('#db-total2').textContent = DBS.length;
+  const sel = Array.from(ctRoles);
+  const rows = [];
+  sel.forEach(r => {
+    const def = ROLES.find(x => x.id === r);
+    const n = Math.max(1, Math.round(parseInt(def.hit.replace(',', '')) / 12));
+    for (let i = 0; i < Math.min(n, 6); i++) {
+      const comp = COMPANIES[(ROLES.indexOf(def) * 3 + i) % COMPANIES.length];
+      rows.push({
+        n: ['L. Chen','M. Zhang','R. Alvarez','S. Whitmore','K. Tan','J. Martins'][i % 6],
+        r, c: comp.n, e: ['chen','zhang','alvarez','whitmore','tan','martins'][i % 6] + '@' + comp.n.replace(/[^a-zA-Z]/g, '').toLowerCase().slice(0, 10) + '.com',
+        p: '+' + (61 + i * 7) + ' ' + Math.floor(20000000 + Math.random() * 8999999),
+        cf: [96, 92, 88, 84, 79, 75][i % 6], src: def.db[i % def.db.length]
+      });
+    }
+  });
+  $('#ct2-count').textContent = `${rows.length} 位联系人 · 覆盖 ${new Set(rows.map(r => r.c)).size} 家企业`;
+  $('#ct2-body').innerHTML = rows.map(r => `
+    <tr><td><div class="bold">${r.n}</div><div class="small muted">${r.r}</div></td>
+    <td class="muted">${r.c}</td>
+    <td class="mono small">${r.e}</td>
+    <td class="mono small">${r.p}</td>
+    <td><span class="tag ${r.cf >= 90 ? 'green' : r.cf >= 80 ? 'cyan' : 'orange'}">${r.cf}%</span></td>
+    <td><button class="btn sm" data-add="${r.n}">加入序列</button></td></tr>`).join('');
+  $$('[data-add]').forEach(b => b.onclick = e => { e.stopPropagation(); toast(`${b.dataset.add} 已加入「海外采购·深度培育」序列`); });
+  const cov = ctRoles.size ? Math.min(96, 52 + ctRoles.size * 6) : 0;
+  $('#ct2-cov').textContent = cov.toFixed(1) + '%';
+  $('#cov-ov').style.width = (cov - 8) + '%'; $('#cov-ovv').textContent = (cov - 8) + '%';
+}
+$('#ct2-fetch').onclick = () => { toast('已向 4 个数据库发起采集请求…'); setTimeout(() => { ct2Render(); toast('采集完成，联系人数据已更新'); }, 800); };
+
+/* =======================================================================
+   09 · 自动化营销
+   ======================================================================= */
+const SEQ = [
+  { n:1, a:'邮件（首触）', c:'行业洞察型长文：对应 CQ 的场景化结论', tz:'悉尼 09:00 → 北京 07:00', st:'已发送', lang:'EN / 中文' },
+  { n:2, a:'邮件（跟进）', c:'TCO 测算表 + 同线路案例（含口径说明）', tz:'墨尔本 10:30 → 北京 08:30', st:'待发送', lang:'EN' },
+  { n:3, a:'LinkedIn 触达', c:'决策链三人同步：采购 / 运营 / 技术', tz:'旧金山 08:15 → 北京 23:15', st:'计划中', lang:'EN' },
+  { n:4, a:'WhatsApp / 微信', c:'展会邀约：现场体验同款配置', tz:'迪拜 11:00 → 北京 15:00', st:'计划中', lang:'EN / AR' },
+  { n:5, a:'电话（AI 外呼 + 转人工）', c:'按 TCO 测算结果预约线上方案会', tz:'利马 09:30 → 北京 20:30', st:'计划中', lang:'ES' },
+  { n:6, a:'展会现场跟进', c:'扫码入场 + 专属资料 + 现车体验', tz:'展会当地 10:00', st:'计划中', lang:'多语种' },
+  { n:7, a:'销售 1v1 移交', c:'高匹配线索移交区域销售并关闭自动化序列', tz:'工作时间触发', st:'条件触发', lang:'本地化' }
+];
+let seqPaused = false;
+function seqRender() {
+  $('#seq-body').innerHTML = SEQ.map(s => `
+    <tr><td class="mono bold">${s.n}</td><td class="bold">${s.a}</td>
+    <td class="muted" style="line-height:1.6">${s.c}</td>
+    <td class="mono small">${s.tz}</td>
+    <td><span class="tag ${s.st === '已发送' ? 'green' : s.st === '待发送' ? 'cyan' : ''}">${seqPaused && s.st === '待发送' ? '已暂停' : s.st}</span></td></tr>`).join('');
+  $('#au-previewlabel').textContent = seqPaused ? '序列已暂停（预览不变）' : '节点 1 · 首触邮件';
+  $('#au-phone').innerHTML = `
+    <div class="mail">
+      <div class="mh"><span class="av">SW</span><span><span class="nm">Sunwin Bus · 申沃客车</span><br><span class="tm">09:02 · Sydney</span></span></div>
+      <div class="hero" style="background-image:url('./assets/sunwin-bus-3q.jpg');background-size:cover;background-position:60% 62%;position:relative">
+        <span class="hs" style="z-index:2">SUNWIN · FLEET INSIGHT</span>
+        <span class="ht" style="z-index:2">Bus Blind Spots: What Drivers Actually Miss</span>
+        <span style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,28,42,.86),rgba(8,28,42,.08) 65%)"></span>
+      </div>
+      <div class="mt">Hi Michael,<br>
+      针对 <b>${$('#ct-co').value.split('（')[0]}</b> 这类线路结构，我们复盘了右转工况下的盲区触发路径——<b>右侧内轮差</b>是城市公交最高频的事故前兆。<br>
+      随信附上同线路 A/B 测试车的对照方案（${$('#ct-lang').value}）。</div>
+      <div class="mact"><span class="b p">查看对照方案</span><span class="b">预约 30 分钟</span></div>
+    </div>
+    <div class="mail">
+      <div class="mh"><span class="av" style="background:#0b94c9">SW</span><span><span class="nm">Sunwin · TCO Model</span><br><span class="tm">昨天 19:40 · Sydney</span></span></div>
+      <div class="mt">${$('#ct-key').value || '运营成本'} 测算表已生成：可代入你的日均里程、电价与维保单价，输出 5 年 TCO 对比。</div>
+      <div class="mact"><span class="b">打开测算表</span></div>
+    </div>
+    <div class="mail" style="opacity:.72">
+      <div class="mh"><span class="av" style="background:rgba(15,23,42,.35)">IN</span><span><span class="nm">展会邀约</span><br><span class="tm">10月28日 · 08:10 · Sydney</span></span></div>
+      <div class="mt">Bus &amp; Transit Conference 展位 B12，同款配置现车可试乘。</div>
+      <div class="mact"><span class="b">确认出席</span></div>
+    </div>`;
+}
+$('#au-pause').onclick = () => { seqPaused = !seqPaused; $('#au-pause').textContent = seqPaused ? '恢复序列' : '暂停序列'; seqRender(); toast(seqPaused ? '序列已暂停' : '序列已恢复'); };
+
+function tzRender() {
+  const pat = [0,0,0,0,0,0,1,1,2,3,3,3,2,2,1,1,1,0,0,0,0,0,0,0];
+  $('#tz-grid').innerHTML = pat.map(p => `<span class="cell ${p ? 'l' + p : ''}"></span>`).join('');
+}
+
+/* =======================================================================
+   10 · 持续学习
+   ======================================================================= */
+const LR = [
+  { v:'v4.7', t:'加入澳洲右舵关键词族', d:'依据 CQ06 反馈，模型新增右舵车型关键词与沿海气候信号', m:'2h 前 · 强化学习' },
+  { v:'v4.6', t:'新增行业伙伴角色', d:'依据 CQ09 / CQ11 反馈，加入「技术合作型」伙伴角色与联合选题信号', m:'3 天前 · 人工反馈' },
+  { v:'v4.5', t:'场景化客群细分', d:'按骨干线 / 接驳线拆分客群标签，匹配精度 +4.1pt', m:'6 天前 · 图神经网络' },
+  { v:'v4.4', t:'内容偏好学习', d:'偏好「场景 + 佐证」结构的内容，点击率 +3.6pt', m:'10 天前 · 强化学习' },
+  { v:'v4.3', t:'海外渠道扩容', d:'新增拉美海关与地图数据源，海外决策人覆盖 +9%', m:'2 周前 · 数据扩容' }
+];
+const LR_CONTENT = [
+  { v:'m2.4', t:'新增「真实车队场景引用」因果因子', d:'依据 T+14 回流 4,980 条结算样本，PSM 差异 +2.4pt 确认因果，升为强因果因子', m:'5h 前 · 效果回流' },
+  { v:'m2.3', t:'降级「高清画质封面」为伴随因子', d:'控制账号体量后系数归零，且与「精美封面」共线 VIF 8.4，不再驱动自动改写', m:'2 天前 · 漂移复核' },
+  { v:'m2.2', t:'新增「蹭智驾热点」跟风风险标注', d:'与 CQ12 合规红线冲突，命中即拦截，不进入推荐项', m:'4 天前 · 合规规则' },
+  { v:'m2.1', t:'Schema v1.3 → v1.4', d:'时效话题类二级标签由 5 个扩到 6 个，抽样复核准确率 94.2%（阈值 92%）', m:'1 周前 · 字典迭代' },
+  { v:'m2.0', t:'上线爆款概率校准', d:'原始 raw score 改为校准概率，误差由 0.082 降至 0.031', m:'2 周前 · 模型重训' }
+];
+let lrLedger = 'outreach';
+function lrRender() {
+  const list = lrLedger === 'outreach' ? LR : LR_CONTENT;
+  $('#lr-hist').innerHTML = list.map(h => `
+    <div class="tl-item"><div class="t">${h.v} ${h.t}</div><div class="d">${h.d}</div><div class="meta">${h.m}</div></div>`).join('');
+}
+$$('[data-ledger]').forEach(b => b.onclick = () => {
+  $$('[data-ledger]').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  lrLedger = b.dataset.ledger;
+  lrRender();
+});
+$('#lr-run').onclick = () => {
+  const b = $('#lr-run'); b.disabled = true; b.textContent = '训练中…';
+  setTimeout(() => {
+    const a = 0.861 + Math.random() * 0.02, c = 78.4 + Math.random() * 3, p = 92.4 + Math.random() * 1.4;
+    $('#lr-h2').textContent = a.toFixed(3); $('#lr-b2').style.width = (a * 100) + '%';
+    $('#lr-h3').textContent = c.toFixed(1) + '%'; $('#lr-b3').style.width = c + '%';
+    $('#lr-h1').textContent = p.toFixed(1) + '%'; $('#lr-b1').style.width = p + '%';
+    LR.unshift({ v:'v4.8', t:'第 28 轮反馈训练完成', d:'采纳 214 条新样本，渠道评分权重与内容偏好同步更新', m:'刚刚 · 自动' });
+    lrRender();
+    b.disabled = false; b.textContent = '触发第 28 轮训练';
+    toast('第 28 轮训练完成，AUC 提升至 ' + a.toFixed(3));
+  }, 1100);
+};
+
+/* =======================================================================
+   02 · 内容资产引擎
+   ======================================================================= */
+const EG_KPIS = [
+  { l:'样本量（近 3 月）', v:'8,640', d:'内容 · 1,920 / 账号 · 6,720' },
+  { l:'爆款率（Y 口径）', v:'11.4%', d:'收藏/曝光 ≥ 3.2%', c:'up' },
+  { l:'模型 PR-AUC', v:'0.842', d:'较上版 +0.037', c:'up' },
+  { l:'打标复核准确率', v:'94.2%', d:'抽样 320 条', c:'up' },
+  { l:'强因果因子', v:'9', d:'伴随 7 · 跟风 6', c:'flat' }
+];
+const EG_PIPE = [
+  { no:'STEP 01', t:'定边界', d:'平台 + 垂直行业 + 近 3 月窗口', foot:'压制时效漂移' },
+  { no:'STEP 02', t:'合规采集', d:'外显内容 + 交互指标 + 账号特征 + 发布特征', foot:'8,640 条' },
+  { no:'STEP 03', t:'固定 Schema', d:'人工定一级/二级字典，AI 只做映射', foot:'Schema v1.4' },
+  { no:'STEP 04', t:'构建样本', d:'Y = 收藏/曝光 ≥ 3.2%；X = 三层特征', foot:'爆款 984 条' },
+  { no:'STEP 05', t:'统计 + 建模', d:'单标签/组合相关性 + 分类模型辨因果', foot:'PR-AUC 0.842' },
+  { no:'STEP 06', t:'交给 Agent', d:'匹配度 / 概率 / 建议 / 风险标注', foot:'进行中', on:true },
+  { no:'STEP 07', t:'持续回流', d:'T+3/7/14 回传 → 重训 → 抗漂移', foot:'第 12 轮' }
+];
+const EG_FACTORS = [
+  { t:'场景化开头（具体工况）', l1:'叙事结构', corr:0.61, tier:'cause', cls:'cause',
+    ev:'回归显著 · 个体FE同向 · PSM 差异 +2.8pt · SHAP 贡献 22%' },
+  { t:'可核验数字带出处', l1:'证据强度', corr:0.54, tier:'cause', cls:'cause',
+    ev:'回归显著 · 个体FE同向 · PSM 差异 +2.1pt · SHAP 贡献 17%' },
+  { t:'首屏结论前置', l1:'叙事结构', corr:0.47, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +1.7pt · SHAP 13%' },
+  { t:'数据对比表', l1:'证据强度', corr:0.44, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +1.5pt · SHAP 11%' },
+  { t:'结尾行动号召（预约/试用）', l1:'转化设计', corr:0.41, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +1.4pt · SHAP 10%' },
+  { t:'真实车队/客户场景引用', l1:'证据强度', corr:0.38, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +1.2pt · SHAP 8%' },
+  { t:'标题含品牌词', l1:'基础特征', corr:0.29, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +0.9pt · SHAP 6%' },
+  { t:'配图数量 ≥ 3', l1:'视觉包装', corr:0.26, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +0.8pt · SHAP 5%' },
+  { t:'视频时长 60–90 秒', l1:'视觉包装', corr:0.19, tier:'cause', cls:'cause',
+    ev:'回归显著 · FE 同向 · PSM +0.6pt · SHAP 4%' },
+  { t:'高清画质封面', l1:'视觉包装', corr:0.72, tier:'assoc', cls:'assoc',
+    ev:'控制体量后消失 · 与「精美封面」共线 VIF 8.4 · 仅伴随' },
+  { t:'精美封面设计', l1:'视觉包装', corr:0.69, tier:'assoc', cls:'assoc',
+    ev:'控制变量后不显著 · 与「高清画质」共线 · 仅伴随' },
+  { t:'发布于正午时段', l1:'发布特征', corr:0.34, tier:'assoc', cls:'assoc',
+    ev:'控制账号体量后消失 · 时段是分发背景而非驱动' },
+  { t:'账号粉丝量级', l1:'账号特征', corr:0.58, tier:'assoc', cls:'assoc',
+    ev:'控制后系数归零 · 属账号体量而非内容质量' },
+  { t:'热点词「新能源渗透率」', l1:'时效话题', corr:0.66, tier:'trend', cls:'trend',
+    ev:'仅相关性 · 无因果证据 · 与热点周期强绑定' },
+  { t:'蹭「智驾 L2/L4」热点', l1:'时效话题', corr:0.58, tier:'trend', cls:'trend',
+    ev:'仅相关性 · 与 CQ12 合规红线冲突 · 禁止主动推荐' },
+  { t:'蹭「出口/关税」热点', l1:'时效话题', corr:0.51, tier:'trend', cls:'trend',
+    ev:'仅相关性 · 衰减快（半衰期 11 天）· 禁止主动推荐' }
+];
+const EG_MATCH = [
+  { t:'场景化开头（具体工况）', v:0.91, w:91 },
+  { t:'可核验数字带出处', v:0.88, w:88 },
+  { t:'首屏结论前置', v:0.74, w:74 },
+  { t:'数据对比表', v:0.66, w:66 },
+  { t:'结尾行动号召', v:0.58, w:58 },
+  { t:'真实车队场景引用', v:0.31, w:31, warn:true },
+  { t:'数据对比表 · 车辆段', v:0, w:0, miss:true }
+];
+const EG_ADVICE = [
+  { t:'补「真实车队场景引用」', d:'当前匹配度 31%，低于强因果因子基线 62%。同类内容加入该标签后收藏率提升 2.4pt（PSM 匹配样本 218 条）。', gain:'+2.4pt', ok:true },
+  { t:'「视频时长」建议压到 60–90 秒', d:'当前 108 秒，超出该因果因子最优区间（n=1,204）。', gain:'+0.6pt', ok:true },
+  { t:'「高清画质封面」无需调整', d:'属伴随因子，控制账号体量后系数归零，改它不带来增量。', gain:'0.0pt', ok:false }
+];
+const EG_RISK = [
+  { t:'蹭「智驾 L2/L4」热点', d:'仅有相关性、无因果证据；且与 CQ12 合规红线（严禁混用「自动驾驶」描述 L2 功能）冲突。命中即拦截。', lv:'高风险' },
+  { t:'热点词「新能源渗透率」', d:'与热点周期强绑定，半衰期约 14 天，模型半衰期衰减后不可复现。命中仅提示，不作推荐。', lv:'中风险' },
+  { t:'蹭「出口/关税」热点', d:'时效性极强且伴随 CQ08 商业订单口径风险。命中即拦截。', lv:'高风险' }
+];
+const EG_BACKFLOW = [
+  { t:'T+3', s:'早期信号', n:'6,120 条已回传 · 早期互动量', r:'13.8%' },
+  { t:'T+7', s:'稳定信号', n:'5,430 条已回传 · 收藏/点赞比', r:'11.9%' },
+  { t:'T+14', s:'结算信号', n:'4,980 条已回传 · 最终收藏/曝光', r:'11.4%' }
+];
+function egRender() {
+  $('#eg-kpis').innerHTML = EG_KPIS.map(k => `<div class="kpi"><div class="l">${k.l}</div><div class="v">${k.v}</div><div class="d ${k.c || ''}">${k.d}</div></div>`).join('');
+  $('#eg-pipe').innerHTML = EG_PIPE.map(s => `
+    <div class="eg-step" ${s.on ? 'style="border-color:rgba(23,178,106,.4);background:rgba(23,178,106,.05)"' : ''}>
+      <div class="no">${s.no}</div><div class="t">${s.t}</div><div class="d">${s.d}</div>
+      <div class="foot">${s.foot}${s.on ? ' · 当前' : ''}</div></div>`).join('');
+  $('#eg-factors').innerHTML = EG_FACTORS.map(f => `
+    <tr><td style="font-weight:600">${f.t}</td><td class="muted">${f.l1}</td>
+    <td class="mono bold" style="color:${f.cls === 'cause' ? 'var(--brand)' : f.cls === 'assoc' ? 'var(--cyan)' : 'var(--warn)'}">${f.corr.toFixed(2)}</td>
+    <td><span class="tier ${f.cls}">${f.tier === 'cause' ? '强因果因子' : f.tier === 'assoc' ? '伴随因子' : '跟风风险'}</span></td>
+    <td class="small muted" style="line-height:1.55">${f.ev}</td></tr>`).join('');
+  $('#eg-match').innerHTML = EG_MATCH.map(m => `
+    <div class="match">
+      <span class="mn" style="${m.miss ? 'color:var(--faint)' : ''}">${m.t}</span>
+      <span class="mb"><span class="mf ${m.warn ? 'warn' : ''}" style="width:${m.w}%"></span></span>
+      <span class="mv" style="color:${m.miss ? 'var(--faint)' : m.warn ? 'var(--warn)' : 'var(--text)'}">${m.miss ? '未命中' : (m.v * 100).toFixed(0) + '%'}</span>
+    </div>`).join('');
+  $('#eg-advice').innerHTML = EG_ADVICE.map(a => `
+    <div class="eng-card ${a.ok ? 'ok' : ''}" style="margin-bottom:9px">
+      <div class="row between"><span class="bold" style="font-size:12.8px">${a.t}</span>
+        <span class="tier ${a.ok ? 'cause' : 'assoc'}">预期 ${a.gain}</span></div>
+      <div class="note mt6">${a.d}</div>
+    </div>`).join('');
+  $('#eg-risk').innerHTML = EG_RISK.map(r => `
+    <div class="eng-card risk" style="margin-bottom:9px">
+      <div class="row between"><span class="bold" style="font-size:12.8px">${r.t}</span><span class="tier trend">${r.lv}</span></div>
+      <div class="note mt6">${r.d}</div>
+    </div>`).join('');
+  $('#eg-backflow').innerHTML = EG_BACKFLOW.map(b => `
+    <tr><td class="mono bold">${b.t}</td><td class="muted">${b.s}</td><td class="muted">${b.n}</td>
+    <td class="mono bold" style="color:var(--brand)">${b.r}</td></tr>`).join('');
+}
+$('#eg-recollect').onclick = () => {
+  const b = $('#eg-recollect'); b.disabled = true; b.textContent = '采集中…';
+  setTimeout(() => { b.disabled = false; b.textContent = '重跑采集与打标';
+    toast('采集与打标完成：8,640 条样本 · Schema v1.4 · 复核准确率 94.2%'); }, 900);
+};
+$('#eg-toproduct').onclick = () => { go('content'); toast('已接入「营销内容定制」：单点质量分升级为 评分 + 概率 + 风险三段'); };
+
+/* =======================================================================
+   引导 / 导航绑定
+   ======================================================================= */
+$$('[data-go]').forEach(el => el.onclick = () => go(el.dataset.go));
+$('#btn-guide').onclick = () => toast('导览：01 总览 → 02 内容资产引擎 → 03 问题库 → 04 模型 → 05 画像 → 06 内容 → 07 获客 → 08 联系人 → 09 营销 → 10 进化');
+$('#ov-refresh').onclick = () => {
+  chRender(); roiRender();
+  const contentCost = 42.8 + (Math.random() * 4 - 2);
+  const reachCost = 18.6 + (Math.random() * 3 - 1.5);
+  const amount = 7240 + (Math.random() * 600 - 300);
+  const roi = amount / (contentCost + reachCost);
+  $('#roi-big').innerHTML = roi.toFixed(1) + '<i style="font-size:14px;font-style:normal;font-weight:500">×</i>';
+  toast(`ROI 已重算：投入 ¥${(contentCost + reachCost).toFixed(1)}万 → 商机 ¥${amount.toFixed(0)}万 · ROI ${roi.toFixed(1)}×`);
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+
+/* init */
+cqRender(); modelRender(); pvRender(); ctInit(); chRender(); ct2Render(); seqRender(); tzRender(); lrRender(); egRender(); fleetRender(); roiRender(); effRender();
+</script>
+</body>
+</html>

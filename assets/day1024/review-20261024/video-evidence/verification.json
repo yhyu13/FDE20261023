@@ -1,0 +1,23 @@
+{
+  "duration_difference_seconds": 0.0,
+  "atoms": [
+    "ftyp",
+    "moov",
+    "free",
+    "mdat"
+  ],
+  "video": {
+    "codec_name": "h264",
+    "width": 1920,
+    "height": 1080,
+    "pix_fmt": "yuv420p",
+    "avg_frame_rate": "24/1"
+  },
+  "audio_codec": "aac",
+  "picture_all_nine": "passed",
+  "jitter_all_nine": "passed",
+  "subtitle_three_axes_and_burn_sample": "passed",
+  "whole_file_decode": "passed",
+  "http_range": "not tested; no server started",
+  "voice_subjective_quality": "not guaranteed by metadata; no human listening sign-off"
+}

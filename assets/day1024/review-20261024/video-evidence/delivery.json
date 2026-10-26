@@ -1,0 +1,55 @@
+{
+  "directory": "C:\\Users\\24717\\AppData\\Local\\Temp\\kilo\\day1024-review-video",
+  "final_video": "C:\\Users\\24717\\AppData\\Local\\Temp\\kilo\\day1024-review-video\\final.mp4",
+  "bytes": 62643583,
+  "sha256": "d8175e0942b8212d51a2402de66ec8ae63698fe52f2071e87556236accc27d70",
+  "duration_seconds": 185.064,
+  "voice": {
+    "name": "zh-CN-YunjianNeural",
+    "rate": "-5%",
+    "pitch": "-5Hz",
+    "boundary": "SentenceBoundary"
+  },
+  "subtitles": 41,
+  "scenes": 9,
+  "verification_files": [
+    "verification.json",
+    "caption-verification.json",
+    "browser-playback.json",
+    "ffprobe-final.json",
+    "layout-check.json",
+    "source-manifest.json"
+  ],
+  "publish_files": [
+    "final.mp4",
+    "subs.ass",
+    "subs.srt",
+    "subs.vtt",
+    "audio/narration_full.wav",
+    "contact-sheet.png",
+    "frames/",
+    "html/",
+    "midpoints/",
+    "boundaries/",
+    "timeline.json",
+    "steps.json",
+    "scenes.json",
+    "subtitles.json",
+    "produce.py",
+    "reproduce.ps1",
+    "engine/",
+    "inputs/"
+  ],
+  "do_not_publish": [
+    "browser-profile/",
+    "playback-profile/",
+    "tmp/",
+    "downloads/"
+  ],
+  "limitations": [
+    "No human listening approval; low-pitch male voice is a selected synthetic voice, not a biological claim.",
+    "SentenceBoundary timing; within-sentence split timing is proportional, not forced phoneme alignment.",
+    "Local file playback and seek verified; HTTP Range was not tested and no server was started.",
+    "Teaching scenarios only; no real marketing effectiveness, budget, supplier quote, or prediction validated."
+  ]
+}

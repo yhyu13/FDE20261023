@@ -1,0 +1,76 @@
+{
+  "status": "教学情景；不是客户预算、供应商报价、收入预测或已验证效果",
+  "currency": "CNY",
+  "horizon_days": 90,
+  "customer_total_listed_cost": 85000.0,
+  "customer_assumed_external_payments": 73000.0,
+  "unit_pre_marketing_contribution": 25000.0,
+  "break_even_orders": 4,
+  "break_even_orders_at_50_percent_incrementality": 7,
+  "base_roi_at_50_percent_incrementality": -0.558824,
+  "vendor_service_revenue": 15000.0,
+  "vendor_direct_cost": 12500.0,
+  "vendor_delivery_contribution": 2500.0,
+  "vendor_delivery_contribution_margin": 0.166667,
+  "scenarios": [
+    {
+      "id": "conservative",
+      "label": "保守",
+      "qualified_leads": 60,
+      "sales_accepted": 12,
+      "new_customers": 1,
+      "net_revenue": 100000.0,
+      "incremental_pre_marketing_contribution": 25000.0,
+      "net_contribution_after_marketing": -60000.0,
+      "marketing_roi": -0.705882,
+      "listed_cost_cpl": 1416.666667,
+      "listed_cost_cac": 85000.0
+    },
+    {
+      "id": "base",
+      "label": "基准",
+      "qualified_leads": 100,
+      "sales_accepted": 25,
+      "new_customers": 3,
+      "net_revenue": 300000.0,
+      "incremental_pre_marketing_contribution": 75000.0,
+      "net_contribution_after_marketing": -10000.0,
+      "marketing_roi": -0.117647,
+      "listed_cost_cpl": 850.0,
+      "listed_cost_cac": 28333.333333
+    },
+    {
+      "id": "optimistic",
+      "label": "乐观",
+      "qualified_leads": 160,
+      "sales_accepted": 48,
+      "new_customers": 6,
+      "net_revenue": 600000.0,
+      "incremental_pre_marketing_contribution": 150000.0,
+      "net_contribution_after_marketing": 65000.0,
+      "marketing_roi": 0.764706,
+      "listed_cost_cpl": 531.25,
+      "listed_cost_cac": 14166.666667
+    }
+  ],
+  "source_arithmetic": {
+    "opportunity_total_wan": 7240.0,
+    "overseas_amount_share": 0.541436,
+    "touch_to_opportunity_ratio": 0.072881,
+    "reply_lift_vs_manual_pp": 13.3,
+    "reply_lift_r16_r27_pp": 12.0,
+    "agency_flow_assumption_not_saving": 210000.0
+  },
+  "limitations": [
+    "全部费用与转化输入均为任意教学假设，不能据此批准支出。",
+    "净收入假设为同一不含流转税、扣退货口径；不是回款。实际须与财务统一口径。",
+    "贡献率已扣产品或服务履约变动成本，尚未扣营销成本；不是会计净利率。",
+    "成交均为去重新客户，且暂假设100%增量；没有对照时不能认定真实增量。",
+    "90天是教学窗口，不是已批准试点期限。成交观察须覆盖实际销售周期。",
+    "成本口径仅含已列项目；遗漏销售跟进、差旅或佣金时必须补入，不能声称完整CAC。",
+    "73000元为假设外付项合计，不代表实际付款、可取消支出或现金节约。",
+    "客户直接数据费与软件方数据费假设为不同合同，不重复计费；真实采购需去重。",
+    "未假设平台代收代付。若代收，代付款不得冒充自有服务收入。",
+    "软件方贡献未扣销售获客、研发、管理、融资、税等，不是净利润。"
+  ]
+}

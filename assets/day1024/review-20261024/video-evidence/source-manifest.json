@@ -1,0 +1,17 @@
+{
+  "voice": "zh-CN-YunjianNeural",
+  "rate": "-5%",
+  "pitch": "-5Hz",
+  "narration_chars": 792,
+  "subtitle_events": 41,
+  "audio_duration_seconds": 185.064,
+  "sources": {
+    "04-视频讲解稿.md": "7f87305550ec363c52c2bb1f33fc11eabc882a6ec599285a2b8c2b39093783b2",
+    "calculate.py": "94c036bb2753ef0993161c61ba19fa0e0fac80a44f3068c8c2c4c39b6884f901",
+    "model-inputs.json": "bd5862f2c47b59009f7a7c82c75b4647a5847b7b8656883db911bfb602269206",
+    "model-results.json": "a4803da77cf7e710ce40b4f26bb1efc115663cdb5b34f29007fd07ac5df2b34d"
+  },
+  "motion": "Pillow floating-point crop; 1.04x maximum; no zoompan",
+  "privacy": "Only approved scene narration sent to Edge TTS; local slides block HTTP(S).",
+  "disclaimer": "免责声明：本输出由 AI 辅助生成，仅用于信息整理与研究参考，不构成专业意见或决策依据。"
+}

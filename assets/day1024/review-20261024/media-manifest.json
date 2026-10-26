@@ -1,0 +1,27 @@
+{
+  "video": "video.mp4",
+  "video_sha256": "d8175e0942b8212d51a2402de66ec8ae63698fe52f2071e87556236accc27d70",
+  "bytes": 62643583,
+  "duration_seconds": 185.064,
+  "voice": {
+    "name": "zh-CN-YunjianNeural",
+    "rate": "-5%",
+    "pitch": "-5Hz",
+    "boundary": "SentenceBoundary"
+  },
+  "scenes": 9,
+  "subtitle_events": 41,
+  "omitted": [
+    "browser-profile/",
+    "playback-profile/",
+    "tmp/",
+    "downloads/"
+  ],
+  "limitations": [
+    "No human listening approval; low-pitch male voice is a selected synthetic voice, not a biological claim.",
+    "SentenceBoundary timing; within-sentence split timing is proportional, not forced phoneme alignment.",
+    "Local file playback and seek verified; HTTP Range was not tested and no server was started.",
+    "Teaching scenarios only; no real marketing effectiveness, budget, supplier quote, or prediction validated."
+  ],
+  "source_regeneration_note": "Frozen video scripts retain their original isolated-output guard. Run in the original temp directory; do not claim arbitrary-location replay."
+}

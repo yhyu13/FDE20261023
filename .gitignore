@@ -48,29 +48,54 @@ samples/
 !data/README.md
 out/
 
-# 素材与交付物目录（不入库）
-#   assets/day1023/、day1024_*/  演示原型、截图、一次性探针脚本
-#   assets/02 申沃的智能驾驶…/    原始素材的解包目录
-#   合计约 108 MB，多为 PNG/HTML 一次性中间物，可由脚本重新生成
-#   真正值得入库的只有交付级图片与小文本（白名单见下），其余都是中间产物。
+# 素材与交付物目录
+#   历史上 assets/ 整体不入库（约 108 MB 中间产物），代价是**克隆下来的仓库跑不了验收测试**、
+#   README 的预览图也挂。现在改成：放行"交付物 + 我方产出"，只把可重跑的中间产物挡在外面。
 #
-# 例外（白名单）：下面几个文件是交付物，不是中间产物。
-#   README.md / overview.html 的预览图与 docs/训练营背景.md 的"一手现场材料"引用都指着它们，
-#   删掉会让预览图挂掉、让溯源链断掉，所以继续跟踪。
-#   用 assets/* 而不是 assets/ 目录，是因为 git 不允许在被排除的目录里再放行子项。
-#   新增白名单项 = 确认它不是中间产物 + 确认有引用。
-#   图片全部用 ASCII 文件名：Git for Windows 在 ACP=GBK 下会把
-#   中文文件名转码错位，导致本地与远程名字对不上。
+# 规则分三层，顺序敏感（后出现的规则覆盖先出现的）：
+#   ① assets/*          挡住目录本身，git 不允许在被排除的目录里再放行子项
+#   ② !assets/<dir>/    放行整个目录，git 才会进去扫内容
+#   ③ assets/**/...     在放行目录里再排除中间产物与未授权材料
+#
+# 中文文件名现在是允许的（git 存的是 UTF-8 字节，core.quotepath=true 只影响显示）。
+#   推完要复核远端树名与本地逐字一致，见 tools/verify_asset_names.py。
+
 assets/*
 !assets/overview-preview.png
 !assets/problem-original-photo.jpg
 !assets/survey-detail-photo-05.jpg
 !assets/training-camp-site-photo.jpg
+!assets/海报样例.png
 #   下面三个是"被测原型"本体：tests/ 里的验收测试直接读它们的 index.html，
 #   不入库的话，克隆下来的仓库里测试必然失败。它们是交付物，不是中间产物。
 !assets/day1024_prd_kimi/
 !assets/day1024_prd_v1/
 !assets/day1024_sol_v1_v2/
+
+# ② 放行目录：交付原型 HTML/JS、海报与预览 PNG、TTS mp3 与时间轴、生成脚本、复盘文档、公开产品图
+!assets/day1023/
+!assets/day1024/
+!assets/day1025/
+!assets/customer_analysis/
+
+# ③ 目录内的中间产物（体积大、可由脚本重跑）
+assets/**/*.mp4
+assets/**/*.zip
+assets/**/*.wav
+assets/**/*.log
+assets/**/.hyperframes/
+assets/**/_shots/
+assets/**/renders/
+assets/day1024/review-20261024/video-assets/frames/
+assets/day1024/review-20261024/video-assets/midpoints/
+
+# ③ 未授权材料，不随公开仓库分发
+#   智能纪要 PDF = 训练营内部讲座的 AI 纪要；微信图片 = 投影幕翻拍（含讲师姓名与主办方幻灯片）；
+#   docx = 命题方下发的原题原件。入库前先拿授权。
+assets/day1023/智能纪要：*.pdf
+assets/day1023/微信图片_*.jpg
+assets/day1025/lecture/
+assets/customer_analysis/**/*.docx
 
 # 交付归档包：单文件 380 MB，超过 GitHub 单文件 100 MB 硬限制，推送必被拒
 #   内容是视频构建产物（mp4 / wav / frames / 27 MB 的 index.html）

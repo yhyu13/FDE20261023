@@ -1,0 +1,197 @@
+<template>
+  <style>
+    #root{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;
+      padding:36px 64px 0;font-family:"Noto Sans JP",sans-serif;color:#0d1526}
+    .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:#98a2b3;letter-spacing:.7px}
+    .hd{display:flex;align-items:flex-end;justify-content:space-between;margin-top:8px}
+    h2{margin:0;font-size:30px;display:flex;align-items:center;gap:12px}
+    .ic{font-family:"JetBrains Mono",monospace;font-size:14px;color:#fff;background:#0a86bd;
+      border-radius:6px;padding:3px 8px}
+    .sub{color:#5a6679;font-size:14px;margin-top:6px}
+    .tag{font-size:13px;padding:4px 12px;border-radius:999px;font-weight:600;background:rgba(13,21,38,.06);color:#5a6679}
+    .btn{font-size:13px;padding:6px 14px;border-radius:8px;border:1px solid rgba(15,23,42,.11);background:#fff}
+    .btn.pri{background:#12a465;border-color:#12a465;color:#fff}
+    .main{flex:1;min-height:0;margin-top:18px;display:flex;gap:20px}
+    .panel{border:1px solid rgba(15,23,42,.11);border-radius:12px;background:#fff;display:flex;
+      flex-direction:column;min-height:0}
+    .ph{padding:11px 16px;border-bottom:1px solid rgba(15,23,42,.11);font-size:15px;font-weight:600;
+      display:flex;justify-content:space-between}
+    .ph .hint{font-weight:400;font-size:12px;color:#98a2b3;font-family:"JetBrains Mono",monospace}
+    .pb{padding:12px 16px;overflow:hidden;min-height:0}
+    .flds{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .fld label{display:block;font-size:12.5px;color:#5a6679;margin-bottom:4px}
+    .ipt{border:1px solid rgba(15,23,42,.11);border-radius:8px;padding:7px 11px;font-size:13px;background:#fff}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{text-align:left;font-size:11.5px;color:#98a2b3;padding:8px;border-bottom:1px solid rgba(15,23,42,.11)}
+    td{padding:7px 8px;border-bottom:1px solid rgba(15,23,42,.06);line-height:1.4}
+    .mono{font-family:"JetBrains Mono",monospace}
+    .pool .l{font-size:12.5px;color:#5a6679}
+    .pool .v{font-family:"JetBrains Mono",monospace;font-size:40px;font-weight:700;letter-spacing:-1px;margin-top:2px}
+    .pool .d{font-size:12.5px;color:#0a7a4a;margin-top:2px}
+    .br{display:flex;align-items:center;gap:11px;margin-top:10px;font-size:13px}
+    .br .bl{flex:0 0 116px;color:#5a6679}
+    .br .bt{flex:1;height:10px;border-radius:6px;background:rgba(13,21,38,.07);overflow:hidden}
+    .br .bf{display:block;height:100%;border-radius:6px;background:#12a465}
+    .br .bv{flex:0 0 60px;text-align:right;font-family:"JetBrains Mono",monospace;font-weight:600}
+    .layers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .layer{border:1px solid rgba(15,23,42,.11);border-radius:10px;padding:10px 12px}
+    .layer .lt{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px}
+    .layer .lt i{width:9px;height:9px;border-radius:2px;background:#12a465}
+    .layer.a .lt i{background:#0a86bd}
+    .layer .kv{display:flex;justify-content:space-between;font-size:12px;margin-top:5px;color:#5a6679}
+    .layer .kv b{color:#0d1526;font-weight:600;text-align:right}
+    .gate{display:flex;gap:9px;padding:9px 12px;border-radius:9px;border:1px solid rgba(15,23,42,.11);
+      font-size:12.5px;line-height:1.55;margin-bottom:8px}
+    .gate .g{flex:0 0 18px;height:18px;border-radius:50%;color:#fff;font-size:11px;font-weight:800;
+      display:flex;align-items:center;justify-content:center}
+    .gate.pass{background:rgba(10,122,74,.05)}.gate.pass .g{background:#0a7a4a}
+    .gate.warn{background:rgba(168,96,10,.06)}.gate.warn .g{background:#a8600a}
+    .gate .gt{font-weight:600}.gate .gd{color:#5a6679}
+    .tl{border-left:2px solid rgba(15,23,42,.11);padding-left:12px;margin-top:6px}
+    .tl .it{position:relative;padding-bottom:9px;font-size:12.5px}
+    .tl .it::before{content:"";position:absolute;left:-17px;top:5px;width:8px;height:8px;border-radius:50%;background:#12a465}
+    .tl .it .d{color:#5a6679;line-height:1.5;margin-top:2px}
+    #caps{position:absolute;left:0;right:0;bottom:104px;display:flex;justify-content:center;pointer-events:none}
+    .cap{font-size:19px;line-height:1.45;padding:7px 16px;border-radius:10px;background:rgba(13,21,38,.06)}
+  </style>
+  <div id="root" data-composition-id="s3" data-width="1280" data-height="720">
+    <div class="kicker clip" id="s3-kicker" data-start="0.3" data-duration="28">ABILITY 02 · STEP 03 · 输入产品与典型客户 → 生成筛选规则集</div>
+    <div class="hd">
+      <div>
+        <h2 class="clip" id="s3-title" data-start="0.5" data-duration="28"><span class="ic">02</span>找客户模型定制</h2>
+        <div class="sub clip" id="s3-sub" data-start="0.7" data-duration="28">改一个输入，规则当场重算，企业池与匹配分布同步更新；结果回流驱动下一轮迭代</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="tag clip" id="s3-n" data-start="0.9" data-duration="28">10 条生效规则</span>
+        <span class="btn clip" id="s3-reset" data-start="0.9" data-duration="28">重置</span>
+        <span class="btn pri clip" id="s3-run" data-start="0.9" data-duration="28">重新生成模型</span>
+      </div>
+    </div>
+    <div class="main">
+      <div style="flex:1;display:flex;flex-direction:column;gap:14px;min-height:0">
+        <div class="panel clip" id="s3-inputs" data-start="{{CUE_inputs}}" data-duration="{{CUEEND_inputs}}">
+          <div class="ph">产品与客户输入 <span class="hint">录入即改，改完重新生成</span></div>
+          <div class="pb">
+            <div class="flds">
+              <div class="fld" style="grid-column:span 2"><label>产品品类</label>
+                <div class="ipt">城市客车 / 城际客车 / 团体通勤客车（新能源全系）</div></div>
+              <div class="fld" style="grid-column:span 2"><label>典型客户描述</label>
+                <div class="ipt" style="font-size:12.5px">地方国有公交集团（3000 辆以上）、省会城市公交公司、海外国有 / 私营客运运营商、客车经销与维保服务商、车联网与自动驾驶技术伙伴</div></div>
+              <div class="fld"><label>典型应用场景</label>
+                <div class="ipt">大客流骨干线路、普通接驳线、城际客运、机场接驳</div></div>
+              <div class="fld"><label>核心技术卖点</label>
+                <div class="ipt">电池续航与电耗管理、整车轻量化、驾驶辅助安全配置、车联网远程诊断</div></div>
+              <div class="fld"><label>目标区域</label>
+                <div class="ipt" id="s3-region">中国华东、华南公交集团、澳洲、东南亚、拉美、中东</div></div>
+              <div class="fld"><label>排除对象</label>
+                <div class="ipt">个人购车、二手车商、非营运车辆改装厂、已明确无采购计划</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel clip" id="s3-rules" style="flex:1;min-height:0" data-start="{{CUE_rules}}" data-duration="{{CUEEND_rules}}">
+          <div class="ph">生成的筛选规则集 <span class="hint">交集后预计 4,820 家企业</span></div>
+          <div class="pb">
+            <table>
+              <thead><tr><th style="width:104px">规则维度</th><th style="width:88px">条件</th>
+                <th>取值 / 关键词</th><th style="width:82px">命中量</th></tr></thead>
+              <tbody>
+                <tr><td>行业分类</td><td style="color:#5a6679">企业类型 =</td><td>公交运营商 / 城际客运 / 客车制造商 / 经销商 / 批发商 / 服务商 / 行业伙伴</td><td class="mono" style="color:#12a465">2,860</td></tr>
+                <tr><td>规模区间</td><td style="color:#5a6679">车辆规模 ≥</td><td>300 辆（公交）｜50 辆（客运）｜年采购 ≥ 20 台（经销）</td><td class="mono" style="color:#12a465">1,940</td></tr>
+                <tr><td>关键词族 A</td><td style="color:#5a6679">产品词</td><td>城市客车、城际客车、团体通勤客车、电池续航与电耗管理、整车轻量化、车联网远程诊断</td><td class="mono" style="color:#12a465">3,120</td></tr>
+                <tr><td>关键词族 B</td><td style="color:#5a6679">场景词</td><td>大客流骨干线路、普通接驳线、城际客运、机场接驳</td><td class="mono" style="color:#12a465">2,640</td></tr>
+                <tr><td>关键词族 C</td><td style="color:#5a6679">行业词</td><td>公交集团、公共交通、城市客运、旅游客运、班车</td><td class="mono" style="color:#12a465">2,210</td></tr>
+                <tr><td>区域过滤</td><td style="color:#5a6679">国家 / 省份</td><td>中国华东、华南公交集团、澳洲、东南亚、拉美、中东</td><td class="mono" style="color:#12a465">1,860</td></tr>
+                <tr><td>排除规则</td><td style="color:#5a6679">排除</td><td>个人购车、二手车商、非营运车辆改装厂、已明确无采购计划</td><td class="mono" style="color:#cf2a1c">- 1,180</td></tr>
+                <tr><td>决策链角色</td><td style="color:#5a6679">职位族</td><td>采购总监 / 运营总监 / 技术负责人 / 董事会 / 维保主管</td><td class="mono" style="color:#12a465">3,260</td></tr>
+                <tr><td>时效规则</td><td style="color:#5a6679">活跃度</td><td>近 24 个月有采购、招标或新车交付记录</td><td class="mono" style="color:#12a465">1,720</td></tr>
+                <tr><td>关联信号</td><td style="color:#5a6679">图关系</td><td>与已知 86 家成交客户存在采购 / 运营 / 维保弱关联</td><td class="mono" style="color:#12a465">960</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div style="flex:0 0 360px;display:flex;flex-direction:column;gap:14px;min-height:0">
+        <div class="panel clip" id="s3-pool" data-start="{{CUE_pool}}" data-duration="{{CUEEND_pool}}">
+          <div class="pb">
+            <div class="pool"><div class="l">预计目标企业（交集后）</div>
+              <div class="v" id="s3-poolv">4,820</div>
+              <div class="d">精度 86.2% · 较人工筛选快 40×</div></div>
+            <div id="s3-bars" data-start="{{CUE_bars}}" data-duration="{{CUEEND_bars}}">
+              <div class="br"><span class="bl">高匹配 ≥85</span><span class="bt"><span class="bf" style="width:28%"></span></span><span class="bv">1,350</span></div>
+              <div class="br"><span class="bl">中匹配 70-84</span><span class="bt"><span class="bf" style="width:45%;background:#0a86bd"></span></span><span class="bv">2,170</span></div>
+              <div class="br"><span class="bl">低匹配 &lt;70</span><span class="bt"><span class="bf" style="width:27%;background:rgba(15,23,42,.18)"></span></span><span class="bv">1,300</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel clip" id="s3-layers" data-start="{{CUE_layers}}" data-duration="{{CUEEND_layers}}">
+          <div class="ph">渠道分层 · 两套效果口径 <span class="hint">T2 渠道标签</span></div>
+          <div class="pb">
+            <div class="layers">
+              <div class="layer">
+                <div class="lt"><i></i>关系层（订阅 / 关系驱动）</div>
+                <div class="kv"><span>公众号</span><b>咨询数</b></div>
+                <div class="kv"><span>官网</span><b>询盘表单</b></div>
+                <div class="kv"><span>展会</span><b>有效洽谈数</b></div>
+                <div class="kv"><span>销售推介</span><b>商机推进</b></div>
+              </div>
+              <div class="layer a">
+                <div class="lt"><i></i>算法层（分发驱动）</div>
+                <div class="kv"><span>抖音 / 视频号</span><b>完播 + 有效评论</b></div>
+                <div class="kv"><span>小红书</span><b>收藏 + 咨询</b></div>
+                <div class="kv"><span>千川投放</span><b>CPL</b></div>
+                <div class="kv" style="color:#cf2a1c"><span>FB01 / FB02</span><b>浏览≠客户数</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel clip" id="s3-eval" style="flex:1;min-height:0" data-start="{{CUE_eval}}" data-duration="{{CUEEND_eval}}">
+          <div class="ph">模型评估与迭代</div>
+          <div class="pb">
+            <div class="gate pass"><span class="g">✓</span><span><span class="gt">行业覆盖完整性 94%</span><br>
+              <span class="gd">已覆盖 6 类采购主体角色</span></span></div>
+            <div class="gate pass"><span class="g">✓</span><span><span class="gt">决策链识别 88%</span><br>
+              <span class="gd">可定位采购 / 技术 / 运营三类关键角色</span></span></div>
+            <div class="gate warn"><span class="g">!</span><span><span class="gt">海外决策人覆盖 61%</span><br>
+              <span class="gd">低于阈值 78%，建议补充采集澳洲 / 拉美企业库</span></span></div>
+            <div class="gate warn"><span class="g">!</span><span><span class="gt">成本口径敏感 2 项</span><br>
+              <span class="gd">CQ04 的 TCO 测算需产品部输入</span></span></div>
+            <div class="tl">
+              <div class="it"><div class="t">v4.7 <span class="tag" style="padding:2px 8px">当前</span></div>
+                <div class="d">新增「澳洲右舵车型」关键词族；排除项加入非营运改装厂</div></div>
+              <div class="it"><div class="t">v4.6</div>
+                <div class="d">依据 CQ09 / CQ11 反馈新增行业伙伴角色（技术合作型）</div></div>
+              <div class="it" style="padding-bottom:0"><div class="t">v4.5</div>
+                <div class="d">按骨干线 / 接驳线场景细分客群标签，匹配精度 +4.1pt</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="caps" data-track-kind="captions">/*CAPTIONS*/null</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s3-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+    tl.fromTo("#s3-title", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.5);
+    tl.fromTo("#s3-sub", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.7);
+    tl.fromTo("#s3-inputs", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, {{CUE_inputs}});
+    tl.fromTo("#s3-rules", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, {{CUE_rules}});
+    tl.fromTo("#s3-layers", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_layers}});
+    // 「改一个输入」：区域输入框追加非洲并高亮
+    tl.call(() => {
+      const r = document.querySelector("#s3-region");
+      if (r && !r.textContent.includes("非洲")) r.textContent = r.textContent + "、非洲";
+    }, null, {{CUE_edit}});
+    tl.fromTo("#s3-region", { boxShadow: "0 0 0 0 rgba(18,164,101,.55)" },
+      { boxShadow: "0 0 0 10px rgba(18,164,101,0)", duration: 0.9, ease: "power2.out" }, {{CUE_edit}});
+    // 「规则当场重算」：企业池与分布条同步变化
+    tl.to("#s3-poolv", { duration: 0.5, ease: "power2.out",
+      onStart: () => { document.querySelector("#s3-poolv").textContent = "5,060"; } }, {{CUE_rerun}});
+    tl.fromTo("#s3-bars", { opacity: 0.4 }, { opacity: 1, duration: 0.4 }, {{CUE_rerun}});
+    tl.fromTo("#s3-pool", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_pool}});
+    tl.fromTo("#s3-bars .bf", { scaleX: 0, transformOrigin: "left center" },
+      { scaleX: 1, duration: 0.7, ease: "power3.out", stagger: 0.08 }, {{CUE_bars}});
+    tl.fromTo("#s3-eval", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_eval}});
+    window.__timelines["s3"] = tl;
+  </script>
+</template>

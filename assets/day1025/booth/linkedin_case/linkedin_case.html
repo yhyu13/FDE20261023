@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>XX客车 × LinkedIn · 海外 GTM 爆款案例</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --ink:#0c1a24;
+    --deep:#0a5c43;
+    --green:#12855f;
+    --teal:#0b94c9;
+    --li:#0a66c2;
+    --li-soft:#e8f0fe;
+    --muted:#586873;
+    --faint:#8d9aa3;
+    --hair:rgba(12,26,36,.10);
+    --grad:linear-gradient(120deg,#0d7a55 0%,#0f8f74 45%,#0b94c9 100%);
+    --li-grad:linear-gradient(120deg,#0a66c2 0%,#0b94c9 100%);
+    --sans:"Noto Sans SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+    --mono:"Consolas","SF Mono",monospace;
+  }
+  html,body{background:#e9eeee}
+  .poster{
+    position:relative;width:2560px;height:1440px;overflow:hidden;
+    background:#eef2f2;font-family:var(--sans);color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ================= background ================= */
+  .bg{position:absolute;inset:0}
+  .bg-base{position:absolute;inset:0;
+    background:
+      radial-gradient(1400px 900px at 2% -14%, #e9fbf2 0%, rgba(233,251,242,0) 58%),
+      radial-gradient(1200px 900px at 100% 0%, #e7f1fc 0%, rgba(231,241,252,0) 60%),
+      linear-gradient(168deg,#f7f9f9 0%,#eef2f3 48%,#e8edee 100%);
+  }
+  .bg-photo{position:absolute;right:-320px;bottom:-300px;width:2100px;opacity:.22;
+    filter:blur(6px) saturate(.7) contrast(1.02);
+    -webkit-mask-image:linear-gradient(102deg,transparent 2%,#000 42%);
+    mask-image:linear-gradient(102deg,transparent 2%,#000 42%);
+  }
+  .bg-photo img{display:block;width:100%}
+  .bg-wash{position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(247,249,249,.72) 0%,rgba(247,249,249,.20) 36%,rgba(247,249,249,.10) 64%,rgba(238,242,242,.74) 100%);
+  }
+  .bg-grid{position:absolute;inset:0;opacity:.48;
+    background-image:linear-gradient(rgba(12,26,36,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(12,26,36,.045) 1px,transparent 1px);
+    background-size:48px 48px;
+    -webkit-mask-image:radial-gradient(1500px 900px at 14% 72%,#000 0%,transparent 74%);
+    mask-image:radial-gradient(1500px 900px at 14% 72%,#000 0%,transparent 74%);
+  }
+  .glow{position:absolute;filter:blur(8px)}
+  .glow-a{left:-380px;top:-420px;width:1500px;height:1300px;
+    background:radial-gradient(circle at 50% 50%,rgba(23,178,116,.20),rgba(23,178,116,0) 62%)}
+  .glow-b{right:-260px;top:-360px;width:1500px;height:1300px;
+    background:radial-gradient(circle at 50% 50%,rgba(10,102,194,.16),rgba(10,102,194,0) 62%)}
+  .glow-c{right:100px;top:120px;width:1500px;height:1100px;
+    background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.92),rgba(255,255,255,0) 64%)}
+  .beam{position:absolute;left:-260px;top:-760px;width:1500px;height:1500px;
+    background:linear-gradient(118deg,rgba(255,255,255,.92) 0%,rgba(255,255,255,.28) 34%,rgba(255,255,255,0) 62%);
+    transform:rotate(-6deg);filter:blur(10px);opacity:.55}
+  .bg-hair{position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,#0d7a55,#0f8f74,#0a66c2);opacity:.9}
+
+  /* ================= brand ================= */
+  .brand{position:absolute;left:150px;top:78px;display:flex;align-items:center;gap:20px}
+  .mark{width:74px;height:74px;border-radius:20px;display:grid;place-items:center;
+    background:linear-gradient(150deg,#0d6f4f,#0a5c43 55%,#084a36);
+    color:#fff;font-size:34px;font-weight:900;letter-spacing:-1px;
+    box-shadow:0 14px 30px rgba(10,92,67,.30),inset 0 2px 0 rgba(255,255,255,.28),inset 0 -6px 14px rgba(0,0,0,.18);
+  }
+  .wordmark b{display:block;font-size:37px;font-weight:900;letter-spacing:2px;line-height:1.1}
+  .wordmark span{display:block;margin-top:7px;font-size:15px;font-weight:600;letter-spacing:.18em;color:#6c7a83;font-family:var(--mono)}
+
+  /* ================= badge ================= */
+  .badge{position:absolute;right:160px;top:52px;height:66px;padding:0 26px 0 12px;display:flex;align-items:center;gap:14px;
+    background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.9);border-radius:999px;
+    box-shadow:0 14px 34px rgba(10,40,60,.14),inset 0 1px 0 rgba(255,255,255,.9);
+    backdrop-filter:blur(10px);z-index:8}
+  .badge .bi{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--grad);color:#fff}
+  .badge .bt{font-size:23px;font-weight:800;letter-spacing:.4px}
+  .badge .bs{font-size:18.5px;color:#78868f;font-weight:600;padding-left:14px;border-left:1px solid var(--hair);margin-left:2px}
+  .badge .bs b{color:var(--li);font-weight:800}
+
+  /* ================= copy ================= */
+  .kicker{position:absolute;left:150px;top:186px;display:flex;align-items:center;gap:16px;
+    font-family:var(--mono);font-size:15.5px;font-weight:700;letter-spacing:.18em;color:var(--li)}
+  .kicker .sandbox{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:.08em;
+    color:#0a6b8a;background:rgba(10,102,194,.08);border:1px solid rgba(10,102,194,.18);
+    padding:5px 10px;border-radius:999px}
+  .headline{position:absolute;left:148px;top:218px;font-weight:900;font-size:100px;line-height:1.08;letter-spacing:-2px}
+  .headline .l1,.headline .l2{display:block}
+  .headline .l2{margin-top:2px;white-space:nowrap}
+  .headline em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .headline em.li{background:var(--li-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{position:absolute;left:152px;top:458px;width:1100px;font-size:28px;line-height:1.55;color:#52616c;letter-spacing:.1px;font-weight:500}
+  .sub b{color:#0c1a24;font-weight:800}
+  .sub .ar{color:var(--li);font-weight:800;margin:0 6px}
+
+  /* ================= why linkedin ================= */
+  .why{position:absolute;left:150px;top:570px;width:1100px;height:136px;
+    background:rgba(255,255,255,.84);border:1px solid rgba(255,255,255,.95);border-radius:18px;
+    box-shadow:0 18px 40px rgba(10,40,60,.09),inset 0 1px 0 rgba(255,255,255,.9);
+    padding:14px 22px 9px;display:flex;flex-direction:column;backdrop-filter:blur(8px)}
+  .why .stats{flex:1;display:grid;grid-template-columns:repeat(3,1fr);align-items:center}
+  .why .stat{height:64px;padding-left:20px;border-left:1px solid var(--hair);display:flex;flex-direction:column;justify-content:center}
+  .why .stat:first-child{border-left:0;padding-left:0}
+  .why .num{font-size:36px;font-weight:900;line-height:1;letter-spacing:-.5px}
+  .why .num.green{color:var(--green)}
+  .why .num.blue{color:var(--li)}
+  .why .lab{font-size:17px;font-weight:800;margin-top:7px;letter-spacing:.2px}
+  .why .sm{font-size:14px;color:#7a8790;margin-top:4px;font-weight:500}
+  .why-note{border-top:1px solid var(--hair);padding-top:6px;font-size:13px;line-height:1.35;color:#8b979f;font-weight:500}
+  .why-note b{color:#5d6b74;font-weight:800}
+
+  /* ================= AI grid ================= */
+  .ai-grid{position:absolute;left:150px;top:726px;width:1100px;display:grid;grid-template-columns:1fr 1fr;gap:18px 20px}
+  .ai-card{height:208px;background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.95);border-radius:18px;
+    box-shadow:0 16px 34px rgba(10,40,60,.08),inset 0 1px 0 rgba(255,255,255,.9);
+    padding:20px 22px;display:flex;gap:16px;backdrop-filter:blur(8px)}
+  .ai-card .ic{width:48px;height:48px;border-radius:50%;flex:0 0 48px;display:grid;place-items:center;
+    background:linear-gradient(150deg,#ecfaf3,#d5f1e6);color:#0a6b4c;border:1px solid rgba(18,133,95,.18);
+    box-shadow:0 8px 18px rgba(10,92,67,.10),inset 0 2px 0 rgba(255,255,255,.9)}
+  .ai-card .ic.blue{background:linear-gradient(150deg,#eef5fe,#dbe9fb);color:var(--li);border-color:rgba(10,102,194,.18);
+    box-shadow:0 8px 18px rgba(10,102,194,.10),inset 0 2px 0 rgba(255,255,255,.9)}
+  .ai-card .ic svg{width:25px;height:25px}
+  .ai-card .body{flex:1;min-width:0}
+  .ai-card .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .ai-card .lab{font-family:var(--mono);font-size:12.5px;font-weight:700;color:#0a7a55;letter-spacing:.14em;white-space:nowrap}
+  .ai-card .tag{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--li);background:rgba(10,102,194,.08);
+    border:1px solid rgba(10,102,194,.14);padding:3px 7px;border-radius:5px;letter-spacing:.06em;white-space:nowrap}
+  .ai-card .t{font-size:29px;font-weight:900;letter-spacing:.2px;margin-top:8px;line-height:1.12}
+  .ai-card .d{font-size:18px;line-height:1.5;color:#5c6b75;font-weight:500;margin-top:7px}
+  .ai-card .d b{color:#0c1a24;font-weight:800}
+
+  /* ================= linkedin window ================= */
+  .li-window{position:absolute;left:1320px;top:160px;width:1090px;height:980px;border-radius:26px;overflow:hidden;
+    background:#f4f2ee;border:1px solid rgba(12,26,36,.10);
+    box-shadow:0 46px 90px rgba(8,32,46,.24),0 14px 30px rgba(8,32,46,.12),inset 0 1px 0 rgba(255,255,255,.9);z-index:5}
+  .li-chrome{height:54px;background:#e8edf1;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid rgba(12,26,36,.08)}
+  .dots{display:flex;gap:7px}
+  .dots i{width:10px;height:10px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+  .url{flex:1;height:32px;background:#fff;border:1px solid rgba(12,26,36,.08);border-radius:8px;display:flex;align-items:center;gap:8px;padding:0 12px;
+    font-family:var(--mono);font-size:12.5px;color:#6b7780}
+  .sp{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--li);
+    background:rgba(10,102,194,.08);border:1px solid rgba(10,102,194,.15);padding:4px 8px;border-radius:999px;white-space:nowrap}
+  .li-nav{height:64px;background:#fff;display:flex;align-items:center;gap:14px;padding:0 22px;border-bottom:1px solid #e2e2e2}
+  .li-logo{width:36px;height:36px;border-radius:7px;background:var(--li);color:#fff;display:grid;place-items:center;
+    font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:900;letter-spacing:-1.5px;padding-bottom:2px}
+  .li-search{width:300px;height:34px;border-radius:17px;background:#edf3f8;display:flex;align-items:center;gap:8px;padding:0 12px;
+    color:#6b7780;font-size:12.5px;font-weight:500}
+  .li-search svg{width:16px;height:16px}
+  .li-icons{margin-left:auto;display:flex;align-items:center;gap:18px;color:#5f6b76}
+  .li-icons svg{width:22px;height:22px}
+  .li-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(150deg,#0d6f4f,#0a5c43);
+    color:#fff;display:grid;place-items:center;font-size:18px;font-weight:900;border:2px solid #fff;box-shadow:0 0 0 1px rgba(12,26,36,.10)}
+  .li-feed{padding:20px 22px;background:#f4f2ee}
+  .li-post{background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:18px 20px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.02),0 2px 4px rgba(0,0,0,.05)}
+  .li-head{display:flex;align-items:center;gap:12px}
+  .li-av{width:54px;height:54px;border-radius:50%;flex:0 0 54px;background:linear-gradient(150deg,#0d6f4f,#0a5c43);
+    color:#fff;display:grid;place-items:center;font-size:26px;font-weight:900;box-shadow:inset 0 2px 0 rgba(255,255,255,.25)}
+  .li-name{font-size:20px;font-weight:800;line-height:1.2;color:#191919;letter-spacing:.1px}
+  .li-meta{font-size:13.5px;color:#666;margin-top:3px;display:flex;align-items:center;gap:6px;font-weight:500}
+  .li-meta .dot{width:3px;height:3px;border-radius:50%;background:#8a8a8a}
+  .li-meta .tagp{color:var(--li);font-weight:700}
+  .li-menu{margin-left:auto;color:#666;font-size:22px;letter-spacing:2px;line-height:1}
+  .li-text{margin-top:14px;font-size:23px;line-height:1.4;color:#191919;letter-spacing:.1px}
+  .li-text b{font-weight:800}
+  .li-doc{margin-top:14px;height:420px;border-radius:10px;overflow:hidden;position:relative;color:#fff;
+    background:
+      linear-gradient(90deg,rgba(4,29,24,.95) 0%,rgba(5,42,35,.86) 42%,rgba(5,42,35,.28) 100%),
+      url("../poster/bus_xx.png") right center/cover no-repeat;
+    padding:22px 24px;display:flex;flex-direction:column;justify-content:space-between}
+  .li-doc::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(3,18,20,.48),transparent 46%);pointer-events:none}
+  .doc-top,.doc-bottom{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .doc-kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:rgba(255,255,255,.72);font-weight:700}
+  .doc-pages{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:rgba(255,255,255,.86);font-weight:700}
+  .doc-title{position:relative;z-index:1;max-width:660px;font-size:35px;line-height:1.13;font-weight:900;letter-spacing:-.3px;
+    text-shadow:0 2px 18px rgba(0,0,0,.28)}
+  .doc-title span{display:block;color:#8fe4c6;font-size:13px;font-family:var(--mono);letter-spacing:.16em;font-weight:700;margin-bottom:10px}
+  .doc-bottom{justify-content:flex-start}
+  .doc-btn{background:#fff;color:#0a5c43;font-size:14px;font-weight:800;padding:9px 18px;border-radius:6px;letter-spacing:.2px;
+    box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .doc-sub{font-size:12.5px;color:rgba(255,255,255,.78);font-weight:500}
+  .doc-badge{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.10em;color:#bff5df;
+    border:1px solid rgba(191,245,223,.35);background:rgba(9,71,54,.45);padding:5px 9px;border-radius:5px}
+  .li-chips{margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .li-chips .cl{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;color:var(--li);margin-right:2px}
+  .chip{font-size:12.5px;color:#3a4a54;background:#eef3f8;border:1px solid #dbe4ea;padding:5px 10px;border-radius:999px;font-weight:600;white-space:nowrap}
+  .li-eng{margin-top:12px;padding-top:10px;border-top:1px solid #e8e8e8;display:flex;align-items:center;gap:16px;font-size:13.5px;color:#666;font-weight:500}
+  .li-eng .rx{color:var(--li);font-weight:700}
+  .li-mini{margin-top:14px;background:#fff;border:1px solid #e0e0e0;border-radius:12px;padding:15px 18px;display:flex;align-items:center;gap:14px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.02),0 2px 4px rgba(0,0,0,.04)}
+  .mini-ic{width:44px;height:44px;border-radius:50%;flex:0 0 44px;background:var(--li-soft);color:var(--li);display:grid;place-items:center}
+  .mini-ic svg{width:22px;height:22px}
+  .mini-t{font-size:16.5px;font-weight:800;color:#191919}
+  .mini-d{font-size:13px;color:#666;margin-top:2px;font-weight:500}
+  .mini-meta{font-size:11.5px;color:var(--li);margin-top:3px;font-weight:700;letter-spacing:.02em}
+  .mini-btn{margin-left:auto;background:var(--li);color:#fff;font-size:12.5px;font-weight:800;padding:8px 14px;border-radius:999px;white-space:nowrap}
+
+  /* ================= funnel ================= */
+  .funnel{position:absolute;left:150px;top:1200px;width:2260px;height:116px;border-radius:20px;
+    background:linear-gradient(110deg,#0a5c43 0%,#0f8f74 46%,#0a66c2 100%);
+    box-shadow:0 24px 50px rgba(8,50,60,.22),inset 0 1px 0 rgba(255,255,255,.18);
+    display:flex;align-items:center;padding:0 26px;color:#fff;z-index:6}
+  .f-label{width:170px;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.14em;line-height:1.5;opacity:.72}
+  .f-metrics{flex:1;display:flex;align-items:center;justify-content:space-around;padding:0 8px}
+  .fm{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+  .fm .n{font-size:38px;font-weight:900;letter-spacing:-.5px;line-height:1}
+  .fm .l{font-size:14px;font-weight:600;opacity:.82}
+  .fa{opacity:.38;display:flex;align-items:center}
+  .fa svg{width:20px;height:20px}
+  .f-note{width:210px;text-align:right;font-size:12px;line-height:1.45;opacity:.72;font-weight:500}
+
+  /* ================= footnote ================= */
+  .foot{position:absolute;left:152px;bottom:38px;display:flex;align-items:center;gap:12px;font-size:18px;color:#8b979f;font-weight:600;letter-spacing:.02em}
+  .foot .bar{width:26px;height:3px;border-radius:2px;background:var(--grad);opacity:.7}
+  .foot b{color:#5d6b74;font-weight:800}
+  .data-note{position:absolute;right:150px;bottom:34px;display:flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:14px;color:#6d7a82;letter-spacing:.10em;
+    background:rgba(255,255,255,.66);border:1px solid rgba(12,26,36,.08);padding:8px 15px;border-radius:999px}
+  .data-note .dn-dot{width:8px;height:8px;border-radius:50%;border:2px solid #9aa6ad;background:transparent}
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="bg">
+    <div class="bg-base"></div>
+    <div class="bg-photo"><img src="../poster/bus_xx.png" alt=""></div>
+    <div class="bg-wash"></div>
+    <div class="bg-grid"></div>
+    <div class="beam"></div>
+    <div class="glow glow-a"></div>
+    <div class="glow glow-b"></div>
+    <div class="glow glow-c"></div>
+    <div class="bg-hair"></div>
+  </div>
+
+  <div class="brand">
+    <div class="mark">XX</div>
+    <div class="wordmark">
+      <b>XX客车</b>
+      <span>XX BUS</span>
+    </div>
+  </div>
+
+  <div class="badge">
+    <span class="bi">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </span>
+    <span class="bt">GDPS 2026 · FDE 智能人才工厂</span>
+    <span class="bs">题 02 · <b>XX客车</b></span>
+  </div>
+
+  <div class="kicker">LINKEDIN CASE · NORTH AMERICA GTM <span class="sandbox">案例沙盘 · 模拟推演</span></div>
+
+  <h1 class="headline">
+    <span class="l1">AI 把一条提问</span>
+    <span class="l2">做成 <em class="li">LinkedIn</em> <em>爆款</em></span>
+  </h1>
+
+  <p class="sub">
+    XX客车 <span class="ar">→</span> 北美公交运营商<br>
+    <b>12 CQ</b><span class="ar">→</span><b>1 篇白皮书</b><span class="ar">→</span><b>6 条高管帖</b><span class="ar">→</span><b>3 类 ABM 人群</b>
+  </p>
+
+  <div class="why">
+    <div class="stats">
+      <div class="stat">
+        <div class="num green">1B+</div>
+        <div class="lab">职场用户</div>
+        <div class="sm">全球专业网络</div>
+      </div>
+      <div class="stat">
+        <div class="num blue">4/5</div>
+        <div class="lab">决策者 / 采购影响人</div>
+        <div class="sm">CEO · 采购 · 工程 · 供应链</div>
+      </div>
+      <div class="stat">
+        <div class="num green">80%</div>
+        <div class="lab">B2B 社媒线索</div>
+        <div class="sm">来自 LinkedIn</div>
+      </div>
+    </div>
+    <div class="why-note"><b>LinkedIn 平台数据为行业公开口径，未在本项目复测。</b> 适用：高客单、长周期 B2B 出海；不适用：低客单 C 端。</div>
+  </div>
+
+  <div class="ai-grid">
+    <div class="ai-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-4-.9L3 21l1.9-4.9a8.4 8.4 0 0 1-.9-4A8.4 8.4 0 0 1 12.4 3 8.4 8.4 0 0 1 21 11.5z"/><path d="M8.5 10.5h7"/><path d="M8.5 14h4.5"/></svg></div>
+      <div class="body">
+        <div class="top"><span class="lab">01 · 选题</span><span class="tag">12 CQ</span></div>
+        <div class="t">只写客户问过的</div>
+        <div class="d">CQ05 城市公交 vs 城际客运；CQ06 右舵 / 盐雾；CQ08 来访 ≠ 订单</div>
+      </div>
+    </div>
+    <div class="ai-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18"/><path d="M12 3a15 15 0 0 0 0 18"/></svg></div>
+      <div class="body">
+        <div class="top"><span class="lab">02 · 本地化</span><span class="tag">SCHEMA v1.4</span></div>
+        <div class="t">英文原生，不翻译</div>
+        <div class="d">Schema 映射 6 类 34 标签；ECE/ADR 口径，<b>AI 不编参数</b></div>
+      </div>
+    </div>
+    <div class="ai-card">
+      <div class="ic blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/></svg></div>
+      <div class="body">
+        <div class="top"><span class="lab">03 · 定向</span><span class="tag">3 LISTS</span></div>
+        <div class="t">公司 × 职位双维</div>
+        <div class="d">Transit Operator · Procurement · 500+ · US/CA；3 类 ABM 名单</div>
+      </div>
+    </div>
+    <div class="ai-card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 9 11l4 4 7-8"/><path d="M14 7h6v6"/><path d="M3 21h18"/></svg></div>
+      <div class="body">
+        <div class="top"><span class="lab">04 · 归因</span><span class="tag">7 SOURCES</span></div>
+        <div class="t">文档下载 → 销售跟进</div>
+        <div class="d">Lead Form 自动填充；7 数据源回流，点击 / 回复反哺选题</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="li-window">
+    <div class="li-chrome">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="url">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        linkedin.com/feed
+      </div>
+      <span class="sp">AD PREVIEW</span>
+    </div>
+    <div class="li-nav">
+      <div class="li-logo">in</div>
+      <div class="li-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        Search
+      </div>
+      <div class="li-icons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9.5 9.5 0 0 1-4-.9L3 21l1.9-4.9a8.4 8.4 0 0 1-.9-4A8.4 8.4 0 0 1 12.4 3 8.4 8.4 0 0 1 21 11.5z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+      </div>
+      <div class="li-avatar">S</div>
+    </div>
+    <div class="li-feed">
+      <div class="li-post">
+        <div class="li-head">
+          <div class="li-av">S</div>
+          <div>
+            <div class="li-name">XX Bus · XX客车</div>
+            <div class="li-meta">1,284 followers <span class="dot"></span> <span class="tagp">Sponsored</span></div>
+          </div>
+          <div class="li-menu">···</div>
+        </div>
+        <div class="li-text"><b>City bus or intercity coach?</b> A 2026 selection guide for North American transit operators.</div>
+        <div class="li-doc">
+          <div class="doc-top">
+            <span class="doc-kicker">XX BUS · WHITE PAPER</span>
+            <span class="doc-pages">12 PAGES · EN</span>
+          </div>
+          <div class="doc-title"><span>2026 NORTH AMERICA</span>TRANSIT SELECTION GUIDE</div>
+          <div class="doc-bottom">
+            <span class="doc-btn">Download</span>
+            <span class="doc-sub">City bus vs intercity · ECE/ADR · service network</span>
+            <span class="doc-badge">DOC AD</span>
+          </div>
+        </div>
+        <div class="li-chips">
+          <span class="cl">ABM 定向</span>
+          <span class="chip">Transit Operators</span>
+          <span class="chip">Procurement Directors</span>
+          <span class="chip">500+ employees</span>
+          <span class="chip">US / Canada</span>
+        </div>
+        <div class="li-eng"><span class="rx">1,248 reactions</span><span>186 comments</span><span>342 reposts</span></div>
+      </div>
+
+      <div class="li-mini">
+        <div class="mini-ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </div>
+        <div>
+          <div class="mini-t">Message Ad · InMail</div>
+          <div class="mini-d">向 ABM 名单发送 Demo 邀约</div>
+          <div class="mini-meta">模拟打开率 42% · 销售可直接跟进</div>
+        </div>
+        <span class="mini-btn">发送</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="funnel">
+    <div class="f-label">模拟推演<br>CASE SANDBOX</div>
+    <div class="f-metrics">
+      <div class="fm"><span class="n">1.2M</span><span class="l">曝光</span></div>
+      <div class="fa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
+      <div class="fm"><span class="n">38K</span><span class="l">互动</span></div>
+      <div class="fa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
+      <div class="fm"><span class="n">3,400</span><span class="l">留资</span></div>
+      <div class="fa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
+      <div class="fm"><span class="n">612</span><span class="l">MQL</span></div>
+    </div>
+    <div class="f-note">非实测<br>展示 AI 归因链路</div>
+  </div>
+
+  <div class="foot"><span class="bar"></span><b>案例沙盘</b> · 效果数据为模拟推演，不代表真实业绩</div>
+  <div class="data-note"><span class="dn-dot"></span>SIMULATED CASE</div>
+</div>
+</body>
+</html>

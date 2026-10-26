@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>XX客车 · 全域获客模型 · 展位演示片（两项能力）</title>
+<style>
+  html,body{margin:0;background:#0d1526}
+  #root{position:relative;width:1280px;height:720px;overflow:hidden;background:#eef1f6;
+    font-family:"Noto Sans JP",-apple-system,"PingFang SC",sans-serif;color:#0d1526}
+</style>
+</head>
+<body>
+<div id="root"
+     data-composition-id="main"
+     data-start="0"
+     data-duration="132.16"
+     data-width="1280"
+     data-height="720">
+
+  <div id="s1" data-composition-id="s1" data-composition-src="compositions/s1.html"
+       data-start="0.0" data-duration="28.816"
+       data-track-index="1" data-track-kind="graphics"
+       data-width="1280" data-height="720"></div>
+
+  <div id="s2" data-composition-id="s2" data-composition-src="compositions/s2.html"
+       data-start="28.816" data-duration="40.168"
+       data-track-index="2" data-track-kind="graphics"
+       data-width="1280" data-height="720"></div>
+
+  <div id="s3" data-composition-id="s3" data-composition-src="compositions/s3.html"
+       data-start="68.984" data-duration="35.752"
+       data-track-index="3" data-track-kind="graphics"
+       data-width="1280" data-height="720"></div>
+
+  <div id="s4" data-composition-id="s4" data-composition-src="compositions/s4.html"
+       data-start="104.736" data-duration="27.424"
+       data-track-index="4" data-track-kind="graphics"
+       data-width="1280" data-height="720"></div>
+
+  <audio id="voice-s1" class="clip" src="assets/s1.mp3"
+         data-start="0.6" data-duration="27.216" data-track-index="5" data-volume="1"></audio>
+  <audio id="voice-s2" class="clip" src="assets/s2.mp3"
+         data-start="29.416" data-duration="38.568" data-track-index="6" data-volume="1"></audio>
+  <audio id="voice-s3" class="clip" src="assets/s3.mp3"
+         data-start="69.584" data-duration="34.152" data-track-index="7" data-volume="1"></audio>
+  <audio id="voice-s4" class="clip" src="assets/s4.mp3"
+         data-start="105.336" data-duration="25.824" data-track-index="8" data-volume="1"></audio>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = gsap.timeline({ paused: true });
+</script>
+</body>
+</html>

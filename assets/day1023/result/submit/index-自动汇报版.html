@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>申沃的智能驾驶，下一站开向哪里？— 自动语音汇报（北美 2 组）</title>
+<style>
+  :root{--navy:#0e2a4d;--blue:#1b5faa;--steel:#5b7695;--gold:#c9a227;--ink:#101a2b;--muted:#6b7c93;
+    --hair:#e2e8f1;--ok:#1b8a4b;--warn:#c2480d;--maxw:1180px;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#f4f7fb;color:var(--ink);padding-bottom:130px;
+    font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .topbar{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--hair);z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 18px;gap:12px}
+  .brand{font-weight:800;font-size:14px;color:var(--navy);white-space:nowrap}
+  .brand span{color:var(--steel);font-weight:500;margin-left:8px;font-size:12.5px}
+  .tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .tools button{background:#fff;border:1px solid var(--hair);color:var(--steel);border-radius:999px;padding:6px 13px;font-size:12.5px;cursor:pointer}
+  .tools button:hover{border-color:var(--blue);color:var(--blue)}
+  .tools button.primary{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+  .tools button.on{border-color:var(--gold);color:#8a6d0b;background:#fcf4dc}
+  #timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--warn);font-size:13px;min-width:46px;text-align:center}
+  select,input[type=range]{font-size:12.5px;color:var(--steel)}
+  #prog{position:fixed;top:58px;left:0;height:2px;width:0;z-index:31;background:linear-gradient(90deg,var(--navy),var(--blue) 60%,var(--gold));transition:width .2s linear}
+  .navdot{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:11px;z-index:25}
+  .navdot i{width:9px;height:9px;border-radius:50%;background:#c6d0de;cursor:pointer;position:relative;transition:.25s}
+  .navdot i::after{content:attr(data-t);position:absolute;right:17px;top:50%;transform:translateY(-50%);white-space:nowrap;
+    background:var(--navy);color:#fff;font-size:11.5px;padding:3px 8px;border-radius:4px;opacity:0;pointer-events:none;transition:.2s}
+  .navdot i:hover::after{opacity:1}
+  .navdot i.on{background:var(--blue);transform:scale(1.5)}
+  section.panel{padding:70px 0 8px;scroll-margin-top:58px;opacity:.5;transition:opacity .5s}
+  section.panel.active{opacity:1}
+  .eyebrow{font-size:12.5px;letter-spacing:.2em;color:var(--steel);font-weight:800}
+  h2{font-size:clamp(23px,2.5vw,36px);line-height:1.25;font-weight:800;letter-spacing:-.015em;color:var(--navy);margin-top:12px}
+  .rule{height:1px;background:var(--hair);margin:20px 0 24px}
+  .lead{font-size:clamp(15px,1.3vw,19px);line-height:1.75;color:var(--steel);font-weight:500;max-width:64em}
+  .lead b{color:var(--ink)}
+  .mono{font-size:13px;color:var(--muted)}
+  em{font-style:normal;color:var(--blue);font-weight:800}
+  .foot{margin-top:24px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:#9aa8bc}
+  .grid{display:grid;gap:18px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:1fr 1fr}
+  .card{background:#fff;border:1px solid var(--hair);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue)}
+  .card.warn::before{background:var(--warn)} .card.ok::before{background:var(--ok)} .card.gold::before{background:var(--gold)}
+  .card h3{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:9px}
+  .card p,.card li{font-size:14px;line-height:1.7;color:#3b475c}
+  ul{padding-left:1.1em} li{margin-bottom:5px}
+  .kicker{display:inline-block;font-size:11.5px;padding:2px 8px;border-radius:4px;vertical-align:2px;margin-left:6px;font-weight:700}
+  .kicker.b{background:#e9f1fa;color:var(--blue)} .kicker.g{background:#e6f5ec;color:var(--ok)}
+  .kicker.r{background:#fdeee7;color:var(--warn)} .kicker.y{background:#fcf4dc;color:#8a6d0b}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th{color:var(--navy);font-weight:800;border-bottom:2px solid var(--navy);padding:8px 14px 8px 0;text-align:left}
+  td{border-bottom:1px solid var(--hair);padding:10px 14px 10px 0;text-align:left;vertical-align:top;line-height:1.6;color:#2f3b4f}
+  tr:last-child td{border-bottom:none}
+  .hero{min-height:100vh;color:#fff;display:flex;align-items:center;position:relative;overflow:hidden;
+    background:radial-gradient(110% 80% at 88% 8%,rgba(201,162,39,.22) 0%,rgba(201,162,39,0) 55%),linear-gradient(135deg,#0a1f3a 0%,#0e2a4d 45%,#1b5faa 100%)}
+  .hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:8.3333% 100%}
+  .hero .wrap{position:relative}
+  .hero .eyebrow{color:#9fc0e8}
+  .hero h1{font-size:clamp(36px,5.2vw,70px);line-height:1.16;font-weight:800;letter-spacing:-.03em;margin-top:16px}
+  .hero .bar{width:110px;height:4px;background:var(--gold);margin:28px 0}
+  .hero .sub{font-size:clamp(16px,1.85vw,25px);color:#cfe0f4}
+  .hero .meta{margin-top:40px;font-size:14px;color:#8fb0d8;line-height:2}
+  .hero .num{position:absolute;right:40px;bottom:50px;font-size:clamp(80px,13vw,190px);font-weight:800;color:rgba(255,255,255,.06);letter-spacing:-.05em;line-height:.8}
+  .statement{background:#fff;border:1px solid var(--hair);border-radius:16px;padding:50px 44px;text-align:center}
+  .statement p{font-size:clamp(19px,2.2vw,32px);line-height:1.6;font-weight:800;color:var(--navy)}
+  .statement em{border-bottom:5px solid var(--gold);padding-bottom:2px}
+  .flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:24px}
+  .flow span{font-size:13.5px;color:var(--steel);background:#fff;border:1px solid var(--hair);border-radius:999px;padding:7px 15px}
+  .flow i{color:#b9c5d6;font-style:normal}
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .step{padding-top:16px;border-top:3px solid var(--navy)}
+  .step:nth-child(2){border-top-color:var(--blue)} .step:nth-child(3){border-top-color:#4c86c9}
+  .step:nth-child(4){border-top-color:#8db2d8} .step:nth-child(5){border-top-color:var(--gold)}
+  .step .no{font-size:29px;font-weight:800;color:var(--navy);line-height:1;letter-spacing:-.04em;margin-bottom:7px}
+  .step h3{font-size:15.5px;font-weight:800;color:var(--navy);margin-bottom:8px}
+  .step p{font-size:13px;line-height:1.65;color:#48566c}
+  .ai{color:var(--blue);font-weight:700} .human{color:var(--warn);font-weight:700}
+  .demo{display:grid;grid-template-columns:190px 1fr;gap:20px;align-items:start}
+  .rail{display:flex;flex-direction:column;gap:9px;position:sticky;top:76px}
+  .rbtn{display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;background:#fff;border:1px solid var(--hair);
+    border-radius:10px;padding:12px 14px;font-size:14px;color:var(--muted);transition:.18s}
+  .rbtn b{color:var(--navy);font-weight:800;width:1.6em}
+  .rbtn.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .rbtn.on b{color:var(--gold)}
+  .dpanel{background:#fff;border:1px solid var(--hair);border-radius:12px;padding:24px 26px;min-height:280px}
+  .dpanel>h3{font-size:17.5px;font-weight:800;color:var(--navy)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:#fff;border:1px solid var(--hair);border-radius:999px;padding:6px 13px;font-size:13px;color:#3b475c}
+  .chip.ai{border-color:#c9dcf2;background:#f2f7fd;color:var(--blue)}
+  .chip.bad{border-color:#f0c9b7;background:#fdf2ec;color:var(--warn)}
+  .chip.pick{cursor:pointer} .chip.pick.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .note{font-size:13.5px;color:var(--muted);margin-top:13px}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:14px;margin-top:13px}
+  .kv b{color:var(--navy)}
+  .draft{background:#f4f7fb;border:1px solid var(--hair);border-radius:9px;padding:17px 19px;margin-top:13px}
+  .draft p{font-size:14px;line-height:1.7;margin-bottom:6px}
+  .hit{background:#fdeae0;color:var(--warn);font-weight:700;padding:0 4px;border-radius:3px}
+  .fixed{background:#e3f4ea;color:var(--ok);font-weight:700;padding:0 4px;border-radius:3px}
+  footer.end{padding:64px 0 80px;text-align:center}
+  footer.end .bignote{font-size:clamp(18px,2vw,27px);font-weight:800;color:var(--navy);line-height:1.65}
+  footer.end em{border-bottom:5px solid var(--gold);padding-bottom:2px}
+  footer.end .fin{margin-top:18px;font-size:13px;color:#9aa8bc;letter-spacing:.1em}
+  #subtitle{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);max-width:min(900px,88vw);z-index:29;display:none;
+    background:rgba(14,42,77,.95);color:#fff;padding:15px 22px;border-radius:12px;font-size:17px;line-height:1.65;border-left:4px solid var(--gold)}
+  #subtitle.show{display:block}
+  #subtitle .who{display:block;font-size:11.5px;letter-spacing:.2em;color:#8fb0d8;margin-bottom:6px}
+  #ctrl{position:fixed;right:20px;bottom:20px;z-index:30;display:flex;gap:8px;align-items:center;
+    background:rgba(255,255,255,.95);border:1px solid var(--hair);border-radius:999px;padding:8px 14px}
+  #ctrl button{background:#fff;border:1px solid var(--hair);color:var(--steel);border-radius:999px;padding:6px 13px;font-size:12.5px;cursor:pointer}
+  #ctrl button.k{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+  #status{font-size:12px;color:var(--muted);min-width:56px;text-align:center}
+  @media (max-width:1080px){.g4,.g3,.g2,.steps{grid-template-columns:1fr}.demo{grid-template-columns:1fr}
+    .rail{position:static;flex-direction:row;flex-wrap:wrap}.navdot{display:none}section.panel{opacity:1}}
+  @media print{.topbar,.navdot,#prog,#ctrl,#subtitle{display:none}section.panel{opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">申沃的智能驾驶，下一站开向哪里？<span>企业真题 02 · 北美 2 组 · 自动语音汇报</span></div>
+  <div class="tools">
+    <span id="timer">2:30</span>
+    <button id="play" class="primary">▶ 开始自动汇报</button>
+    <button id="pause">暂停</button>
+    <button id="stop">停止</button>
+    <button id="subbtn" class="on">字幕</button>
+    <select id="voice" title="音色"></select>
+    <input id="rate" type="range" min="0.8" max="1.6" step="0.05" value="1.3" title="语速" style="width:90px">
+    <button id="top">回顶部</button>
+    <button id="full">全屏</button>
+  </div>
+</div>
+<div id="prog"></div>
+
+<nav class="navdot" id="navdot">
+  <i class="on" data-t="封面"></i><i data-t="核心结论"></i><i data-t="聚焦问题"></i><i data-t="三方客群"></i>
+  <i data-t="工作条件"></i><i data-t="业务假设"></i><i data-t="五步闭环"></i><i data-t="质量保障"></i>
+  <i data-t="Demo 演示"></i><i data-t="交付清单"></i>
+</nav>
+
+<div id="subtitle"><span class="who" id="subwho">正在播报</span><span id="subtext"></span></div>
+<div id="ctrl"><button class="k" id="ctrlPlay">▶ 播放</button><button id="ctrlPause">⏸ 暂停</button><span id="status">就绪</span></div>
+
+<section class="hero" id="s0">
+  <div class="wrap">
+    <div class="eyebrow">GDPS 2026 · 企业真题 02 · 申沃客车 · 北美 2 组</div>
+    <h1>申沃的智能驾驶，<br>下一站开向哪里？</h1>
+    <div class="bar"></div>
+    <p class="sub">小组任务一 · 需求分析与初步方案</p>
+    <p class="meta">2 分 30 秒自动语音汇报　·　聚焦问题 → 工作条件 → 业务假设 → 初步方案 → 现场 Demo</p>
+  </div>
+  <div class="num">02</div>
+</section>
+
+<section class="panel" id="s1">
+  <div class="wrap">
+    <div class="eyebrow">01 / 一句话结论</div><h2>核心结论</h2><div class="rule"></div>
+    <div class="statement"><p>申沃<em>不缺宣传素材</em>，缺的是<em>带阶段标注、带审核状态、可持续复用的内容资产</em>。<br>解法＝ <em>AI 起草与越界提示</em> ＋ <em>人工审核固化版本</em> ＋ <em>素材库复用</em>。</p></div>
+    <div class="foot"><span>直接对应企业任务 4：已审核通过的表达与素材版本，可在后续策划中复用</span></div>
+  </div>
+</section>
+
+<section class="panel" id="s2">
+  <div class="wrap">
+    <div class="eyebrow">02 / 业务理解</div><h2>聚焦的具体业务问题</h2><div class="rule"></div>
+    <p class="lead">品牌团队面向三类客群做智能驾驶宣传时，<b>每次选题都要重新找资料、重新核实口径</b>，五个技术阶段（辅助驾驶 / 自动驾驶合作 / 试点 / 量产 / 运营）容易被混用，已审核通过的内容无法复用。</p>
+    <div class="grid g3" style="margin-top:22px">
+      <div class="card"><h3>依据一　情境原文<span class="kicker b">原始描述</span></h3><p>“品牌团队每次组织选题都要重新找资料、核实口径，已经修改过的内容也不容易复用。”</p></div>
+      <div class="card warn"><h3>依据二　草稿踩雷<span class="kicker r">五处硬伤</span></h3><p>DRAFT-01 一次命中五个问题：合作→量产 REV01｜城间→城市 REV02｜泛化无人驾驶能力 REV03｜来访→订单 REV04｜30% 降幅无测算 REV05</p></div>
+      <div class="card ok"><h3>依据三　人工补位<span class="kicker g">已在发生</span></h3><p>确认口径 v1.0 人工维护 P01–P03，并要求保留 REV01–REV05 记录 —— 企业正用人工方式弥补“不能复用”的缺口。</p></div>
+    </div>
+    <div class="flow"><span>归集资料</span><i>→</i><span>按客群识别场景</span><i>→</i><span>选题与渠道内容</span><i>→</i><span>人工审核</span><i>→</i><span>入库复用</span><i>→</i><span>下一轮迭代</span></div>
+  </div>
+</section>
+
+<section class="panel" id="s3">
+  <div class="wrap">
+    <div class="eyebrow">03 / 业务理解</div><h2>三方客群，三种关注点</h2><div class="rule"></div>
+    <table>
+      <tr><th style="width:14%">客群</th><th style="width:28%">真实关注点</th><th style="width:40%">代表客户问题</th><th>材料偏好</th></tr>
+      <tr><td><b>公交运营商</b></td><td>线路匹配、安全辅助、维保与故障响应、运营依据</td><td>CQ01 盲区辅助　CQ02 车型区分　CQ03 维保案例　CQ04 成本数据</td><td>产品配置与具体项目事实</td></tr>
+      <tr><td><b>海外客户</b></td><td>当地使用条件、服务支持、城市与城间定位</td><td>CQ05 定位区别　CQ06 澳洲适配　CQ07 服务网络　CQ08 美洲来访</td><td>地区适配与产品边界</td></tr>
+      <tr><td><b>行业伙伴</b></td><td>合作方向、系统协同、技术阶段</td><td>CQ09 合作方向　CQ10 RoboBus 阶段　CQ11 车联网协同　CQ12 阶段区分</td><td>有来源的合作与阶段说明</td></tr>
+    </table>
+    <div class="foot"><span>来源：客户问题与客群.xlsx（CQ01–CQ12）· 客群背景表</span><span>销售回收问题　技术 / 项目负责证实</span></div>
+  </div>
+</section>
+
+<section class="panel" id="s4">
+  <div class="wrap">
+    <div class="eyebrow">04 / 工作条件</div><h2>条件盘点：有什么，缺什么</h2><div class="rule"></div>
+    <div class="grid g4">
+      <div class="card"><h3>业务规则<span class="kicker b">硬约束</span></h3><ul><li>五个技术阶段不可混用</li><li>展会≠交付、来访≠订单、合作≠量产</li><li>每条选题须挂 1 个 CQ + 1 份 S</li><li>无依据内容列“待核实”</li></ul></div>
+      <div class="card"><h3>专家经验<span class="kicker b">判断依据</span></h3><ul><li>S01–S11 资料卡自带使用边界</li><li>REV01–REV05 五条审核判例</li><li>P01–P03 已确认可复用表达</li></ul></div>
+      <div class="card"><h3>已有数据<span class="kicker b">可直接用</span></h3><ul><li>11 份公开资料 S01–S11</li><li>12 条客户问题 CQ01–CQ12</li><li>5 张图片 PIC01–PIC05</li><li>审核 · 口径 · 反馈 · 模板</li></ul></div>
+      <div class="card warn"><h3>条件缺口<span class="kicker r">待企业补</span></h3><ul><li>无运营成本测算数据</li><li>车型参数待技术补充</li><li>S08 日期矛盾待核</li><li>澳洲服务网络未披露</li><li>RoboBus 无落地证据</li></ul></div>
+    </div>
+    <div class="foot"><span>规则来源：品牌渠道与内容规则</span><span>缺口一律进资料需求清单，不编造数据</span></div>
+  </div>
+</section>
+
+<section class="panel" id="s5">
+  <div class="wrap">
+    <div class="eyebrow">05 / 业务假设</div><h2>核心判断，与四条待确认假设</h2><div class="rule"></div>
+    <p class="lead">问题本质不是“缺内容”，而是<b>缺一套带阶段标注、带审核状态的可持续复用的内容资产</b> —— 把每次策划从“从零搜索”变成“在已确认素材库上迭代”。</p>
+    <div class="grid g4" style="margin-top:22px">
+      <div class="card gold"><h3>假设一<span class="kicker y">待确认</span></h3><p><b>企业愿持续投入人手做人工确认。</b>无审核环节，口径库无法建立，复用机制整体失效。</p></div>
+      <div class="card gold"><h3>假设二<span class="kicker y">待确认</span></h3><p><b>技术与项目人员能及时更新资料与进展。</b>更新滞后会让选题引用过期的阶段信息。</p></div>
+      <div class="card gold"><h3>假设三<span class="kicker y">待确认</span></h3><p><b>已确认口径可跨渠道复用。</b>官网须准确、销售可列待确认问题，复用粒度需明确。</p></div>
+      <div class="card gold"><h3>假设四<span class="kicker y">待确认</span></h3><p><b>S01–S11 覆盖度足以支撑 11 月四周选题。</b>缺口无法补齐时，部分选题降级为“资料征集”。</p></div>
+    </div>
+    <div class="foot"><span>有公开来源＝已核实事实　·　官网介绍＝材料说法不外推</span><span>本四条＝小组假设，须企业确认后执行</span></div>
+  </div>
+</section>
+
+<section class="panel" id="s6">
+  <div class="wrap">
+    <div class="eyebrow">06 / 初步方案</div><h2>五步闭环怎么跑</h2><div class="rule"></div>
+    <div class="steps">
+      <div class="step"><div class="no">01</div><h3>资料归集与标注</h3><p><span class="ai">AI</span>　抽取来源 / 时间 / 阶段 / 客群 / 边界，建素材库并标待核实<br><span class="human">人</span>　抽查来源、补车型参数<br>→ 结构化素材库</p></div>
+      <div class="step"><div class="no">02</div><h3>场景与问题匹配</h3><p><span class="ai">AI</span>　建立「客户问题 ↔ 产品能力 ↔ 案例 ↔ 传播主题」映射，每客群初筛 3–4 个场景<br><span class="human">人</span>　确认场景优先级<br>→ 场景匹配清单</p></div>
+      <div class="step"><div class="no">03</div><h3>选题与内容起草</h3><p><span class="ai">AI</span>　生成四周选题表，起草公众号提纲 / 官网文案 / 展会介绍 / 销售推介，自动附来源与阶段标注<br><span class="human">人</span>　初审结构与取舍<br>→ 选题表与初稿</p></div>
+      <div class="step"><div class="no">04</div><h3>人工审核与固化</h3><p><span class="ai">AI</span>　比对资料卡边界，自动提示“展会→交付”等越界表述<br><span class="human">人</span>　技术 / 品牌 / 项目三方审核，通过即写入口径版本表<br>→ 可复用口径</p></div>
+      <div class="step"><div class="no">05</div><h3>复用与下一轮</h3><p><span class="ai">AI</span>　新问题先匹配已有口径，输出选题前后对照<br><span class="human">人</span>　补充新进展、决定版本是否升级<br>→ 对照表与需求清单</p></div>
+    </div>
+    <div class="foot"><span>AI 负责：找得到、配得上、写得出、比得出</span><span>人掌握：判得准、批得了、发不发</span></div>
+  </div>
+</section>
+
+<section class="panel" id="s7">
+  <div class="wrap">
+    <div class="eyebrow">07 / 质量保障</div><h2>分工边界，与三类信息区分</h2><div class="rule"></div>
+    <div class="grid g2">
+      <div class="card"><h3>AI 与人的分工<span class="kicker b">各司其职</span></h3>
+        <table><tr><th style="width:50%">AI 负责</th><th>人负责</th></tr>
+          <tr><td>归集、字段标注、待核实标记</td><td>来源与事实抽查、参数补充</td></tr>
+          <tr><td>问题-能力-案例-主题匹配初筛</td><td>场景优先级与取舍决策</td></tr>
+          <tr><td>选题表与四类内容起草、阶段标注</td><td>技术阶段判定（技术审核员）</td></tr>
+          <tr><td>越界提示、修改建议对照</td><td>口径批准与版本发布（审核员）</td></tr>
+          <tr><td>版本对照、反馈匹配、缺口清单</td><td>发布决定与对外授权</td></tr>
+        </table>
+      </div>
+      <div class="card warn"><h3>事实 / 说法 / 假设<span class="kicker r">严格分三类</span></h3>
+        <table><tr><th style="width:18%">类别</th><th style="width:56%">示例</th><th>处理</th></tr>
+          <tr><td>已核实事实</td><td>6/5 与享道签约，方向含 RoboBus（S11）；奉浦快线含驾驶辅助、盲区监测（S06）</td><td>直接引用，保留编号</td></tr>
+          <tr><td>材料说法</td><td>官网提及远程诊断与联合保障（S01）；澳洲适配为“建设方向”（S08）</td><td>标注出处，不推导为既成事实</td></tr>
+          <tr><td>小组假设</td><td>关键假设一至四</td><td>圈出，待确认后执行</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="s8">
+  <div class="wrap">
+    <div class="eyebrow">08 / 方案演示 Demo</div><h2>现场跑一遍：从客户问题到可复用口径</h2><div class="rule"></div>
+    <div class="demo">
+      <div class="rail">
+        <button class="rbtn on" data-step="1"><b>01</b>资料归集</button>
+        <button class="rbtn" data-step="2"><b>02</b>场景匹配</button>
+        <button class="rbtn" data-step="3"><b>03</b>内容起草</button>
+        <button class="rbtn" data-step="4"><b>04</b>越界检测</button>
+        <button class="rbtn" data-step="5"><b>05</b>审核入库</button>
+      </div>
+      <div class="dpanel" id="dpanel"></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="s9">
+  <div class="wrap">
+    <div class="eyebrow">09 / 交付物</div><h2>本方案交付什么</h2><div class="rule"></div>
+    <div class="grid g3">
+      <div class="card"><h3>持续资产<span class="kicker b">可复用</span></h3><ul><li>素材库（来源 / 阶段 / 客群 / 边界）</li><li>口径版本表（版本 · 依据 · 适用范围）</li><li>待核实与资料需求清单</li></ul></div>
+      <div class="card"><h3>11 月内容<span class="kicker b">可直接用</span></h3><ul><li>四周选题安排表（挂 CQ / S / PIC）</li><li>公众号提纲 1 份</li><li>官网文案 1 段</li><li>展会介绍 1 段</li></ul></div>
+      <div class="card ok"><h3>判断依据<span class="kicker g">可追溯</span></h3><ul><li>每条结论对应 S 资料编号</li><li>改动保留前后版本与审核记录</li><li>下一轮反馈直接进入再迭代</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<footer class="end">
+  <div class="wrap">
+    <p class="bignote">实际发布不属于本次任务 —— 方案保证的是：<br><em>下一次做选题时，不必再从零开始。</em></p>
+    <p class="fin">汇报完毕　·　请评委提问　·　企业真题 02 · 申沃客车 · 北美 2 组</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var secs = [].slice.call(document.querySelectorAll('section'));
+  var dots = [].slice.call(document.getElementById('navdot').children);
+  var progEl = document.getElementById('prog');
+
+  dots.forEach(function(d,i){
+    d.addEventListener('click', function(){ stopAll(); secs[i].scrollIntoView({behavior:'smooth', block:'start'}); });
+  });
+
+  function nearest(){
+    var y = window.scrollY + window.innerHeight * 0.35, idx = 0;
+    secs.forEach(function(s,i){ if(s.offsetTop <= y) idx = i; });
+    return idx;
+  }
+  function paint(){
+    var i = nearest();
+    dots.forEach(function(d,n){ d.classList.toggle('on', n===i); });
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progEl.style.width = (h>0 ? (window.scrollY/h*100) : 0) + '%';
+  }
+  window.addEventListener('scroll', paint, {passive:true});
+  paint();
+
+  document.addEventListener('keydown', function(e){
+    var i = nearest();
+    if(e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); stopAll(); secs[Math.min(secs.length-1,i+1)].scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); stopAll(); secs[Math.max(0,i-1)].scrollIntoView({behavior:'smooth',block:'start'}); }
+    else if(e.key===' '){ e.preventDefault(); if(state==='playing'){ pause(); } else { start(); } }
+    else if(e.key==='Escape'){ stopAll(); }
+    else if(e.key==='f'||e.key==='F'){ document.getElementById('full').click(); }
+  });
+
+  document.getElementById('top').addEventListener('click', function(){ stopAll(); window.scrollTo({top:0,behavior:'smooth'}); });
+  document.getElementById('full').addEventListener('click', function(){
+    if(!document.fullscreenElement){ document.documentElement.requestFullscreen(); } else { document.exitFullscreen(); }
+  });
+
+  /* ---------- Demo 面板 ---------- */
+  var AUD = {
+    '公交运营商': { cq:'CQ01 现有驾驶辅助能帮助司机看清哪些盲区？', s:'S06 奉浦快线 BRT 车辆交付（全景环视 / 驾驶辅助 / 盲区监测）', pic:'PIC04 18 米 BRT 产品图', ch:'公众号 · 销售推介',
+      draft:'奉浦快线新一代 BRT 车辆已完成交付，配备全景环视、驾驶辅助与盲区监测等配置，帮助驾驶员在进站、转弯等场景掌握周边状况。（来源 S06，2025-11-26）', stage:'具体项目交付 · 辅助驾驶配置' },
+    '海外客户': { cq:'CQ05 城市公交和城间客运车型分别面向什么场景？', s:'S10 IAA 展会：iEV12 城市客车 与 iEV12LE 城间客车两类定位', pic:'PIC05 IAA 报道配图', ch:'官网 · 展会',
+      draft:'MG Commercial 在 IAA 展出 iEV12 城市客车与 iEV12LE 城间客车：前者服务城市公交，后者面向城间客运并采用低入口布置，均介绍纯电动力与驾驶辅助配置。（来源 S10，2026-10-08）', stage:'展会展示 · 两类产品定位' },
+    '行业伙伴': { cq:'CQ10 RoboBus 是否已经量产并商业运营？', s:'S11 申沃与享道战略合作（车联网 / RoboBus / 信息安全 / AI 应用）', pic:'—（暂无对应图片，列待核实）', ch:'官网 · 销售推介',
+      draft:'2026 年 6 月 5 日，申沃与享道出行签署合作协议，合作方向包括车联网、RoboBus、信息安全与 AI 应用。（来源 S11，上海汽车报 2026-06-14）', stage:'战略合作 · 未量产 / 未商业运营' }
+  };
+  var aud = '公交运营商', step = 1, box = document.getElementById('dpanel');
+  function chipHtml(list, cls){
+    return '<div class="chips">' + list.map(function(x){ return '<span class="chip ' + (cls||'') + '">' + x + '</span>'; }).join('') + '</div>';
+  }
+  function drawDemo(){
+    var a = AUD[aud], h = '';
+    if(step===1){
+      h = '<h3>01　资料归集与标注 <span class="kicker b">AI</span> <span class="kicker r">人抽查</span></h3>'
+        + '<div class="kv"><b>输入</b><span>S01–S11 资料卡 · CQ01–CQ12 · PIC01–PIC05 · REV01–REV05 · 确认口径 v1.0 · FB01–FB04</span></div>'
+        + '<p class="note">AI 自动抽取「来源 / 时间 / 公开阶段 / 客群 / 使用边界」并入库：</p>'
+        + chipHtml(['S01 公司与服务','S02 iEV7','S03 10 系 7 米','S04 9 系 12 米','S05 18 米 BRT','S06 奉浦快线交付','S07 CIBE 展会','S08 悉尼车展','S09 美洲来访','S10 IAA 展会','S11 享道合作'],'ai')
+        + '<p class="note">自动标记的待核实项：</p>'
+        + chipHtml(['S08 网页日期 7/14 与正文 7/15 矛盾','S02–S05 缺续航与智能配置参数','REV05 无成本测算','PIC01–PIC05 对外使用待授权'],'bad')
+        + '<p class="note">→ 输出：结构化素材库（每条含确认状态）</p>';
+    }
+    if(step===2){
+      h = '<h3>02　场景与问题匹配 <span class="kicker b">AI 初筛</span> <span class="kicker r">人定优先级</span></h3>'
+        + '<p class="note" style="margin-top:12px">切换客群，看 AI 自动给出「客户问题 → 产品资料 → 配图 → 渠道」映射：</p>'
+        + '<div class="chips" style="margin-top:8px">' + Object.keys(AUD).map(function(k){ return '<span class="chip pick' + (k===aud?' on':'') + '" data-aud="' + k + '">' + k + '</span>'; }).join('') + '</div>'
+        + '<table style="margin-top:16px"><tr><th style="width:22%">客户问题</th><th style="width:36%">对应公开资料</th><th style="width:22%">推荐配图</th><th>渠道</th></tr>'
+        + '<tr><td>' + a.cq + '</td><td>' + a.s + '</td><td>' + a.pic + '</td><td>' + a.ch + '</td></tr></table>'
+        + '<p class="note">→ 输出：三类客群场景匹配清单（每条至少 1 个 CQ + 1 份 S，符合品牌规则第 2 条）</p>';
+    }
+    if(step===3){
+      h = '<h3>03　选题与内容起草 <span class="kicker b">AI 起草</span> <span class="kicker r">人初审</span></h3>'
+        + '<div class="kv"><b>客群</b><span>' + aud + '</span><b>选题来源</b><span>' + a.cq + '</span><b>渠道</b><span>' + a.ch + '</span></div>'
+        + '<div class="draft"><p style="font-weight:800">渠道内容初稿（AI 自动附来源与阶段标注）</p><p>' + a.draft + '</p>'
+        + '<p class="mono">技术阶段标注：' + a.stage + '</p></div>'
+        + '<p class="note">→ 输出：四周选题安排表 + 公众号提纲 / 官网文案 / 展会介绍 / 销售推介要点</p>';
+    }
+    if(step===4){
+      h = '<h3>04　越界检测 <span class="kicker b">本方案的核心价值</span></h3>'
+        + '<p class="note" style="margin-top:12px">AI 逐句比对资料卡使用边界，命中即提示并给出可替换表述：</p>'
+        + '<table style="margin-top:6px"><tr><th style="width:26%">疑似越界</th><th style="width:28%">命中规则</th><th>建议替换</th></tr>'
+        + '<tr><td>“罗布巴士已进入<span class="hit">量产与大规模商业运营</span>”</td><td>合作→量产（REV01 / S11 边界）</td><td>改为「<span class="fixed">合作方向涉及 RoboBus</span>」，沿用 P01 表述</td></tr>'
+        + '<tr><td>“澳洲<span class="hit">服务网络已全面覆盖</span>”</td><td>建设方向→既成事实（S08）</td><td>改为「<span class="fixed">推进本地服务建设</span>」并列待核实</td></tr>'
+        + '<tr><td>“美洲来访标志<span class="hit">海外订单落地</span>”</td><td>来访→订单（REV04 / S09）</td><td>改为「<span class="fixed">开展交流，介绍智能驾驶与车联网</span>」</td></tr>'
+        + '<tr><td>“运营成本<span class="hit">下降 30%</span>”</td><td>无测算依据（REV05 / FB04）</td><td>删除降幅，转为<span class="fixed">资料征集</span>项</td></tr></table>'
+        + '<p class="note">规则来源：品牌渠道与内容规则「不能从展会推出交付、从来访推出订单、从合作推出量产」</p>';
+    }
+    if(step===5){
+      h = '<h3>05　人工审核与版本固化 <span class="kicker r">人批准</span> <span class="kicker g">转为可复用</span></h3>'
+        + '<div class="kv"><b>审核角色</b><span>技术审核员 · 品牌审核员 · 项目审核员</span><b>本次结果</b><span>通过（依据 S06 / S10 / S11 + REV01–REV05）</span></div>'
+        + '<div class="draft"><p style="font-weight:800">新增口径版本条目</p>'
+        + '<table><tr><th style="width:12%">编号</th><th style="width:36%">表达</th><th style="width:14%">版本</th><th>适用范围</th></tr>'
+        + '<tr><td>P04</td><td>' + (aud==='行业伙伴' ? '双方签约，合作方向涉及车联网与 RoboBus' : aud==='海外客户' ? 'iEV12 面向城市公交，iEV12LE 面向城间客运' : '奉浦快线交付车辆含全景环视、驾驶辅助与盲区监测') + '</td><td>V1.0</td><td>' + a.ch + ' · ' + aud + '</td></tr></table></div>'
+        + '<p class="note">下一轮（如 FB01–FB04 的追问到来）：AI 先匹配已有 P01–P04，命中直接复用；未命中 → 进资料需求清单。<b>这就是“不必再从零开始”。</b></p>';
+    }
+    box.innerHTML = h;
+    [].slice.call(box.querySelectorAll('.chip.pick')).forEach(function(c){
+      c.addEventListener('click', function(){ aud = c.getAttribute('data-aud'); drawDemo(); });
+    });
+  }
+  function setDemo(n){
+    step = n;
+    [].slice.call(document.querySelectorAll('.rbtn')).forEach(function(x){ x.classList.toggle('on', parseInt(x.getAttribute('data-step'),10)===n); });
+    drawDemo();
+  }
+  [].slice.call(document.querySelectorAll('.rbtn')).forEach(function(b){
+    b.addEventListener('click', function(){ stopAll(); setDemo(parseInt(b.getAttribute('data-step'),10)); });
+  });
+  drawDemo();
+
+  /* ---------- 语音讲解 ---------- */
+  var SCRIPT = [
+    {to:'s0', who:'开场', t:'评委老师好，我们是北美 2 组，汇报申沃客车这道真题。结论先说：申沃不缺宣传素材，缺的是带阶段标注、可复用的内容资产。', after:400},
+    {to:'s1', who:'01 核心结论', t:'我们给的不是一篇稿子，而是一套工作方式：AI 起草与越界提示，加人工审核固化版本，加素材库复用。它直接对应企业任务四：已审核内容可在后续策划中复用', after:400},
+    {to:'s2', who:'02 聚焦问题', t:'我们只聚焦一个问题：品牌团队面向三类客群做宣传时，每次都要重新找资料、重新核口径。三条依据：情境原文写明已修改内容不易复用；历史草稿一次踩了五个雷，合作写成量产、来访写成订单、30% 降幅没有测算；企业现在只能靠人工维护口径来补缺口。', after:400},
+    {to:'s3', who:'03 三方客群', t:'三类客群关心的事完全不同：公交运营商看安全辅助和维保案例，海外客户看当地适配与服务网络，行业伙伴看合作方向和技术阶段。', after:300},
+    {to:'s4', who:'04 工作条件', t:'手上有 11 份公开资料、12 条客户问题、5 张图片、5 条审核判例。最关键的规则是五个技术阶段不能混用：展会不等于交付、来访不等于订单、合作不等于量产；缺证据一律列待核实，不编数据。', after:300},
+    {to:'s5', who:'05 业务假设', t:'这里交代四条我们也无法确认的假设：企业是否愿意持续投入人工审核、技术项目能否及时更新、口径能否跨渠道复用、现有资料能否撑满十一月选题。须经企业确认才能落地。', after:400},
+    {to:'s6', who:'06 五步闭环', t:'方案是五步闭环：AI 归集标注建素材库；按客群做问题到案例到主题的匹配；生成四周选题和四类渠道内容；AI 提示越界表述，人做三方审核；通过的表达写入口径版本表，下一轮直接复用。一句话：AI 管写得出，人管发不发。', after:400},
+    {to:'s7', who:'07 质量保障', t:'底线是三件事：有公开来源的才当事实引用，官网介绍只标出处不外推，自己的判断一律圈出待确认。', after:400},
+    {to:'s8', who:'08 Demo · 第一、二步', demo:1, after:500, t:'请看演示。第一步，11 份资料自动入库，4 个待核实项被标出。第二步，切到海外客户，立刻给出 CQ05 到 S10 的映射。', nextDemo:2, nextDelay:4800},
+    {to:'s8', who:'08 Demo · 第三、四步', demo:3, after:500, t:'第三步，生成带来源和阶段标注的初稿。第四步是核心价值：把已量产、服务网络已全面覆盖这类话当场标红，并给出合规替换。', nextDemo:4, nextDelay:4800},
+    {to:'s8', who:'08 Demo · 第五步', demo:5, after:450, t:'第五步，审核通过写入新口径 P04；下一轮追问先匹配已有口径，命中就直接用。', after2:400},
+    {to:'s9', who:'09 交付物', t:'我们交付三类：可复用的素材库与口径版本表、可直接用的十一月选题和四类文案、可追溯的判断依据。', after:300},
+    {to:'s9', who:'收尾', t:'实际发布不属于本次任务，我们保证的是：下一次做选题时，不必再从零开始。汇报完毕，请评委提问。', after:0}
+  ];
+
+  var synth = window.speechSynthesis;
+  var voiceSel = document.getElementById('voice');
+  var voices = [];
+  var MALE = ['Yunyang','Yunxi','Yunye','Kangkang','Yunjian','Li-mu','Daniel','Alex','Liang'];
+  var FEMALE = ['Xiaoxiao','Xiaoyi','Huihui','Yaoyao','Tingting','Ting-Ting','Sinji','Meijia','Mei-Jia','Google'];
+  function vScore(v){
+    var n = (v.name || '').toLowerCase(), s = 0;
+    MALE.forEach(function(k){ if(n.indexOf(k.toLowerCase()) >= 0) s += 10; });
+    FEMALE.forEach(function(k){ if(n.indexOf(k.toLowerCase()) >= 0) s -= 10; });
+    return s;
+  }
+  function vLabel(v){
+    var s = vScore(v);
+    return v.name + (s >= 10 ? ' · 商务男声' : (s <= -10 ? ' · 女声' : ' · 中文'));
+  }
+  function loadVoices(){
+    voices = synth ? synth.getVoices() : [];
+    var zh = voices.filter(function(v){ return (v.lang||'').toLowerCase().indexOf('zh') === 0; });
+    var list = (zh.length ? zh : voices).slice().sort(function(a,b){ return vScore(b) - vScore(a); });
+    voiceSel.innerHTML = list.map(function(v){ return '<option value="' + v.name + '">' + vLabel(v) + '</option>'; }).join('');
+    if(list.length) voiceSel.selectedIndex = 0;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged = loadVoices; }
+
+  var idx = 0, state = 'idle', timerId = null, waitId = null;
+  var sub = document.getElementById('subtitle'), subText = document.getElementById('subtext'), subWho = document.getElementById('subwho');
+  var statusEl = document.getElementById('status'), timerEl = document.getElementById('timer');
+  var TOTAL = 150, left = TOTAL, clockId = null;
+
+  function showSub(who, text){ subWho.textContent = who; subText.textContent = text; sub.classList.add('show'); }
+  function setStatus(s){ statusEl.textContent = s; }
+  function toTop(){ secs.forEach(function(s){ s.classList.remove('active'); }); }
+
+  function pickVoice(){
+    if(!synth) return null;
+    var vs = synth.getVoices();
+    if(voiceSel.value){
+      var f = vs.filter(function(v){ return v.name === voiceSel.value; });
+      if(f.length) return f[0];
+    }
+    var zh = vs.filter(function(v){ return (v.lang||'').toLowerCase().indexOf('zh') === 0; });
+    if(zh.length){
+      zh.sort(function(a,b){ return vScore(b) - vScore(a); });
+      return zh[0];
+    }
+    var male = vs.filter(function(v){ return vScore(v) >= 10; });
+    return male.length ? male[0] : (vs.length ? vs[0] : null);
+  }
+
+  function speakSeg(i){
+    if(i >= SCRIPT.length){ finish(); return; }
+    idx = i;
+    var seg = SCRIPT[i];
+    var target = document.getElementById(seg.to);
+    if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    toTop();
+    if(target) target.classList.add('active');
+    if(typeof seg.demo === 'number'){ setDemo(seg.demo); }
+    showSub(seg.who, seg.t);
+    setStatus('播报中');
+    if(!synth){ waitId = setTimeout(function(){ afterSpeak(i); }, 2600); return; }
+    var u = new SpeechSynthesisUtterance(seg.t);
+    var v = pickVoice(); if(v) u.voice = v;
+    u.lang = 'zh-CN';
+    u.rate = parseFloat(document.getElementById('rate').value);
+    u.pitch = 0.92;
+    u.onend = function(){ afterSpeak(i); };
+    u.onerror = function(){ afterSpeak(i); };
+    /* Demo 分段推进：讲完中段时间切到下一步面板 */
+    if(seg.nextDemo){
+      waitId = setTimeout(function(){
+        if(state !== 'playing') return;
+        setDemo(seg.nextDemo);
+      }, seg.nextDelay);
+    }
+    synth.speak(u);
+  }
+
+  function afterSpeak(i){
+    if(state !== 'playing') return;
+    clearTimeout(waitId);
+    var seg = SCRIPT[i];
+    timerId = setTimeout(function(){ if(state === 'playing') speakSeg(i+1); }, seg.after || 300);
+  }
+
+  function startClock(){
+    clearInterval(clockId);
+    if(left <= 0) left = TOTAL;
+    clockId = setInterval(function(){
+      if(state !== 'playing') return;
+      left--; timerEl.textContent = fmt(left);
+      if(left <= -45){ finish(); left = TOTAL; timerEl.textContent = fmt(left); }
+    }, 1000);
+  }
+  function fmt(s){ var neg = s < 0; var a = Math.abs(s); var m = Math.floor(a/60), ss = a%60; return (neg?'-':'') + m + ':' + (ss<10?'0':'') + ss; }
+
+  function start(){
+    if(state === 'paused'){ resume(); return; }
+    if(!synth){ alert('当前浏览器不支持语音合成，请用 Chrome / Edge / Safari 打开，页面仍可手动滚动浏览。'); }
+    state = 'playing';
+    setStatus('播报中');
+    document.getElementById('play').textContent = '⏸ 暂停';
+    document.getElementById('ctrlPlay').textContent = '⏸ 暂停';
+    if(left <= 0 || left === TOTAL) left = TOTAL;
+    startClock();
+    speakSeg(idx >= SCRIPT.length ? 0 : idx);
+  }
+  function pause(){
+    if(state !== 'playing') return;
+    state = 'paused'; setStatus('已暂停');
+    if(synth) synth.pause();
+    clearTimeout(timerId); clearTimeout(waitId);
+    document.getElementById('play').textContent = '▶ 继续';
+    document.getElementById('ctrlPlay').textContent = '▶ 继续';
+  }
+  function resume(){
+    if(state !== 'paused') { start(); return; }
+    state = 'playing'; setStatus('播报中');
+    if(synth) synth.resume();
+    document.getElementById('play').textContent = '⏸ 暂停';
+    document.getElementById('ctrlPlay').textContent = '⏸ 暂停';
+  }
+  function finish(){
+    state = 'idle'; clearInterval(clockId); clearTimeout(timerId); clearTimeout(waitId);
+    setStatus('已结束');
+    document.getElementById('play').textContent = '▶ 重新播放';
+    document.getElementById('ctrlPlay').textContent = '▶ 播放';
+    idx = 0; sub.classList.remove('show');
+    toTop();
+  }
+  function stopAll(){
+    if(state === 'idle') return;
+    state = 'idle'; clearInterval(clockId); clearTimeout(timerId); clearTimeout(waitId);
+    if(synth) synth.cancel();
+    setStatus('已停止');
+    document.getElementById('play').textContent = '▶ 开始自动汇报';
+    document.getElementById('ctrlPlay').textContent = '▶ 播放';
+    idx = 0; sub.classList.remove('show');
+    toTop();
+  }
+
+  document.getElementById('play').addEventListener('click', function(){ if(state==='playing') pause(); else start(); });
+  document.getElementById('ctrlPlay').addEventListener('click', function(){ if(state==='playing') pause(); else start(); });
+  document.getElementById('pause').addEventListener('click', pause);
+  document.getElementById('ctrlPause').addEventListener('click', pause);
+  document.getElementById('stop').addEventListener('click', function(){ left = TOTAL; timerEl.textContent = fmt(left); stopAll(); setStatus('就绪'); });
+  document.getElementById('subbtn').addEventListener('click', function(){
+    var on = sub.classList.toggle('show');
+    this.classList.toggle('on', on);
+    if(!on && state !== 'playing'){} else if(on && !subText.textContent){ subWho.textContent = '北美 2 组'; subText.textContent = '点击右上角「开始自动汇报」，页面将自动滚动并同步语音讲解。'; }
+  });
+  document.addEventListener('visibilitychange', function(){ if(document.hidden && state === 'playing') pause(); });
+})();
+</script>
+</body>
+</html>

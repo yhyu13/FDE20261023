@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XX客车 · Booth Loop</title>
+<!--
+  Keep this file in the same folder as the three PNGs:
+  XXbus_poster_3840x2160.png
+  XXbus_linkedin_case_3840x2160.png
+  XXbus_linkedin_case_volvo_3840x2160.png
+-->
+<style>
+  :root{
+    --bg:#050b09;
+    --ink:#f4f8f6;
+    --muted:#8fa49c;
+    --safety:#f5c542;
+    --li:#0a66c2;
+    --green:#12855f;
+    --dur:8000ms;
+    --sans:"Noto Sans SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+    --mono:"Consolas","SF Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  html{background:var(--bg)}
+  body{
+    overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);-webkit-font-smoothing:antialiased;
+    user-select:none;-webkit-user-select:none;overscroll-behavior:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  body.idle{cursor:none}
+
+  .stage{
+    position:fixed;inset:0;display:grid;place-items:center;
+    background:
+      radial-gradient(1200px 800px at 50% 44%, #0b1a16 0%, #050b09 68%),
+      #050b09;
+  }
+  .slide{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:contain;object-position:center;
+    opacity:0;transition:opacity 1.15s ease;
+    will-change:opacity;pointer-events:none;
+  }
+  .slide.active{opacity:1}
+
+  /* ---------- always-on progress ---------- */
+  .progress{
+    position:fixed;left:0;right:0;bottom:0;height:3px;z-index:40;
+    background:rgba(255,255,255,.08);
+  }
+  .progress i{
+    display:block;height:100%;width:0;
+    background:linear-gradient(90deg,var(--safety) 0%,var(--li) 62%,var(--green) 100%);
+    box-shadow:0 0 14px rgba(245,197,66,.35);
+    animation:grow var(--dur) linear forwards;
+  }
+  @keyframes grow{from{width:0}to{width:100%}}
+
+  /* ---------- HUD ---------- */
+  .hud{
+    position:fixed;top:22px;left:50%;z-index:30;
+    display:flex;align-items:center;gap:10px;
+    padding:8px 10px 8px 14px;
+    background:rgba(8,20,17,.74);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:999px;
+    box-shadow:0 18px 40px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter:blur(14px);
+    opacity:0;transform:translate(-50%,-6px);pointer-events:none;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  .hud.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .counter{
+    min-width:54px;text-align:center;
+    font-family:var(--mono);font-size:11px;font-weight:700;
+    letter-spacing:.10em;color:#a9bab4;
+  }
+  .dots{display:flex;align-items:center;gap:6px}
+  .dot{
+    width:7px;height:7px;padding:0;border:0;border-radius:999px;
+    background:rgba(255,255,255,.28);cursor:pointer;
+    transition:width .25s ease,background .25s ease;
+  }
+  .dot.active{width:22px;background:var(--safety)}
+  .dot:hover{background:rgba(255,255,255,.55)}
+  .divider{width:1px;height:18px;background:rgba(255,255,255,.14)}
+  .icon-btn{
+    width:30px;height:30px;padding:0;border-radius:50%;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.05);color:#dfe9e5;
+    display:grid;place-items:center;cursor:pointer;
+    transition:background .2s ease,border-color .2s ease,color .2s ease;
+  }
+  .icon-btn:hover{background:rgba(245,197,66,.14);border-color:rgba(245,197,66,.42);color:#fff}
+  .icon-btn svg{width:15px;height:15px}
+  .icon-play{display:none}
+  body.paused .icon-play{display:block}
+  body.paused .icon-pause{display:none}
+
+  /* ---------- loader ---------- */
+  .loader{
+    position:fixed;inset:0;z-index:60;
+    display:grid;place-items:center;
+    background:
+      radial-gradient(900px 600px at 50% 46%, #0b1a16 0%, #050b09 70%),
+      #050b09;
+    transition:opacity .6s ease;
+  }
+  .loader.hide{opacity:0;pointer-events:none}
+  .loader .box{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .loader .brand{
+    font-size:26px;font-weight:900;letter-spacing:4px;color:#f4f8f6;
+  }
+  .loader .brand i{
+    font-style:normal;color:var(--safety);
+  }
+  .loader .sub{
+    font-family:var(--mono);font-size:10px;font-weight:700;
+    letter-spacing:.22em;color:#8fa49c;
+  }
+  .loader .line{
+    width:190px;height:2px;margin-top:4px;
+    background:rgba(255,255,255,.10);overflow:hidden;
+  }
+  .loader .line i{
+    display:block;width:42%;height:100%;
+    background:linear-gradient(90deg,var(--safety),var(--li));
+    animation:load 1.15s ease-in-out infinite;
+  }
+  @keyframes load{
+    0%{transform:translateX(-110%)}
+    100%{transform:translateX(350%)}
+  }
+
+  @media (max-width:700px){
+    .hud{top:10px;left:12px;right:12px;transform:translateY(-6px);gap:7px;padding:7px 8px 7px 11px;justify-content:center}
+    .hud.show{transform:none}
+    .counter{min-width:46px;font-size:10px}
+    .icon-btn{width:28px;height:28px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .slide{transition-duration:.01ms}
+    .progress i{animation-duration:var(--dur)}
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage" aria-live="polite">
+  <img class="slide active" src="XXbus_poster_3840x2160.png" alt="XX客车 品牌主海报" decoding="async" fetchpriority="high">
+  <img class="slide" src="XXbus_linkedin_case_3840x2160.png" alt="XX客车 LinkedIn 海外 GTM 案例" decoding="async">
+  <img class="slide" src="XXbus_linkedin_case_volvo_3840x2160.png" alt="XX客车 沃尔沃基因 安全高端海报" decoding="async">
+</div>
+
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<div class="hud" id="hud">
+  <span class="counter" id="counter">01 / 03</span>
+  <div class="dots" id="dots" aria-label="切换画面">
+    <button class="dot active" type="button" data-i="0" aria-label="第 1 张"></button>
+    <button class="dot" type="button" data-i="1" aria-label="第 2 张"></button>
+    <button class="dot" type="button" data-i="2" aria-label="第 3 张"></button>
+  </div>
+  <span class="divider"></span>
+  <button class="icon-btn" id="toggle" type="button" aria-label="暂停 / 继续">
+    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 4.8c0-1 1.1-1.6 1.9-1L20 11.1c.8.5.8 1.6 0 2.1L9.9 20.2c-.8.5-1.9-.1-1.9-1V4.8z"/></svg>
+  </button>
+  <button class="icon-btn" id="fs" type="button" aria-label="全屏">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+  </button>
+</div>
+
+
+<div class="loader" id="loader">
+  <div class="box">
+    <div class="brand">XX <i>BUS</i></div>
+    <div class="sub">BOOTH LOOP · 4K</div>
+    <div class="line"><i></i></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const DURATION = 8000;
+  const stage = document.getElementById("stage");
+  const hud = document.getElementById("hud");
+  const counter = document.getElementById("counter");
+  const bar = document.getElementById("bar");
+  const loader = document.getElementById("loader");
+  const dots = [...document.querySelectorAll(".dot")];
+  const slides = [...document.querySelectorAll(".slide")];
+
+  let index = 0;
+  let paused = false;
+  let autoPaused = false;
+  let timer = null;
+  let hideTimer = null;
+  let lastMove = 0;
+  let started = false;
+
+  const pad = n => String(n + 1).padStart(2, "0");
+  const total = String(slides.length).padStart(2, "0");
+
+  function decodeImage(img) {
+    if (img.complete && img.naturalWidth) {
+      return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+    }
+    return new Promise(resolve => {
+      img.addEventListener("load", resolve, { once: true });
+      img.addEventListener("error", resolve, { once: true });
+    });
+  }
+
+  function restartProgress() {
+    bar.style.animation = "none";
+    void bar.offsetWidth;
+    bar.style.animation = `grow ${DURATION}ms linear forwards`;
+    bar.style.animationPlayState = paused ? "paused" : "running";
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    timer = null;
+    if (paused) return;
+    timer = setTimeout(() => show(index + 1), DURATION);
+  }
+
+  function show(next, fromUser = false) {
+    index = (next + slides.length) % slides.length;
+    slides.forEach((img, i) => img.classList.toggle("active", i === index));
+    dots.forEach((dot, i) => dot.classList.toggle("active", i === index));
+
+    counter.textContent = `${pad(index)} / ${total}`;
+
+    restartProgress();
+    schedule();
+    if (fromUser) showHud(true);
+  }
+
+  function showHud(sticky = false) {
+    hud.classList.add("show");
+    document.body.classList.remove("idle");
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hideHud, sticky ? 4200 : 2800);
+  }
+
+  function hideHud() {
+    hud.classList.remove("show");
+    document.body.classList.add("idle");
+  }
+
+  function setPaused(next) {
+    paused = next;
+    document.body.classList.toggle("paused", paused);
+    if (paused) {
+      clearTimeout(timer);
+      timer = null;
+      bar.style.animationPlayState = "paused";
+      showHud(true);
+    } else {
+      restartProgress();
+      schedule();
+      showHud(false);
+    }
+  }
+
+  function togglePause() {
+    setPaused(!paused);
+  }
+
+  async function toggleFullscreen() {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      /* file:// or browser policy may block; ignore */
+    }
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener("click", e => {
+      e.stopPropagation();
+      show(Number(dot.dataset.i), true);
+    });
+  });
+
+  document.getElementById("toggle").addEventListener("click", e => {
+    e.stopPropagation();
+    togglePause();
+  });
+
+  document.getElementById("fs").addEventListener("click", e => {
+    e.stopPropagation();
+    toggleFullscreen();
+  });
+
+  stage.addEventListener("click", () => {
+    togglePause();
+  });
+
+  document.addEventListener("pointermove", () => {
+    const now = performance.now();
+    if (now - lastMove < 90) return;
+    lastMove = now;
+    showHud(false);
+  }, { passive: true });
+
+  document.addEventListener("pointerdown", () => {
+    showHud(false);
+  }, { passive: true });
+
+  document.addEventListener("keydown", e => {
+    if (e.code === "Space") {
+      e.preventDefault();
+      togglePause();
+      return;
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      show(index + 1, true);
+      return;
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      show(index - 1, true);
+      return;
+    }
+    if (e.key === "f" || e.key === "F") {
+      e.preventDefault();
+      toggleFullscreen();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      if (!paused) {
+        autoPaused = true;
+        paused = true;
+        clearTimeout(timer);
+        timer = null;
+        bar.style.animationPlayState = "paused";
+        document.body.classList.add("paused");
+      }
+    } else if (autoPaused) {
+      autoPaused = false;
+      paused = false;
+      document.body.classList.remove("paused");
+      restartProgress();
+      schedule();
+    }
+  });
+
+  document.addEventListener("fullscreenchange", () => {
+    showHud(false);
+  });
+
+  // Keep the booth screen awake when the browser supports Wake Lock.
+  let wakeLock = null;
+  async function requestWakeLock() {
+    try {
+      if ("wakeLock" in navigator && !wakeLock) {
+        wakeLock = await navigator.wakeLock.request("screen");
+        wakeLock.addEventListener("release", () => { wakeLock = null; });
+      }
+    } catch (err) {
+      /* ignore */
+    }
+  }
+  document.addEventListener("pointerdown", requestWakeLock, { once: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") requestWakeLock();
+  });
+
+  // Wait for all three 4K images to decode before starting, so a fade never
+  // lands on a blank frame.
+  const allDecoded = Promise.all(slides.map(decodeImage));
+  const fallback = new Promise(resolve => setTimeout(resolve, 12000));
+
+  Promise.race([allDecoded, fallback]).then(() => {
+    if (started) return;
+    started = true;
+    loader.classList.add("hide");
+    setTimeout(() => loader.remove(), 700);
+    show(0);
+    document.body.classList.add("idle");
+  });
+})();
+</script>
+</body>
+</html>

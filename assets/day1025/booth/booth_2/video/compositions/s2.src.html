@@ -1,0 +1,185 @@
+<template>
+  <style>
+    #root{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;
+      padding:36px 64px 0;font-family:"Noto Sans JP",sans-serif;color:#0d1526}
+    .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:#98a2b3;letter-spacing:.7px}
+    .hd{display:flex;align-items:flex-end;justify-content:space-between;margin-top:8px}
+    h2{margin:0;font-size:30px;display:flex;align-items:center;gap:12px}
+    .ic{font-family:"JetBrains Mono",monospace;font-size:14px;color:#fff;background:#12a465;
+      border-radius:6px;padding:3px 8px}
+    .sub{color:#5a6679;font-size:14px;margin-top:6px}
+    .tag{font-size:13px;padding:4px 12px;border-radius:999px;font-weight:600}
+    .tag.green{background:rgba(10,122,74,.1);color:#0a7a4a}
+    .main{flex:1;min-height:0;margin-top:16px;display:flex;gap:20px}
+    .panel{border:1px solid rgba(15,23,42,.11);border-radius:12px;background:#fff;display:flex;
+      flex-direction:column;min-height:0}
+    .ph{padding:10px 16px;border-bottom:1px solid rgba(15,23,42,.11);font-size:14.5px;font-weight:600}
+    .ph .hint{font-weight:400;font-size:11.5px;color:#98a2b3;font-family:"JetBrains Mono",monospace}
+    .pb{padding:11px 16px;overflow:hidden;min-height:0}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{text-align:left;font-size:11.5px;color:#98a2b3;padding:7px 8px;border-bottom:1px solid rgba(15,23,42,.11)}
+    td{padding:6px 8px;border-bottom:1px solid rgba(15,23,42,.06);line-height:1.4}
+    .mono{font-family:"JetBrains Mono",monospace}
+    .ev{font-size:11.5px;padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap}
+    .ev.pass{background:rgba(10,122,74,.1);color:#0a7a4a}
+    .ev.warn{background:rgba(168,96,10,.12);color:#a8600a}
+    .ev.hold{background:rgba(207,42,28,.1);color:#cf2a1c}
+    .fact{font-family:"JetBrains Mono",monospace;font-size:11.5px;background:rgba(10,134,189,.1);
+      color:#0a86bd;border-radius:4px;padding:1px 6px;margin-right:4px}
+    .chips{display:flex;gap:8px;padding:9px 16px;border-bottom:1px solid rgba(15,23,42,.11);
+      align-items:center;font-size:13px;color:#5a6679;flex-wrap:wrap}
+    .chip{border:1px solid rgba(15,23,42,.11);border-radius:999px;padding:4px 12px;font-size:13px;
+      background:#fff}
+    .chip.c2{border-color:#0a86bd;color:#0a86bd}
+    .chip.c3{border-color:#6d3fd4;color:#6d3fd4}
+    .chip.c4{border-color:#cf2a1c;color:#cf2a1c}
+    .chip.cy{border-color:#12a465;color:#0a7a4a}
+    .gate{display:flex;gap:9px;padding:8px 11px;border-radius:9px;border:1px solid rgba(15,23,42,.11);
+      font-size:12.5px;line-height:1.55;margin-bottom:7px}
+    .gate .g{flex:0 0 18px;height:18px;border-radius:50%;color:#fff;font-size:11px;font-weight:800;
+      display:flex;align-items:center;justify-content:center}
+    .gate.pass{background:rgba(10,122,74,.05)}.gate.pass .g{background:#0a7a4a}
+    .gate.warn{background:rgba(168,96,10,.06)}.gate.warn .g{background:#a8600a}
+    .gate.hold{background:rgba(207,42,28,.06)}.gate.hold .g{background:#cf2a1c}
+    .gate .gt{font-weight:600}.gate .gd{color:#5a6679}
+    .sec{font-family:"JetBrains Mono",monospace;font-size:11px;color:#98a2b3;letter-spacing:.8px;margin:9px 0 3px}
+    .note{font-size:12.5px;color:#5a6679;line-height:1.6}
+    .qq{font-size:16px;font-weight:600;line-height:1.45}
+    .br{display:flex;align-items:center;gap:9px;margin-top:5px;font-size:12.5px}
+    .br .bl{flex:0 0 110px;color:#5a6679}
+    .br .bt{flex:1;height:8px;border-radius:5px;background:rgba(15,23,42,.07);overflow:hidden}
+    .br .bf{display:block;height:100%;border-radius:5px;background:#12a465}
+    .br .bv{flex:0 0 56px;text-align:right;font-family:"JetBrains Mono",monospace;font-weight:600}
+    .mx{width:100%;border-collapse:collapse;font-size:12.5px}
+    .mx th{text-align:center;font-size:11px;padding:5px 3px;color:#98a2b3;border-bottom:1px solid rgba(15,23,42,.11)}
+    .mx td{padding:5px 3px;text-align:center;font-family:"JetBrains Mono",monospace;border-bottom:1px solid rgba(15,23,42,.06)}
+    .mx td.rh{font-family:"Noto Sans JP",sans-serif;font-weight:600;text-align:left}
+    .mx td.h1{background:rgba(18,164,101,.16);color:#068348;font-weight:700}
+    .mx td.h2{background:rgba(18,164,101,.34);color:#fff;font-weight:700}
+    .mx td.h0{color:#98a2b3}
+    .mx tr.sum td{background:#fafbfd;font-weight:700;border-bottom:0}
+    .block{position:absolute;left:64px;right:64px;bottom:112px;display:flex;gap:14px;align-items:center;
+      background:#cf2a1c;color:#fff;border-radius:12px;padding:14px 20px;font-size:16px}
+    .block .g{flex:0 0 24px;height:24px;border-radius:50%;background:#fff;color:#cf2a1c;
+      display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+    #caps{position:absolute;left:0;right:0;bottom:104px;display:flex;justify-content:center;pointer-events:none}
+    .cap{font-size:19px;line-height:1.45;padding:7px 16px;border-radius:10px;background:rgba(13,21,38,.06)}
+  </style>
+  <div id="root" data-composition-id="s2" data-width="1280" data-height="720">
+    <div class="kicker clip" id="s2-kicker" data-start="0.3" data-duration="32">ABILITY 01 · STEP 02 · 客户真实提问 → 可用事实 × 投放渠道 × 边界</div>
+    <div class="hd">
+      <div>
+        <h2 class="clip" id="s2-title" data-start="0.5" data-duration="32"><span class="ic">01</span>CQ 行业问题库</h2>
+        <div class="sub clip" id="s2-sub" data-start="0.7" data-duration="32">12 条提问 × 3 类客群 × 4 类投放渠道；每条带可用事实、必须守住的边界与审核判定</div>
+      </div>
+      <span class="tag green clip" id="s2-count" data-start="0.9" data-duration="32">12 条</span>
+    </div>
+    <div class="main">
+      <div class="panel clip" id="s2-table" style="flex:1" data-start="1.0" data-duration="32">
+        <div class="chips">
+          客群
+          <span class="chip clip" id="s2-seg1" data-start="{{CUE_seg1}}" data-duration="{{CUEEND_seg1}}">公交运营商</span>
+          <span class="chip c2 clip" id="s2-seg2" data-start="{{CUE_seg2}}" data-duration="{{CUEEND_seg2}}">海外客户</span>
+          <span class="chip c3 clip" id="s2-seg3" data-start="{{CUE_seg3}}" data-duration="{{CUEEND_seg3}}">行业伙伴</span>
+          <span style="flex:1"></span>
+          渠道
+          <span class="chip cy clip" id="s2-ch1" data-start="{{CUE_chans}}" data-duration="{{CUEEND_chans}}">官网</span>
+          <span class="chip cy clip" id="s2-ch2" data-start="{{CUE_chans}}" data-duration="{{CUEEND_chans}}">公众号</span>
+          <span class="chip cy clip" id="s2-ch3" data-start="{{CUE_chans}}" data-duration="{{CUEEND_chans}}">销售推介</span>
+          <span class="chip cy clip" id="s2-ch4" data-start="{{CUE_chans}}" data-duration="{{CUEEND_chans}}">展会</span>
+        </div>
+        <div class="pb">
+          <table>
+            <thead><tr><th style="width:62px">编号</th><th style="width:88px">客群</th><th>客户原话</th>
+              <th style="width:150px">可用事实</th><th style="width:104px" id="s2-thev">事实状态</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">CQ01</td><td>公交运营商</td><td>现有驾驶辅助能看清哪些盲区？</td><td><span class="fact">S06</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ02</td><td>公交运营商</td><td>骨干线与接驳线怎么选车型？</td><td><span class="fact">官网13型号</span></td><td><span class="ev warn">需说清边界</span></td></tr>
+              <tr><td class="mono">CQ03</td><td>公交运营商</td><td>维保与故障响应有公开案例吗？</td><td><span class="fact">S01</span><span class="fact">S07</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ04</td><td>公交运营商</td><td>有数据证明运营成本降 30% 吗？</td><td style="color:#98a2b3">无</td><td><span class="ev hold">无依据</span></td></tr>
+              <tr><td class="mono">CQ05</td><td>海外客户</td><td>城市公交 vs 城间客运面向什么场景？</td><td><span class="fact">S10</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ06</td><td>海外客户</td><td>澳洲右舵、沿海气候适配的公开依据？</td><td><span class="fact">S08</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ07</td><td>海外客户</td><td>当地服务网络是否全部建好？</td><td><span class="fact">S08</span></td><td><span class="ev warn">需说清边界</span></td></tr>
+              <tr><td class="mono">CQ08</td><td>海外客户</td><td>美洲来访是否意味着已有商业订单？</td><td><span class="fact">S09</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ09</td><td>行业伙伴</td><td>与享道的合作涉及哪些方向？</td><td><span class="fact">S11</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ10</td><td>行业伙伴</td><td>RoboBus 是否已量产并商业运营？</td><td><span class="fact">S11</span></td><td><span class="ev warn">需说清边界</span></td></tr>
+              <tr><td class="mono">CQ11</td><td>行业伙伴</td><td>车联网、车辆、维保怎么协同选题？</td><td><span class="fact">S01</span><span class="fact">S07</span></td><td><span class="ev pass">公开可查</span></td></tr>
+              <tr><td class="mono">CQ12</td><td>行业伙伴</td><td>驾驶辅助 vs 自动驾驶合作怎么区分？</td><td><span class="fact">S06</span><span class="fact">S11</span></td><td><span class="ev pass">公开可查</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="flex:0 0 340px;display:flex;flex-direction:column;gap:12px;min-height:0">
+        <div class="panel clip" id="s2-gates" data-start="{{CUE_ev}}" data-duration="{{CUEEND_ev}}">
+          <div class="ph">三档边界闸门 <span class="hint">接入点 B · 动态分级</span></div>
+          <div class="pb">
+            <div class="gate pass"><span class="g">✓</span><span><span class="gt">公开可查 · 8 条</span><br>
+              <span class="gd">有 S 编号事实可引用，引用时不得外推到未报道车型</span></span></div>
+            <div class="gate warn"><span class="g">!</span><span><span class="gt">需说清边界 · 3 条</span><br>
+              <span class="gd">CQ02 / CQ07 / CQ10：必须写清「还没到哪一步」，否则撞 REV01 / REV04</span></span></div>
+            <div class="gate hold"><span class="g">✕</span><span><span class="gt">无依据 · 1 条</span><br>
+              <span class="gd">CQ04：REV05 已判「待补依据」，未核实前禁止进入对外内容</span></span></div>
+            <div class="sec clip" id="s2-recheck" data-start="{{CUE_recheck}}" data-duration="{{CUEEND_recheck}}">引擎分级复核 · 抽样 320 条</div>
+            <div class="clip" id="s2-rebars" data-start="{{CUE_recheck}}" data-duration="{{CUEEND_recheck}}">
+              <div class="br"><span class="bl">公开可查</span><span class="bt"><span class="bf" style="width:96.4%"></span></span><span class="bv">96.4%</span></div>
+              <div class="br"><span class="bl">需内部资料</span><span class="bt"><span class="bf" style="width:91.2%;background:#a8600a"></span></span><span class="bv">91.2%</span></div>
+              <div class="br"><span class="bl">待核实 / 高风险</span><span class="bt"><span class="bf" style="width:94.6%;background:#cf2a1c"></span></span><span class="bv">94.6%</span></div>
+              <div class="note" style="margin-top:6px;font-size:11.5px">低于阈值自动回滚字典或改标注 Prompt，不进入人工判断环节</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel clip" id="s2-matrix" data-start="{{CUE_matrix}}" data-duration="{{CUEEND_matrix}}">
+          <div class="ph">客群 × 渠道 覆盖矩阵 <span class="hint">数字 = 问题数</span></div>
+          <div class="pb" style="padding:8px 14px">
+            <table class="mx">
+              <thead><tr><th class="rh">客群</th><th>官网</th><th>公众号</th><th>销售推介</th><th>展会</th><th>小计</th></tr></thead>
+              <tbody>
+                <tr><td class="rh">公交运营商</td><td class="h1">1</td><td class="h2">2</td><td class="h2">4</td><td class="h0">—</td><td>4</td></tr>
+                <tr><td class="rh">海外客户</td><td class="h2">2</td><td class="h0">—</td><td class="h2">2</td><td class="h2">3</td><td>4</td></tr>
+                <tr><td class="rh">行业伙伴</td><td class="h2">2</td><td class="h2">3</td><td class="h1">1</td><td class="h2">2</td><td>4</td></tr>
+                <tr class="sum"><td class="rh">合计</td><td>5</td><td>5</td><td>7</td><td>5</td><td>12</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel clip" id="s2-detail" style="flex:1;min-height:0" data-start="{{CUE_open}}" data-duration="{{CUEEND_open}}">
+          <div class="ph">问题详情 <span class="hint">CQ04</span></div>
+          <div class="pb">
+            <div class="qq">有数据证明运营成本降 30% 吗？</div>
+            <div class="sec">客群 / 渠道</div><div class="note">公交运营商 · 销售推介</div>
+            <div class="sec">可用事实</div><div class="note"><b style="color:#cf2a1c">无可用事实</b> —— 只能写「资料征集」，不能写结论</div>
+            <div class="sec">必须守住的边界</div>
+            <div class="gate hold" style="margin:0"><span class="g">✕</span><span><span class="gt">REV05 已判「待补依据」，必须删具体降幅并列为待核实；FB04 客户仍在追问，仍无测算材料</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="block clip" id="s2-block" data-start="{{CUE_block}}" data-duration="{{CUEEND_block}}">
+      <span class="g">✕</span>
+      <span><b>REV05 已判「待补依据」→ 未核实前禁止进入任何对外内容。</b>「运营成本下降 30%」只能以「资料征集 / 测算模型」呈现，不能写成结论；FB04 显示客户仍在追问，更不能含糊。</span>
+    </div>
+    <div id="caps" data-track-kind="captions">/*CAPTIONS*/null</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s2-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+    tl.fromTo("#s2-title", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 0.5);
+    tl.fromTo("#s2-sub", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.7);
+    tl.fromTo("#s2-count", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.9);
+    tl.fromTo("#s2-table", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.0);
+    tl.fromTo("#s2-seg1", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_seg1}});
+    tl.fromTo("#s2-seg2", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_seg2}});
+    tl.fromTo("#s2-seg3", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_seg3}});
+    tl.fromTo("#s2-ch1", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_chans}});
+    tl.fromTo("#s2-ch2", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_chans}} + 0.05);
+    tl.fromTo("#s2-ch3", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_chans}} + 0.1);
+    tl.fromTo("#s2-ch4", { opacity: 0 }, { opacity: 1, duration: 0.25 }, {{CUE_chans}} + 0.15);
+    tl.fromTo("#s2-gates", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_ev}});
+    tl.fromTo("#s2-recheck", { opacity: 0 }, { opacity: 1, duration: 0.3 }, {{CUE_recheck}});
+    tl.fromTo("#s2-rebars", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, {{CUE_recheck}});
+    tl.fromTo("#s2-matrix", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_matrix}});
+    tl.fromTo("#s2-detail", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_open}});
+    tl.fromTo("#s2-block", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, {{CUE_block}});
+    window.__timelines["s2"] = tl;
+  </script>
+</template>

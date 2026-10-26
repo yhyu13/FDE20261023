@@ -1,0 +1,76 @@
+{
+  "local_file_seek_all_scenes": [
+    {
+      "scene": 1,
+      "time": 8.375,
+      "mean_luma": 217.74725115742356,
+      "distinct_colors": 197,
+      "ready_state": 4
+    },
+    {
+      "scene": 2,
+      "time": 25.20835,
+      "mean_luma": 231.42676183128725,
+      "distinct_colors": 182,
+      "ready_state": 4
+    },
+    {
+      "scene": 3,
+      "time": 44.18755,
+      "mean_luma": 232.97717335392542,
+      "distinct_colors": 192,
+      "ready_state": 4
+    },
+    {
+      "scene": 4,
+      "time": 65.479248,
+      "mean_luma": 212.55084555043024,
+      "distinct_colors": 253,
+      "ready_state": 4
+    },
+    {
+      "scene": 5,
+      "time": 88.83345,
+      "mean_luma": 220.299784593634,
+      "distinct_colors": 251,
+      "ready_state": 4
+    },
+    {
+      "scene": 6,
+      "time": 111.937649,
+      "mean_luma": 224.32720871915558,
+      "distinct_colors": 219,
+      "ready_state": 4
+    },
+    {
+      "scene": 7,
+      "time": 132.645998,
+      "mean_luma": 231.45251414609967,
+      "distinct_colors": 166,
+      "ready_state": 4
+    },
+    {
+      "scene": 8,
+      "time": 153.5835,
+      "mean_luma": 215.2316904578425,
+      "distinct_colors": 205,
+      "ready_state": 4
+    },
+    {
+      "scene": 9,
+      "time": 174.7085,
+      "mean_luma": 229.32733731996734,
+      "distinct_colors": 207,
+      "ready_state": 4
+    }
+  ],
+  "play_started": {
+    "paused": false,
+    "currentTime": 174.708756,
+    "videoWidth": 1920,
+    "videoHeight": 1080
+  },
+  "page_errors": [],
+  "audio_listening": "not human-audited",
+  "http_range": "not applicable to file URL; server delivery not tested"
+}

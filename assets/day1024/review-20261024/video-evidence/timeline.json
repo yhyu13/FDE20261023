@@ -1,0 +1,108 @@
+{
+  "fps": 24,
+  "frames_dir": "C:\\Users\\24717\\AppData\\Local\\Temp\\kilo\\day1024-review-video\\frames",
+  "total_frames": 4442,
+  "total_duration": 185.0835,
+  "segments": [
+    {
+      "image": "scene_01.png",
+      "frames": 402,
+      "duration": 16.75,
+      "scene": 1,
+      "step": 1,
+      "scene_frames": 402,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_02.png",
+      "frames": 406,
+      "duration": 16.9167,
+      "scene": 2,
+      "step": 1,
+      "scene_frames": 406,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_03.png",
+      "frames": 505,
+      "duration": 21.0417,
+      "scene": 3,
+      "step": 1,
+      "scene_frames": 505,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_04.png",
+      "frames": 517,
+      "duration": 21.5417,
+      "scene": 4,
+      "step": 1,
+      "scene_frames": 517,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_05.png",
+      "frames": 604,
+      "duration": 25.1667,
+      "scene": 5,
+      "step": 1,
+      "scene_frames": 604,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_06.png",
+      "frames": 505,
+      "duration": 21.0417,
+      "scene": 6,
+      "step": 1,
+      "scene_frames": 505,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_07.png",
+      "frames": 489,
+      "duration": 20.375,
+      "scene": 7,
+      "step": 1,
+      "scene_frames": 489,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_08.png",
+      "frames": 516,
+      "duration": 21.5,
+      "scene": 8,
+      "step": 1,
+      "scene_frames": 516,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    },
+    {
+      "image": "scene_09.png",
+      "frames": 498,
+      "duration": 20.75,
+      "scene": 9,
+      "step": 1,
+      "scene_frames": 498,
+      "frame_offset": 0,
+      "scene_start": true,
+      "scene_end": true
+    }
+  ],
+  "warnings": []
+}

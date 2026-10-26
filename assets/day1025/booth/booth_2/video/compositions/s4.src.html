@@ -1,0 +1,88 @@
+<template>
+  <style>
+    #root{position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;
+      padding:52px 64px 0;font-family:"Noto Sans JP",sans-serif;color:#0d1526}
+    .kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:#98a2b3;letter-spacing:.7px}
+    h1{margin:12px 0 0;font-size:40px;line-height:1.15;letter-spacing:-.8px}
+    h1 em{font-style:normal;background:linear-gradient(135deg,#12a465,#0a86bd);
+      -webkit-background-clip:text;background-clip:text;color:transparent}
+    .main{flex:1;min-height:0;margin-top:22px;display:flex;gap:22px}
+    .abil{border:1px solid rgba(15,23,42,.11);border-radius:14px;padding:18px 20px;position:relative;
+      overflow:hidden;background:#fff}
+    .rail{position:absolute;left:0;top:0;bottom:0;width:5px;background:#12a465}
+    .abil.b .rail{background:#0a86bd}
+    .no{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:#98a2b3;letter-spacing:1px}
+    .abil h3{margin:7px 0 6px;font-size:22px}
+    .abil p{margin:0;color:#5a6679;font-size:13.5px;line-height:1.6}
+    .trust{margin-top:16px;font-size:16px;color:#5a6679;border-left:4px solid #0a86bd;padding-left:16px;line-height:1.6}
+    .panel{border:1px solid rgba(15,23,42,.11);border-radius:12px;background:#fff;display:flex;
+      flex-direction:column;min-height:0}
+    .ph{padding:11px 16px;border-bottom:1px solid rgba(15,23,42,.11);font-size:15px;font-weight:600}
+    .pb{padding:12px 16px;overflow:hidden;min-height:0}
+    .chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .st{border:1px solid rgba(15,23,42,.11);border-radius:9px;padding:8px 13px;font-size:13px}
+    .st b{display:block;font-family:"JetBrains Mono",monospace;font-size:10px;color:#98a2b3;font-weight:500}
+    .ar{color:#98a2b3}
+    .sec{font-family:"JetBrains Mono",monospace;font-size:11px;color:#98a2b3;letter-spacing:.8px;margin:12px 0 5px}
+    .note{font-size:12.5px;color:#5a6679;line-height:1.65}
+    .cta{margin-top:16px;font-size:24px;font-weight:600}
+    .cta span{color:#12a465}
+    #caps{position:absolute;left:0;right:0;bottom:104px;display:flex;justify-content:center;pointer-events:none}
+    .cap{font-size:19px;line-height:1.45;padding:7px 16px;border-radius:10px;background:rgba(13,21,42,.06)}
+  </style>
+  <div id="root" data-composition-id="s4" data-width="1280" data-height="720">
+    <div class="kicker clip" id="s4-kicker" data-start="0.3" data-duration="22">TAKEAWAY · 两项能力在七步闭环里的位置</div>
+    <h1 class="clip" id="s4-title" data-start="0.5" data-duration="22">问题库决定<em>说什么</em>，找客户模型决定<em>对谁说</em></h1>
+    <div class="main">
+      <div style="flex:1;display:flex;flex-direction:column">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="abil clip" id="s4-c1" data-start="{{CUE_c1}}" data-duration="{{CUEEND_c1}}">
+            <span class="rail"></span>
+            <div class="no">ABILITY 01 · STEP 02</div><h3>CQ 行业问题库</h3>
+            <p>12 个真实提问 × 3 类客群 × 4 类渠道 + 覆盖矩阵。8 个有事实可引、3 个要说清还没到哪一步、1 个无依据被拦下。</p>
+          </div>
+          <div class="abil b clip" id="s4-c2" data-start="{{CUE_c2}}" data-duration="{{CUEEND_c2}}">
+            <span class="rail"></span>
+            <div class="no">ABILITY 02 · STEP 03</div><h3>找客户模型定制</h3>
+            <p>10 条筛选规则，输入即改、规则当场重算，输出目标企业池与三档匹配分布；结果回流驱动下一轮迭代。</p>
+          </div>
+        </div>
+        <div class="trust clip" id="s4-trust" data-start="{{CUE_trust}}" data-duration="{{CUEEND_trust}}">
+          客户考核的不是「火不火」，是<b>「我能不能信你」</b>。任何只讲卖点不讲边界的内容系统，会直接撞上 REV01–REV05。
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;min-height:0">
+        <div class="panel clip" id="s4-rest" style="flex:1;min-height:0" data-start="{{CUE_rest}}" data-duration="{{CUEEND_rest}}">
+          <div class="ph">后面五步，都从这两步接出去</div>
+          <div class="pb">
+            <div class="chain">
+              <div class="st"><b>STEP 04</b>客户画像 · 92.4%</div><span class="ar">›</span>
+              <div class="st"><b>STEP 05</b>营销内容 · 5 渠道</div><span class="ar">›</span>
+              <div class="st"><b>STEP 06</b>全渠道获客 · 7 源</div><span class="ar">›</span>
+              <div class="st"><b>STEP 07</b>自动化 · 7×24</div><span class="ar">›</span>
+              <div class="st"><b>进化</b>持续学习 · 27 轮</div>
+            </div>
+            <div class="sec">Day1 待确认（不许猜）</div>
+            <div class="note">G1 智能驾驶各车型能力清单 · G2 线路类型→车型对应规则 · G3 运营成本测算材料 · G5 澳洲 / 美洲服务网络现状边界 · G6 RoboBus 当前实际阶段</div>
+          </div>
+        </div>
+        <div class="cta clip" id="s4-cta" data-start="{{CUE_cta}}" data-duration="{{CUEEND_cta}}">完整七步闭环和十块面板，欢迎到<span>交互版亲手点一遍</span></div>
+        <div class="clip" id="s4-note" data-start="{{CUE_note}}" data-duration="{{CUEEND_note}}"
+             style="font-size:12px;color:#98a2b3;margin-top:12px">画面数据均为演示用模拟数据 · 企业事实 ⚠️ 待 Day1 现场确认</div>
+      </div>
+    </div>
+    <div id="caps" data-track-kind="captions">/*CAPTIONS*/null</div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s4-kicker", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.3);
+    tl.fromTo("#s4-title", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.5);
+    tl.fromTo("#s4-c1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_c1}});
+    tl.fromTo("#s4-c2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_c2}});
+    tl.fromTo("#s4-rest", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, {{CUE_rest}});
+    tl.fromTo("#s4-trust", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, {{CUE_trust}});
+    tl.fromTo("#s4-cta", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, {{CUE_cta}});
+    tl.fromTo("#s4-note", { opacity: 0 }, { opacity: 1, duration: 0.3 }, {{CUE_note}});
+    window.__timelines["s4"] = tl;
+  </script>
+</template>

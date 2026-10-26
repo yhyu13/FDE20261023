@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN" data-register="instrument">
+<head>
+<title>Day1024 · 钱、策略与产品边界</title>
+<link rel="stylesheet" href="kit.css" data-ve-kit>
+<style>
+:root{color-scheme:light;--bg:#f6f5f0;--surface:#fff;--text:#1a2429;--text-dim:#52616a;--border:#d8dedb;--border-bright:#7a8987;--accent:#176b72;--accent-dim:#e3efed;--risk:#a33b2d;--warn:#775b16;--ok:#176b55;--font-body:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;--font-display:var(--font-body);--font-mono:Consolas,monospace}
+body{font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;font-variant-numeric:tabular-nums}
+main{max-width:1200px;margin:auto;padding:40px 32px 64px}h1{max-width:18ch}header{border-bottom:1px solid var(--border-bright);padding-bottom:28px}header .lead{max-width:65ch}.en{font-size:12px;color:var(--text-dim);max-width:90ch}.verdict{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:0;margin-top:28px;border-block:1px solid var(--border-bright)}.verdict div{padding:18px 16px;border-right:1px solid var(--border)}.verdict div:first-child{padding-left:0}.verdict b{display:block;font-size:26px;margin-top:8px}.verdict span{font-size:13px;color:var(--text-dim)}nav{display:flex;gap:20px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:3}nav a{color:var(--text);font-size:13px;text-decoration:none}section{scroll-margin-top:76px;padding-top:52px}.small{font-size:13px;color:var(--text-dim)}.status{display:inline-block;border:1px solid var(--border-bright);padding:3px 8px;font-size:12px}.warning{border:1px dashed var(--border-bright);padding:16px;margin:20px 0}.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:28px}.costlist{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:10px 14px;align-items:center}.costlist label,.params label{font-size:13px}input{width:100%;min-width:0;padding:10px;border:1px solid var(--border-bright);border-radius:3px;color:var(--text);background:var(--surface);font-family:Consolas,"Microsoft YaHei",monospace;font-size:16px}input:focus{outline:2px solid var(--accent);outline-offset:2px}.params{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}.params label{display:block}.params input{margin-top:7px}.case-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}button{font:inherit;padding:9px 15px;border:1px solid var(--border-bright);border-radius:3px;color:var(--text);background:var(--surface);cursor:pointer}button[aria-pressed=true]{background:var(--accent);color:#fff}button:hover{outline:1px solid var(--accent)}.result{border-top:2px solid var(--accent);padding-top:16px}.numbers{display:grid;grid-template-columns:1fr 1fr;gap:20px 12px}.numbers strong{display:block;font:600 32px Consolas,"Microsoft YaHei",monospace;margin:7px 0}.numbers span{font-size:13px;color:var(--text-dim)}.negative{color:#a33b2d}.positive{color:#176b72}.numbers .wide{grid-column:1/-1;border-top:1px solid var(--border);padding-top:14px}.numbers .wide strong{font-size:42px}.formula{font-family:Consolas,"Microsoft YaHei",monospace;font-size:13px;line-height:1.8}.bars{margin-top:22px}.barline{display:grid;grid-template-columns:100px minmax(50px,1fr) 90px;align-items:center;gap:10px;font-size:12px;margin:12px 0}.track{height:14px;background:var(--surface);border:1px solid var(--border)}.fill{height:100%;background:var(--accent);transition:width .15s}.barline b{font-family:Consolas,monospace;text-align:right}.scenario-table th,.scenario-table td{white-space:nowrap}.focusline{font-size:20px;line-height:1.6;margin:22px 0}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:24px}.source-links{line-height:1.9;overflow-wrap:anywhere}.download{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.download a{display:block;border:1px solid var(--border);padding:14px;color:var(--text)}video{width:100%;aspect-ratio:16/9;background:#111;border:1px solid var(--border);margin-top:16px}.foot{font-size:12px;line-height:1.8;border-top:1px solid var(--border);padding-top:24px;margin-top:40px}summary{cursor:pointer;font-weight:600}details{margin:18px 0}#calc-error{min-height:24px;color:#a33b2d;font-size:13px}.vendor{border-block:1px solid var(--border-bright);padding:20px 0;margin-top:22px}.vendor strong{font:600 28px Consolas,monospace}.proof-list{padding-left:20px}.proof-list li{margin:12px 0}.sec-head{align-items:baseline}.frame{margin-top:18px}
+@media(max-width:760px){main{padding:24px 18px 44px}.calc,.twocol{grid-template-columns:1fr}.verdict{grid-template-columns:1fr}.verdict div{padding:14px 0;border-right:0;border-bottom:1px solid var(--border)}.verdict b{font-size:23px}nav{gap:12px;padding:12px 0}.numbers strong{font-size:25px}.numbers .wide strong{font-size:34px}.download{grid-template-columns:1fr}.costlist{grid-template-columns:minmax(0,1fr) 110px}section{padding-top:38px}.params{gap:12px}h1{font-size:38px}.focusline{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+</head>
+<body><main>
+<header>
+<p class="en">Review the marketing product against the real request, follow the money, and separate evidence from assumptions.</p>
+<p class="eyebrow">Day1024 · 产品审计与经营账 · 2026-10-24</p>
+<h1>花了多少，<br>留下多少。</h1>
+<p class="lead">客户要一份能执行、能核账的区域营销方案。现有演示有获客流程，<b>还没有证明花钱能换来生意。</b></p>
+<p class="meta">静态材料审计 · 不修改原PRD与验收 · 不把样例当实绩</p>
+<div class="verdict" aria-label="当前证据边界">
+<div><span>实际营销支出</span><b>未核实</b><span>未提供合同、验收与实付</span></div>
+<div><span>真实新增成交</span><b>未核实</b><span>商机与成交口径混用</span></div>
+<div><span>客户实际回款</span><b>未核实</b><span>收入、利润、回款各算各的</span></div>
+</div>
+</header>
+<nav aria-label="页面章节"><a href="#money">钱流向哪里</a><a href="#model">调一调经济账</a><a href="#critique">产品挑刺</a><a href="#skills">Agent边界</a><a href="#video">有声讲解</a><a href="#sources">报告与证据</a></nav>
+<section id="money">
+<div class="sec-head"><p class="ve-label caps">资金流</p><h2>四本账，别混成一个“收入”</h2></div>
+<figure><div class="frame"><pre class="mermaid" aria-label="客户市场支出、软件收入、代收代付和交付成本分别记录">flowchart LR
+    C[客户] -->|支付营销费| M[媒体 / 达人 / 制作 / 活动]
+    C -->|支付自有服务费| S[软件方收入]
+    C -.合同采用代付时.-> P[客户资金往来账]
+    P -->|代付 非软件收入| M
+    S -->|扣直接成本| K[模型 / 数据 / 云 / 交付人工]
+    K -->|计算余额| G[交付贡献 不是净利润]</pre></div><figcaption><span class="fig-n">Fig. 1</span> 客户的钱有不同去处；经手的广告款不自动成为软件方收入。</figcaption></figure>
+<div class="twocol"><div><h3>“每月30万”先核分母</h3><p>会议转述一处说代运营费，一处说营销总额。70%可能是经手额，50%返利缺计提基数。<b>不能推出全部可省。</b></p><p class="small">AI会议纪要与口述：4级线索，仅供参考；没有账单交叉验证。</p></div><div><h3>商机不是到账的钱</h3><p>演示金额合计7,240万元，海外占54.14%；Deck写“海外金额30%”。这首先是口径冲突，<b>两边都不是已验证收入。</b></p><p class="small">本地证据：sunwin.html:460–462；sunwin-deck.html:220。由配套Python复算。</p></div></div>
+</section>
+<section id="model">
+<div class="sec-head"><p class="ve-label caps">教学情景</p><h2>卖了三十万，也可能没回本</h2></div>
+<p class="warning"><b>以下全部是假设，不是客户预算、报价或预测。</b> 90天单市场，市场与产品未选定。单笔净收入10万元不是客车报价；成交观察必须覆盖真实销售周期。</p>
+<figure>
+<div class="calc">
+<div><h3>客户花在哪里 · 元</h3><div id="cost-inputs" class="costlist"></div><div class="params">
+<label for="orders">去重新客户成交数<input id="orders" type="number" min="0" max="1000000" step="1" value="3"></label>
+<label for="revenue">单笔净收入 / 元<input id="revenue" type="number" min="0" max="1000000000000" step="1000" value="100000"></label>
+<label for="margin">履约后、营销前贡献率 / %<input id="margin" type="number" min="0" max="100" step="1" value="25"></label>
+<label for="incremental">成交中的增量份额 / %<input id="incremental" type="number" min="0" max="100" step="1" value="100"></label>
+</div><p class="small">净收入不是回款；贡献率已扣履约变动成本，尚未扣营销费。增量份额100%是强假设，不是因果结论。</p></div>
+<div><div class="case-buttons" aria-label="切换教学成交情景"><button type="button" data-case="conservative" aria-pressed="false">保守 · 1笔</button><button type="button" data-case="base" aria-pressed="true">基准 · 3笔</button><button type="button" data-case="optimistic" aria-pressed="false">乐观 · 6笔</button><button type="button" id="reset">重置全部假设</button></div>
+<div class="result" aria-live="polite"><div id="calc-error" role="alert"></div><div class="numbers">
+<div><span>列示营销总成本</span><strong id="total-cost">—</strong></div><div><span>营销前增量贡献</span><strong id="contribution">—</strong></div>
+<div class="wide"><span>扣营销后贡献 · 不是企业净利润</span><strong id="net-result">—</strong></div>
+<div><span>营销ROI</span><strong id="roi">—</strong></div><div><span>回本至少需要</span><strong id="break-even">—</strong></div>
+</div><div class="bars" aria-label="成本和增量贡献的等比例比较"><div class="barline"><span>营销成本</span><div class="track"><div id="cost-bar" class="fill"></div></div><b id="cost-label">—</b></div><div class="barline"><span>增量贡献</span><div class="track"><div id="contribution-bar" class="fill"></div></div><b id="contribution-label">—</b></div></div>
+<p id="cash-note" class="small"></p><p class="formula">ROI = (成交数 × 单笔净收入 × 贡献率 × 增量份额 − 营销成本) ÷ 营销成本</p><p class="small">全成本范围只包括列示项目。漏掉销售跟进、差旅、佣金等，应补入；释放工时不等于减少现金支出。数据费假设是客户与软件方不同的采购合同，真实核账须去重。</p></div></div>
+</div><figcaption><span class="fig-n">Fig. 2</span> 改一项假设，看“收入”如何经过履约与营销成本，变成可比较的贡献。</figcaption>
+</figure>
+<details open><summary>默认情景的三种结果 · 只作教学</summary><div class="ve-table"><table class="scenario-table"><thead><tr><th>教学情景</th><th>有效线索 / 接受 / 成交</th><th>净收入</th><th>营销前贡献</th><th>营销后贡献</th><th>ROI</th></tr></thead><tbody id="scenarios"></tbody></table></div><p class="small">三情景共用原始默认费用，不随上方控件改动；控件区显示单次敏感性测算。默认成交暂按100%增量。基准CPL为850元、列示成本CAC为28,333.33元；若增量仅50%，基准ROI为−55.88%，回本至少7笔。销售周期未结束时，标“观察中”，不能直接填零。</p></details>
+<div class="vendor"><p class="ve-label">软件方另算 · 固定教学情景，不随客户控件改变</p><p><strong id="vendor-fee">—</strong> 自有服务收入 − <strong id="vendor-cost">—</strong> 直接交付成本 = <strong id="vendor-contribution">—</strong> 交付贡献</p><p class="small">假设贡献率16.67%。直接成本含模型500、数据1000、云500、实施5000、审核4000、支持1500元。尚未扣软件方获客、研发、管理和税，不是净利润。</p></div>
+</section>
+<section id="critique">
+<div class="sec-head"><p class="ve-label caps">产品挑刺</p><h2>先让一次营销决定有依据</h2></div>
+<p>保留问题与证据关联、渠道适配、人工纠正和版本审批。优先补下面这些缺口，不把新需求倒写成旧版验收。</p>
+<div class="ve-table"><table><thead><tr><th>优先级</th><th>材料里的具体问题</th><th>应怎样改</th></tr></thead><tbody>
+<tr><td><span class="chip risk">P0</span></td><td>没有真实支出到回款链，商机与成交混用。</td><td>分开计划、承诺、验收、实付、收入与回款；每笔保留凭证主键。</td></tr>
+<tr><td><span class="chip risk">P0</span></td><td>负反馈仍固定加分，训练指标随机上涨。</td><td>标明样例；没有固定评测，不更新“效果提升”。允许变差。</td></tr>
+<tr><td><span class="chip risk">P0</span></td><td>Deck说风险会拦截，生成函数没有对应门禁。</td><td>区分内部草稿与对外放行，缺依据时实际拒绝，而非只贴红标签。</td></tr>
+<tr><td><span class="chip warn">P1</span></td><td>地域筛选、时区和翻译，尚不等于地区策略。</td><td>用当地销售访谈解释买方、竞品、采购链、渠道与费用差异。</td></tr>
+<tr><td><span class="chip warn">P1</span></td><td>全域渠道铺开，尚无单市场预算与停止判据。</td><td>先定一个市场、客群和有限渠道；预算、观察窗、扩张线由客户确认。</td></tr>
+<tr><td><span class="chip warn">P1</span></td><td>销售提问题与内容起草，不等于销售生成方案、负责人校正。</td><td>确认新产物与权限，不只给旧角色换名字。</td></tr>
+</tbody></table></div>
+<figure><div class="frame"><pre class="mermaid" aria-label="单市场试点从事实、负责人审批、预算与凭证到复盘">flowchart TD
+    I[产品证据 / 当地访谈] -->|销售形成| B[策略初稿 / 竞品 / 预算选项]
+    B -->|负责人校正| A[确认范围与执行人]
+    A -->|另行批准预算| X[有限渠道执行]
+    X -->|收集凭证| E[成本 / 线索 / 订单 / 回款]
+    E -->|对照与归因| R{继续 / 修改 / 停止}
+    R -->|回写版本与原因| B</pre></div><figcaption><span class="fig-n">Fig. 3</span> 先跑一个有责任人、预算与验证方法的试点；图是建议，不是已实现功能。</figcaption></figure>
+<p class="small">主PRD展开目录当前缺失；现存sunwin、007规范和归档各自作为不同层级证据。完整历史边界及归档补充见证据报告。</p>
+</section>
+<section id="skills">
+<div class="sec-head"><p class="ve-label caps">复用机制</p><h2>Agent帮忙查证，不替人签字花钱</h2></div>
+<figure><div class="frame"><pre class="mermaid" aria-label="证据、策略、确定性经济计算与人工批准分别负责">flowchart TD
+    D[来源 / 原句 / 有效版本] -->|提取有据主张| S[策略候选与渠道稿]
+    C[真实报价 / 用量 / 成交假设] -->|确定性代码| N[成本 / 回本 / 敏感性]
+    S -->|专业核验| H[负责人校正方案]
+    N -->|比较投入取舍| H
+    H -->|独立预算与付款授权| B[人批准执行]
+    D -->|来源改版使旧批准失效| H
+    B -->|事件与凭证回流| F[待验证反馈 不自动加分]</pre></div><figcaption><span class="fig-n">Fig. 4</span> Skill必须交代输入、输出、工具、质量门槛和拒绝条件；岗位名字不能替代工作契约。</figcaption></figure>
+<div class="twocol"><div><h3>值得保留</h3><ul class="proof-list"><li>把客户问题接到可宣传主张，而非先列AI功能。</li><li>让系统理解变成可改的显式条件。</li><li>审批绑定稿件和来源版本，修改后旧签字失效。</li></ul></div><div><h3>下次必须能断言</h3><ul class="proof-list"><li>导出得到真实文件，不只出现成功提示。</li><li>缺依据走拒绝路径，不硬凑答案。</li><li>反馈先变成任务或实验，不能直接宣称效果增长。</li></ul></div></div>
+</section>
+<section id="video">
+<div class="sec-head"><p class="ve-label caps">有声讲解</p><h2>同一套事实，换一种看法</h2></div>
+<p>9个场景解释客户要什么、钱去了哪、三十万收入为何仍可能没回本。Edge TTS中文男声，配自然短句旁白和烧录字幕。</p>
+<video id="review-video" controls preload="metadata" playsinline aria-label="Day1024经营账审计讲解视频"><source src="video.mp4" type="video/mp4"><track src="subtitles.vtt" kind="subtitles" srclang="zh" label="中文独立字幕">浏览器不支持视频，请打开同目录video.mp4。</video>
+<p class="small">“浑厚”按低音稳重方向制作，听感因人而异。只将脱敏教学旁白送入Edge TTS，不上传客户原文。网页、报告和视频默认金额来自同一套配套输入。</p>
+</section>
+<section id="sources" class="sources" aria-label="证据与下载">
+<div class="sec-head"><p class="ve-label caps">核对与下载</p><h2>每个判断，留一条回去的路</h2></div>
+<div class="source-links"><p>本地证据只证明文件内容，不证明企业真实效果。会议AI总结与竞品落地页不能单独支持经营结论；没有真实账单，实际花费和收益仍未知。</p><p><code>assets/real_request.md:16–30</code>：亮点、竞品、区域策略、单市场试点、销售初稿与负责人校正。</p><p><code>submit/sunwin.html:460–462,1282,1342–1353,1372–1419,1579–1590</code>：商机金额、成交口径、固定加分、模板生成和随机指标。</p><p><code>submit/sunwin-deck/sunwin-deck.html:220,291,795–800</code>：金额占比、阻断承诺、硬编码曲线。</p><p><code>specs/007-marketing-role-workbenches/spec.md:39–42,117–118</code>：版本人审规范与mock边界；不是本轮运行通过证据。</p></div>
+<div class="download"><a href="00-总览.md">00 · 简短总览</a><a href="01-钱流向与经营账.md">01 · 钱流向与经营账</a><a href="02-PRD挑刺与试点重构.md">02 · PRD挑刺与试点重构</a><a href="03-营销产品设计与Agent经验.md">03 · 营销、产品、设计、Agent经验</a><a href="04-视频讲解稿.md">04 · 自然口语讲解稿</a><a href="05-证据与阅读边界.md">05 · 原文证据与材料边界</a><a href="06-验证记录.md">06 · 生成与验证记录</a><a href="model-inputs.json">教学输入 · 可与Python复算</a><a href="model-results.json">Python默认计算结果</a><a href="calculate.py">确定性计算源码</a><a href="video.mp4">下载MP4 · 男声与烧录字幕</a><a href="subtitles.srt">独立字幕SRT</a></div>
+</section>
+<footer class="foot">[判断与建议] 先核实旧账、确定试点，再决定做多大。本文没有批准任何预算，也没有改动原PRD或AC。<br>免责声明：本输出由 AI 辅助生成，仅用于信息整理与研究参考，不构成专业意见或决策依据。</footer>
+<script id="model-data" type="application/json">{"status":"教学情景；不是客户预算、供应商报价、收入预测或已验证效果","currency":"CNY","horizon_days":90,"market":"未选定；单一市场","product":"未确认；100000元只是教学用单笔净收入，不是客车报价","customer_costs":[{"id":"media","label":"媒体净消耗","amount":30000},{"id":"creator","label":"达人制作与发布","amount":12000},{"id":"localization","label":"本地化与其他内容制作","amount":8000},{"id":"events","label":"活动与客户会议","amount":5000},{"id":"software","label":"软件与试点服务费","amount":15000},{"id":"customer_data","label":"客户直接采购的数据工具","amount":3000},{"id":"internal_labor","label":"客户归属人工（分摊成本）","amount":12000}],"vendor_service_revenue":15000,"vendor_direct_costs":[{"id":"model","label":"模型调用","amount":500},{"id":"data","label":"软件方自购数据与工具","amount":1000},{"id":"cloud","label":"基础设施","amount":500},{"id":"implementation","label":"实施工时","amount":5000},{"id":"review","label":"审核与返工工时","amount":4000},{"id":"support","label":"支持工时","amount":1500}],"net_revenue_per_order":100000,"pre_marketing_contribution_rate":0.25,"incremental_share":1.0,"scenarios":[{"id":"conservative","label":"保守","qualified_leads":60,"sales_accepted":12,"new_customers":1},{"id":"base","label":"基准","qualified_leads":100,"sales_accepted":25,"new_customers":3},{"id":"optimistic","label":"乐观","qualified_leads":160,"sales_accepted":48,"new_customers":6}],"source_numbers_for_arithmetic_only":{"opportunity_amounts_wan":[2140,3920,1180],"overseas_amount_wan":3920,"touches":1180,"opportunities":86,"reply_rate_percent":19.4,"manual_baseline_percent":6.1,"r16_percent":7.4,"unverified_monthly_marketing":300000,"unverified_agency_share":0.7},"limitations":["全部费用与转化输入均为任意教学假设，不能据此批准支出。","净收入假设为同一不含流转税、扣退货口径；不是回款。实际须与财务统一口径。","贡献率已扣产品或服务履约变动成本，尚未扣营销成本；不是会计净利率。","成交均为去重新客户，且暂假设100%增量；没有对照时不能认定真实增量。","90天是教学窗口，不是已批准试点期限。成交观察须覆盖实际销售周期。","成本口径仅含已列项目；遗漏销售跟进、差旅或佣金时必须补入，不能声称完整CAC。","73000元为假设外付项合计，不代表实际付款、可取消支出或现金节约。","客户直接数据费与软件方数据费假设为不同合同，不重复计费；真实采购需去重。","未假设平台代收代付。若代收，代付款不得冒充自有服务收入。","软件方贡献未扣销售获客、研发、管理、融资、税等，不是净利润。"]}</script>
+<script>
+(()=>{'use strict';
+const model=JSON.parse(document.getElementById('model-data').textContent);
+const byId=id=>document.getElementById(id);
+const yuan=n=>'¥'+n.toLocaleString('zh-CN',{maximumFractionDigits:2});
+const costs=byId('cost-inputs');
+model.customer_costs.forEach(row=>{const label=document.createElement('label');label.htmlFor='cost-'+row.id;label.textContent=row.label;const input=document.createElement('input');input.type='number';input.min='0';input.max='1000000000000';input.step='100';input.id='cost-'+row.id;input.value=String(row.amount);input.dataset.costId=row.id;costs.append(label,input);});
+function value(id){const e=byId(id);return e.value.trim()===''?NaN:Number(e.value);}
+function fraction(raw){const parts=raw.toLowerCase().split('e');const coefficient=parts[0].replace(/^[+]/,'');const decimal=coefficient.split('.');const places=(decimal[1]||'').length;const exponent=Number(parts[1]||0)-places;const numerator=BigInt((decimal[0]||'0')+(decimal[1]||''));return exponent>=0?[numerator*10n**BigInt(exponent),1n]:[numerator,10n**BigInt(-exponent)];}
+function gcd(a,b){while(b){const next=a%b;a=b;b=next;}return a;}
+function exactBreakEven(){let numerator=0n,denominator=1n;for(const row of model.customer_costs){const [n,d]=fraction(byId('cost-'+row.id).value);numerator=numerator*d+n*denominator;denominator*=d;const divisor=gcd(numerator,denominator);numerator/=divisor;denominator/=divisor;}const [rn,rd]=fraction(byId('revenue').value);const [mn,md]=fraction(byId('margin').value);const [inn,ind]=fraction(byId('incremental').value);const unitNumerator=rn*mn*inn;if(unitNumerator===0n)return null;const top=numerator*rd*md*ind*10000n;const bottom=denominator*unitNumerator;const count=(top+bottom-1n)/bottom;return count<=BigInt(Number.MAX_SAFE_INTEGER)?Number(count):count.toString();}
+function calculate(){
+ const amounts=model.customer_costs.map(row=>value('cost-'+row.id));
+ const orders=value('orders'),revenue=value('revenue'),margin=value('margin')/100,incremental=value('incremental')/100;
+ const all=[...amounts,orders,revenue,margin,incremental];
+ const total=amounts.reduce((a,b)=>a+b,0);
+ const valid=all.every(Number.isFinite)&&amounts.every(x=>x>=0&&x<=1e12)&&orders>=0&&orders<=1e6&&Number.isInteger(orders)&&revenue>=0&&revenue<=1e12&&margin>=0&&margin<=1&&incremental>=0&&incremental<=1;
+ if(!valid){byId('calc-error').textContent='请填有效非负金额、整数成交数和0–100%的比例。';['total-cost','contribution','net-result','roi','break-even','cost-label','contribution-label'].forEach(id=>byId(id).textContent='不可计算');byId('cash-note').textContent='输入无效，不沿用上一次结果。';byId('cost-bar').style.width='0%';byId('contribution-bar').style.width='0%';window.reviewResult={valid:false};return;}
+ byId('calc-error').textContent=total===0?'成本为0，ROI不可计算；不显示无限大。':'';
+ const contribution=orders*revenue*margin*incremental,net=contribution-total;
+ const breakEven=exactBreakEven();
+ byId('total-cost').textContent=yuan(total);byId('contribution').textContent=yuan(contribution);byId('net-result').textContent=yuan(net);byId('net-result').className=net<0?'negative':'positive';
+ byId('roi').textContent=total>0?((net/total)*100).toFixed(2)+'%':'不可计算';
+ byId('break-even').textContent=breakEven===null?'不可回本':breakEven+'笔';
+ const max=Math.max(total,contribution,1);byId('cost-bar').style.width=(total/max*100)+'%';byId('contribution-bar').style.width=(contribution/max*100)+'%';byId('cost-label').textContent=yuan(total);byId('contribution-label').textContent=yuan(contribution);
+ const labor=value('cost-internal_labor');byId('cash-note').textContent='假设外付项 '+yuan(total-labor)+'；归属人工 '+yuan(labor)+'。这是成本分类，不是实付凭证，也不是现金节约。';
+ window.reviewResult={valid:true,total,contribution,net,roi:total>0?net/total:null,breakEven};
+}
+function reset(){model.customer_costs.forEach(row=>byId('cost-'+row.id).value=String(row.amount));byId('orders').value='3';byId('revenue').value=String(model.net_revenue_per_order);byId('margin').value=String(model.pre_marketing_contribution_rate*100);byId('incremental').value=String(model.incremental_share*100);document.querySelectorAll('[data-case]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.case==='base')));calculate();}
+document.querySelectorAll('[data-case]').forEach(button=>button.addEventListener('click',()=>{byId('orders').value=String(model.scenarios.find(row=>row.id===button.dataset.case).new_customers);document.querySelectorAll('[data-case]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));calculate();}));
+document.querySelectorAll('input').forEach(input=>input.addEventListener('input',()=>{document.querySelectorAll('[data-case]').forEach(b=>b.setAttribute('aria-pressed','false'));calculate();}));
+byId('reset').addEventListener('click',reset);
+const total=model.customer_costs.reduce((sum,row)=>sum+row.amount,0);
+model.scenarios.forEach(row=>{const tr=document.createElement('tr');const revenue=row.new_customers*model.net_revenue_per_order;const contribution=revenue*model.pre_marketing_contribution_rate*model.incremental_share;const entries=[row.label,`${row.qualified_leads} / ${row.sales_accepted} / ${row.new_customers}`,yuan(revenue),yuan(contribution),yuan(contribution-total),((contribution-total)/total*100).toFixed(2)+'%'];entries.forEach((text,i)=>{const td=document.createElement('td');td.textContent=text;if(i>1)td.className='num';tr.append(td);});byId('scenarios').append(tr);});
+const vendor=model.vendor_direct_costs.reduce((sum,row)=>sum+row.amount,0);byId('vendor-fee').textContent=yuan(model.vendor_service_revenue);byId('vendor-cost').textContent=yuan(vendor);byId('vendor-contribution').textContent=yuan(model.vendor_service_revenue-vendor);
+reset();
+})();
+</script>
+</main></body></html>

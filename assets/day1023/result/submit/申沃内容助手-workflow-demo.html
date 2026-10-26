@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>申沃智能驾驶内容助手 · 初步方案 Demo</title>
+<style>
+  :root{
+    --navy:#0e2a4d; --ink:#1f2937; --muted:#6b7280; --hair:#e5e7eb; --mist:#f3f6fa;
+    --src:#64748b; --ai:#2563eb; --brand:#ea580c; --rev:#059669;
+    --src-bg:#f1f5f9; --ai-bg:#eff6ff; --brand-bg:#fff7ed; --rev-bg:#ecfdf5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:var(--mist);color:var(--ink);font-size:14px;line-height:1.6}
+  button{font-family:inherit;cursor:pointer}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+
+  header{background:var(--navy);color:#fff;padding:14px 0}
+  header .wrap{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+  header h1{font-size:19px}
+  header p{color:#a9c1e0;font-size:13px}
+  header .task{background:rgba(255,255,255,.1);border-radius:8px;padding:6px 12px;font-size:13px;color:#dbe7f6;text-align:right}
+  header .task b{color:#fbbf24}
+
+  /* 泳道图 */
+  .lane-box{background:#fff;border-bottom:1px solid var(--hair);padding:12px 0 14px;position:sticky;top:0;z-index:10;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+  .lane-title{font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+  table.lane{width:100%;border-collapse:separate;border-spacing:4px;table-layout:fixed}
+  table.lane th{font-size:13px;padding:6px 4px;border-radius:6px;background:#f3f4f6;color:#374151;cursor:pointer;transition:.2s}
+  table.lane th small{display:block;font-weight:400;color:var(--muted);font-size:11px}
+  table.lane th.gap{background:repeating-linear-gradient(45deg,#f9fafb,#f9fafb 6px,#f1f5f9 6px,#f1f5f9 12px);color:#9ca3af;cursor:default}
+  table.lane th.on{background:var(--navy);color:#fff}
+  table.lane th.on small{color:#bcd0ea}
+  table.lane td{font-size:12px;padding:5px 7px;border-radius:6px;line-height:1.45;vertical-align:middle;transition:.2s;opacity:.55}
+  table.lane td.who{opacity:1;font-weight:700;font-size:12.5px;width:118px}
+  table.lane td.empty{background:transparent}
+  table.lane td.col-on{opacity:1;outline:2px solid currentColor;outline-offset:-2px;font-weight:700}
+  .l-src td{color:var(--src)} .l-src td:not(.empty){background:var(--src-bg)}
+  .l-ai td{color:var(--ai)} .l-ai td:not(.empty){background:var(--ai-bg)}
+  .l-brand td{color:var(--brand)} .l-brand td:not(.empty){background:var(--brand-bg)}
+  .l-rev td{color:var(--rev)} .l-rev td:not(.empty){background:var(--rev-bg)}
+  table.lane td.empty.col-on{outline:none}
+
+  /* 步骤页 */
+  main{padding:16px 0 70px}
+  .step{display:none}
+  .step.on{display:block;animation:fade .25s}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1}}
+  .step-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+  .step-head h2{font-size:22px;color:var(--navy)}
+  .step-head h2 small{font-size:14px;color:var(--muted);font-weight:400;margin-left:8px}
+  .ops{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}
+  .role{display:inline-flex;align-items:center;gap:4px;border-radius:99px;padding:2px 10px;font-size:12.5px;font-weight:700;color:#fff}
+  .r-src{background:var(--src)} .r-ai{background:var(--ai)} .r-brand{background:var(--brand)} .r-rev{background:var(--rev)}
+
+  .io{display:flex;gap:10px;align-items:stretch;margin-bottom:12px}
+  .io .in{flex:1;background:#fff;border:1px dashed #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px}
+  .io .in b{color:var(--navy)}
+
+  .screen{background:#fff;border:1px solid #d6dde7;border-radius:10px;overflow:hidden;box-shadow:0 4px 14px rgba(14,42,77,.06);margin-bottom:12px}
+  .screen-bar{background:#eef2f7;padding:7px 12px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px;border-bottom:1px solid #d6dde7}
+  .screen-bar i{width:9px;height:9px;border-radius:50%;background:#cbd5e1;display:inline-block}
+  .screen-bar span{margin-left:8px;font-weight:700;color:#475569}
+  .screen-body{padding:14px 16px}
+
+  .act{display:flex;align-items:center;gap:10px;margin:10px 0 2px;flex-wrap:wrap}
+  .btn{border:none;border-radius:7px;padding:8px 16px;font-size:14px;font-weight:700;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+  .btn:disabled{background:#cbd5e1!important;box-shadow:none;cursor:default}
+  .btn.ai{background:var(--ai)} .btn.brand{background:var(--brand)} .btn.rev{background:var(--rev)} .btn.src{background:var(--src)}
+  .btn.pulse{animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{box-shadow:0 2px 0 rgba(0,0,0,.18),0 0 0 6px rgba(37,99,235,.15)}}
+  .hint{font-size:12.5px;color:var(--muted)}
+
+  .hide{display:none}
+  .show{display:block;animation:fade .3s}
+
+  .out{background:#0e2a4d;color:#fff;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .out b{color:#fbbf24}
+  .nav{display:flex;justify-content:space-between;margin-top:14px}
+  .nav button{background:#fff;border:1px solid #cbd5e1;border-radius:7px;padding:8px 18px;font-weight:700;color:var(--navy)}
+  .nav button.next{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+  /* 通用表格 */
+  table.t{width:100%;border-collapse:collapse;font-size:13px}
+  table.t th{text-align:left;background:#f8fafc;color:#475569;font-weight:700;padding:7px 8px;border-bottom:1px solid var(--hair);white-space:nowrap}
+  table.t td{padding:7px 8px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+  .id{display:inline-block;background:var(--navy);color:#fff;border-radius:3px;padding:0 5px;font-size:11.5px;font-weight:700;line-height:18px}
+  .st{display:inline-block;border-radius:4px;padding:0 6px;font-size:12px;font-weight:700;white-space:nowrap}
+  .st.ok{background:#dcfce7;color:#166534} .st.wait{background:#fef3c7;color:#92400e} .st.no{background:#fee2e2;color:#991b1b} .st.part{background:#e0e7ff;color:#3730a3} .st.reuse{background:#d1fae5;color:#047857}
+  .ai-tag{color:var(--ai);font-size:12px;font-weight:700}
+
+  .inbox{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .inbox div{background:var(--src-bg);border-radius:8px;padding:8px 10px;font-size:13px}
+  .inbox div b{display:block;color:var(--src)}
+
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .aud{border:1px solid var(--hair);border-radius:8px;overflow:hidden}
+  .aud h4{background:#f8fafc;padding:7px 10px;font-size:14px;color:var(--navy)}
+  .aud h4 small{font-weight:400;color:var(--muted);font-size:12px;display:block}
+  .m{padding:7px 10px;border-top:1px solid #f1f5f9;font-size:12.5px;display:grid;grid-template-columns:20px 1fr;gap:4px}
+  .m input{margin-top:3px}
+  .m .q{font-weight:700}
+  .m .arrow{color:var(--muted)}
+  .star{color:#d97706;font-size:11.5px;font-weight:700}
+
+  .tabs{display:flex;gap:4px;margin:12px 0 0;border-bottom:1px solid var(--hair)}
+  .tabs button{background:none;border:none;border-bottom:3px solid transparent;padding:7px 12px;font-size:13.5px;color:var(--muted)}
+  .tabs button.on{color:var(--navy);border-color:var(--navy);font-weight:700}
+  .doc{display:none;background:#fcfcfd;border:1px solid var(--hair);border-top:none;padding:12px 14px;font-size:13.5px;line-height:1.85}
+  .doc.on{display:block}
+  .doc .meta{font-size:12px;color:var(--muted);margin-bottom:4px}
+  .c{display:inline-block;background:var(--navy);color:#fff;font-size:10.5px;border-radius:3px;padding:0 4px;line-height:16px;vertical-align:1px;margin-left:2px}
+  .todo{background:#fef3c7;border:1px dashed #f59e0b;color:#92400e;border-radius:4px;padding:0 6px;font-size:12.5px}
+  .old{background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:8px 12px}
+
+  .two{display:grid;grid-template-columns:1.05fr 1fr;gap:12px;align-items:start}
+  .draft{font-size:14.5px;line-height:2;background:#fffdf5;border:1px solid #f3e8c4;border-radius:8px;padding:10px 14px}
+  .hl{background:#fee2e2;border-bottom:2px solid #dc2626;color:#991b1b;padding:0 1px}
+  .hl sup{background:#dc2626;color:#fff;border-radius:50%;font-size:10px;padding:0 4px;margin-left:1px}
+  .fixed{font-size:14.5px;line-height:2;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px}
+  .revbtns{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  td.res{min-width:150px}
+
+  .lib{display:grid;gap:6px}
+  .lib div{background:var(--rev-bg);border-left:4px solid var(--rev);border-radius:6px;padding:7px 10px;font-size:13px}
+  .lib .mm{font-size:11.5px;color:var(--muted)}
+
+  .fbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .fbs div{background:var(--src-bg);border-radius:8px;padding:8px 10px;font-size:12.5px}
+  .fbs div b{display:block;font-size:13px}
+  .fbs .num{color:var(--muted);font-size:11.5px}
+  .chg td.before{color:#9ca3af;text-decoration:line-through}
+  .chg td.after{color:#065f46;font-weight:700}
+
+  .loop{margin-top:10px;background:#fffbeb;border:1px dashed #d97706;border-radius:8px;padding:9px 14px;font-size:13.5px;color:#92400e}
+  .gap-note{background:#fff;border:1px dashed #cbd5e1;border-radius:8px;padding:10px 14px;margin-bottom:12px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div>
+      <h1>申沃智能驾驶内容助手 · 初步方案 Demo</h1>
+      <p>用材料包里的真实资料，把一个任务从开始走到下一轮</p>
+    </div>
+    <div class="task">本次任务（来自品牌渠道与内容规则）<br><b>2026 年 11 月智能驾驶主题宣传</b>：4 周选题 + 公众号 / 官网 / 展会 / 销售推介</div>
+  </div>
+</header>
+
+<!-- ============ 泳道图：谁在哪一步做什么 ============ -->
+<div class="lane-box">
+  <div class="wrap">
+    <div class="lane-title"><span>👀 全流程一览：横着看是时间顺序，竖着看是谁来做。点表头可跳转。</span><span>当前步骤高亮</span></div>
+    <table class="lane" id="lane">
+      <tr>
+        <th style="width:118px;background:none;cursor:default"></th>
+        <th data-go="0">① 资料归集与标注<small>10-23</small></th>
+        <th data-go="1">② 场景与问题匹配<small>10-23</small></th>
+        <th data-go="2">③ 选题与内容起草<small>10-23</small></th>
+        <th data-go="3">④ 人工审核与固化<small>10-24</small></th>
+        <th class="gap" style="width:92px">发布<small>11 月第 1 周<br>不在本次范围</small></th>
+        <th data-go="4">⑤ 复用与下一轮<small>11-06</small></th>
+      </tr>
+      <tr class="l-src">
+        <td class="who">📦 资料提供方<br><span style="font-weight:400">销售 · 技术 · 项目</span></td>
+        <td data-c="0">上传车型资料、项目进展、客户问题</td>
+        <td data-c="1" class="empty"></td>
+        <td data-c="2" class="empty"></td>
+        <td data-c="3" class="empty"></td>
+        <td class="empty"></td>
+        <td data-c="4">带回客户反馈；领取“待补资料”</td>
+      </tr>
+      <tr class="l-ai">
+        <td class="who">🤖 AI 助手</td>
+        <td data-c="0">自动标出处、日期、阶段、客群、能说到哪</td>
+        <td data-c="1">客户问题 ↔ 资料 ↔ 图片 自动配对</td>
+        <td data-c="2">生成 4 周选题表和 4 类初稿</td>
+        <td data-c="3">逐句查“讲过头”，给替换说法</td>
+        <td class="empty"></td>
+        <td data-c="4">反馈先匹配口径库，出调整对照</td>
+      </tr>
+      <tr class="l-brand">
+        <td class="who">✍️ 品牌团队</td>
+        <td data-c="0">抽查，确认入库</td>
+        <td data-c="1">选定要讲的场景</td>
+        <td data-c="2">修改初稿，提交审核</td>
+        <td data-c="3">按意见改稿</td>
+        <td class="empty"></td>
+        <td data-c="4">确认下一轮选题</td>
+      </tr>
+      <tr class="l-rev">
+        <td class="who">✅ 审核员<br><span style="font-weight:400">技术 · 品牌 · 项目</span></td>
+        <td data-c="0" class="empty"></td>
+        <td data-c="1" class="empty"></td>
+        <td data-c="2" class="empty"></td>
+        <td data-c="3">逐条判定，确认口径入库</td>
+        <td class="empty"></td>
+        <td data-c="4" class="empty"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- ================= ① 资料归集与标注 ================= -->
+<section class="step on" id="st0">
+  <div class="step-head">
+    <h2>① 资料归集与标注<small>2026-10-23 · 任务启动当天</small></h2>
+    <div class="ops">谁来做：<span class="role r-src">📦 销售·技术·项目 上传</span>→<span class="role r-ai">🤖 AI 标注</span>→<span class="role r-brand">✍️ 品牌团队 抽查</span></div>
+  </div>
+  <div class="io"><div class="in">📥 <b>输入：</b>品牌团队发起“11 月智能驾驶宣传”任务，请各部门把手头资料放进来</div></div>
+
+  <div class="screen">
+    <div class="screen-bar"><i></i><i></i><i></i><span>内容助手 › 资料库 › 本次任务收到的资料</span></div>
+    <div class="screen-body">
+      <div class="inbox">
+        <div><b>技术同事 上传</b>车型资料 4 份<br>S02–S05（iEV7、7 米、12 米、18 米 BRT）</div>
+        <div><b>项目同事 上传</b>项目进展 2 份<br>S06 奉浦快线交付、S11 享道合作</div>
+        <div><b>品牌同事 上传</b>公司与新闻 5 份<br>S01、S07–S10；图片 PIC01–PIC05</div>
+        <div><b>销售同事 上传</b>客户问题 12 条<br>CQ01–CQ12（三类客群）</div>
+      </div>
+      <div class="act"><button class="btn ai pulse" onclick="reveal(this,'a0')">🤖 AI 自动标注</button><span class="hint">AI 读每份资料，填出处、日期、阶段、客群，以及“能说到哪为止”</span></div>
+
+      <div class="hide" id="a0">
+        <table class="t" style="margin-top:8px">
+          <tr><th>编号</th><th>资料</th><th>日期</th><th>所处阶段</th><th>适用客群</th><th>能说到哪为止（使用边界）</th><th>状态</th></tr>
+          <tr><td><span class="id">S01</span></td><td>公司与服务背景</td><td>未标注</td><td>企业介绍</td><td>三类都适用</td><td>不推导服务时限、成本降幅</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S02</span></td><td>7.9 米通勤客车 iEV7</td><td>未标注</td><td>产品页</td><td>海外、运营</td><td>没有续航数值，不证明自动驾驶</td><td><span class="st wait">缺参数</span></td></tr>
+          <tr><td><span class="id">S03</span></td><td>10 系 7 米城市客车</td><td>未标注</td><td>产品页</td><td>公交运营商</td><td>配置不能套到其他车型</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S04</span></td><td>9 系 12 米城市客车</td><td>未标注</td><td>产品展示</td><td>公交运营商</td><td>续航、电池、智驾参数待补</td><td><span class="st wait">缺参数</span></td></tr>
+          <tr><td><span class="id">S05</span></td><td>18 米纯电动 BRT</td><td>未标注</td><td>产品展示</td><td>运营商、伙伴</td><td>产品图 ≠ 奉浦快线交付车辆</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S06</span></td><td>奉浦快线 BRT 交付</td><td>2025-11-26</td><td>特定项目交付</td><td>公交运营商</td><td>驾驶辅助 ≠ 无人驾驶；只限该项目车辆</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S07</span></td><td>CIBE 展会与维保展示</td><td>2025-12-18</td><td>展会展示</td><td>伙伴、运营商</td><td>展示 ≠ 已在所有客户处部署</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S08</span></td><td>悉尼车展与澳洲适配</td><td>2026-07-14</td><td>展会与适配</td><td>海外客户</td><td>网页 7/14、正文 7/15，日期需核实；服务只是“建设方向”</td><td><span class="st wait">日期矛盾</span></td></tr>
+          <tr><td><span class="id">S09</span></td><td>美洲公务人员来访</td><td>2026-10-08</td><td>交流活动</td><td>海外、伙伴</td><td>来访 ≠ 订单或项目落地</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S10</span></td><td>IAA 展会两类产品</td><td>2026-10-08</td><td>展会发布</td><td>海外、伙伴</td><td>城市/城间不混用；展会 ≠ 交付</td><td><span class="st ok">可用</span></td></tr>
+          <tr><td><span class="id">S11</span></td><td>申沃与享道战略合作</td><td>2026-06-14</td><td>战略合作</td><td>伙伴、运营商</td><td>合作 ≠ 量产或商业运营</td><td><span class="st ok">可用</span></td></tr>
+        </table>
+        <p class="hint" style="margin-top:6px">另：图片 PIC01–PIC05 已关联到对应资料，状态均为 <span class="st wait">仅限内部选材，对外使用须确认</span></p>
+
+        <div class="act"><button class="btn brand pulse" onclick="reveal(this,'o0')">✍️ 品牌团队：抽查后确认入库</button><span class="hint">人只看黄色标记的几条，确认没问题就入库</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hide" id="o0">
+    <div class="out"><span>📤 <b>输出 → 交给第②步：</b>素材库 v1（11 份资料，3 份待核实；5 张图片待授权；12 条客户问题）</span></div>
+  </div>
+  <div class="nav"><span></span><button class="next" onclick="go(1)">下一步：② 场景与问题匹配 →</button></div>
+</section>
+
+<!-- ================= ② 场景与问题匹配 ================= -->
+<section class="step" id="st1">
+  <div class="step-head">
+    <h2>② 场景与问题匹配<small>2026-10-23</small></h2>
+    <div class="ops">谁来做：<span class="role r-ai">🤖 AI 配对</span>→<span class="role r-brand">✍️ 品牌团队 选场景</span></div>
+  </div>
+  <div class="io"><div class="in">📥 <b>输入（来自第①步）：</b>素材库 v1 + 销售带来的 12 条客户问题</div></div>
+
+  <div class="screen">
+    <div class="screen-bar"><i></i><i></i><i></i><span>内容助手 › 场景匹配 › 客户问题能用哪些资料回答</span></div>
+    <div class="screen-body">
+      <div class="act" style="margin-top:0"><button class="btn ai pulse" onclick="reveal(this,'a1')">🤖 AI 按客群配对</button><span class="hint">每个客户问题，找能回答它的资料和图片；找不到就直说</span></div>
+
+      <div class="hide" id="a1">
+        <p style="margin:4px 0 8px;font-size:13px">图例：<span class="st ok">有依据</span> <span class="st part">部分依据</span> <span class="st no">没有资料</span>　<span class="star">★ AI 推荐本月讲</span>　☑ 由品牌团队勾选</p>
+        <div class="cols3">
+          <div class="aud"><h4>🚌 公交运营商<small>关心：线路匹配、安全辅助、维保、运营依据</small></h4>
+            <label class="m"><input type="checkbox" checked><span><span class="q">CQ01 驾驶辅助能看清哪些盲区？</span> <span class="star">★</span><br><span class="arrow">→ S06 + PIC04</span> <span class="st ok">有依据</span></span></label>
+            <label class="m"><input type="checkbox" checked><span><span class="q">CQ02 骨干线和接驳线怎么选车？</span> <span class="star">★</span><br><span class="arrow">→ S04、S05 + PIC03、PIC04</span> <span class="st ok">有依据</span></span></label>
+            <label class="m"><input type="checkbox"><span><span class="q">CQ03 维保和故障响应有公开案例吗？</span><br><span class="arrow">→ S07、S01（只是展示）</span> <span class="st part">部分</span></span></label>
+            <label class="m"><input type="checkbox" checked><span><span class="q">CQ04 有数据证明成本降 30% 吗？</span><br><span class="arrow">→ 无测算资料</span> <span class="st no">没有资料</span> 只能做“资料征集”</span></label>
+          </div>
+          <div class="aud"><h4>🌏 海外客户<small>关心：当地使用条件、服务支持、城市/城间定位</small></h4>
+            <label class="m"><input type="checkbox" checked><span><span class="q">CQ05 城市和城间车型分别用在哪？</span> <span class="star">★</span><br><span class="arrow">→ S10 + PIC05</span> <span class="st ok">有依据</span></span></label>
+            <label class="m"><input type="checkbox" checked><span><span class="q">CQ06 澳洲右舵、气候适配有依据吗？</span><br><span class="arrow">→ S08（日期待核）</span> <span class="st part">部分</span></span></label>
+            <label class="m"><input type="checkbox"><span><span class="q">CQ07 当地服务网络全建好了吗？</span><br><span class="arrow">→ S08 只说“建设方向”</span> <span class="st part">部分</span></span></label>
+            <label class="m"><input type="checkbox"><span><span class="q">CQ08 美洲来访 = 有当地订单？</span><br><span class="arrow">→ S09 只能答“交流”</span> <span class="st ok">有依据</span></span></label>
+          </div>
+          <div class="aud"><h4>🤝 行业伙伴<small>关心：合作方向、系统协同、技术阶段</small></h4>
+            <label class="m"><input type="checkbox" checked><span><span class="q">CQ09 与享道合作涉及哪些方向？</span> <span class="star">★</span><br><span class="arrow">→ S11</span> <span class="st ok">有依据</span></span></label>
+            <label class="m"><input type="checkbox"><span><span class="q">CQ10 RoboBus 已量产并运营了吗？</span><br><span class="arrow">→ S11 只能答“合作方向”</span> <span class="st ok">有依据</span></span></label>
+            <label class="m"><input type="checkbox"><span><span class="q">CQ11 车联网、车辆、维保能怎样协同？</span><br><span class="arrow">→ S07、S09、S11</span> <span class="st part">部分</span></span></label>
+            <label class="m"><input type="checkbox"><span><span class="q">CQ12 驾驶辅助和自动驾驶合作怎么区分？</span><br><span class="arrow">→ S06、S10、S11</span> <span class="st ok">有依据</span></span></label>
+          </div>
+        </div>
+        <div class="act"><button class="btn brand pulse" onclick="reveal(this,'o1')">✍️ 品牌团队：确认本月场景（6 个）</button><span class="hint">勾选框可以改，这一步是人做取舍</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hide" id="o1">
+    <div class="out"><span>📤 <b>输出 → 交给第③步：</b>场景清单（CQ01、CQ02、CQ04、CQ05、CQ06、CQ09），每个都挂好资料和图片</span></div>
+  </div>
+  <div class="nav"><button onclick="go(0)">← 上一步</button><button class="next" onclick="go(2)">下一步：③ 选题与内容起草 →</button></div>
+</section>
+
+<!-- ================= ③ 选题与内容起草 ================= -->
+<section class="step" id="st2">
+  <div class="step-head">
+    <h2>③ 选题与内容起草<small>2026-10-23</small></h2>
+    <div class="ops">谁来做：<span class="role r-ai">🤖 AI 起草</span>→<span class="role r-brand">✍️ 品牌团队 修改、提交审核</span></div>
+  </div>
+  <div class="io"><div class="in">📥 <b>输入（来自第②步）：</b>6 个选定场景 + 对应资料、图片</div></div>
+
+  <div class="screen">
+    <div class="screen-bar"><i></i><i></i><i></i><span>内容助手 › 11 月选题 › 选题表 v1.0 与渠道初稿</span></div>
+    <div class="screen-body">
+      <div class="act" style="margin-top:0"><button class="btn ai pulse" onclick="reveal(this,'a2')">🤖 AI 生成 4 周选题表和初稿</button><span class="hint">按企业模板填写：周次、客群、问题、渠道、来源、图片、需核实事项</span></div>
+
+      <div class="hide" id="a2">
+        <table class="t">
+          <tr><th>周次</th><th>客群</th><th>客户问题</th><th>主题</th><th>渠道</th><th>来源</th><th>图片</th><th>需核实</th><th>状态</th></tr>
+          <tr><td>第 1 周</td><td>公交运营商</td><td>CQ01</td><td>驾驶辅助帮司机看清哪些盲区</td><td>公众号</td><td>S06</td><td>PIC04</td><td>PIC04 是否为奉浦快线车辆</td><td><span class="st wait">待审</span></td></tr>
+          <tr><td>第 1 周</td><td>海外客户</td><td>CQ05</td><td>城市客车与城间客车怎么选</td><td>展会</td><td>S10</td><td>PIC05</td><td>图片对外授权</td><td><span class="st wait">待审</span></td></tr>
+          <tr><td>第 1 周</td><td>行业伙伴</td><td>CQ09</td><td>申沃与享道合作了什么</td><td>官网</td><td>S11</td><td>—</td><td>RoboBus 当前阶段</td><td><span class="st wait">待审</span></td></tr>
+          <tr><td>第 2 周</td><td>公交运营商</td><td>CQ02</td><td>骨干线和接驳线怎么配车</td><td>官网</td><td>S04、S05</td><td>PIC03、PIC04</td><td>12 米车型参数</td><td><span class="st wait">待审</span></td></tr>
+          <tr><td>第 3 周</td><td>海外客户</td><td>CQ06</td><td>澳洲右舵与气候适配</td><td>销售推介</td><td>S08</td><td>—</td><td>S08 日期</td><td><span class="st wait">待审</span></td></tr>
+          <tr><td>第 4 周</td><td>公交运营商</td><td>CQ04</td><td>运营成本话题（提议）</td><td>销售推介</td><td>—</td><td>—</td><td>无成本测算</td><td><span class="st no">待资料</span></td></tr>
+        </table>
+
+        <div class="tabs" id="tabs">
+          <button class="on" onclick="tab(0)">公众号提纲</button>
+          <button onclick="tab(1)">展会介绍</button>
+          <button onclick="tab(2)">销售推介要点</button>
+          <button onclick="tab(3)">官网文案 ⚠</button>
+        </div>
+        <div class="doc on">
+          <div class="meta">第 1 周 · 公交运营商 · AI 初稿 · 规则要求：客户问题 / 事实依据 / 适用边界 / 后续咨询</div>
+          <b>标题：</b>司机看不到的地方，驾驶辅助怎么帮忙？<br>
+          <b>① 客户问题：</b>现有驾驶辅助能帮司机看清哪些盲区？<span class="c">CQ01</span><br>
+          <b>② 事实依据：</b>奉浦快线新一代 BRT 交付车辆配有全景环视、驾驶辅助、盲区监测等配置。<span class="c">S06</span><br>
+          <b>③ 适用边界：</b>只适用于报道对应的项目车辆；是驾驶辅助，不是无人驾驶。<br>
+          <b>④ 后续咨询：</b><span class="todo">具体能覆盖哪些盲区 → 待技术同事确认</span>
+        </div>
+        <div class="doc">
+          <div class="meta">第 1 周 · 海外客户 · AI 初稿</div>
+          MG Commercial 在 IAA 展示了两款纯电动产品：iEV12 定位城市客车，iEV12LE 定位低入口城间客车，并介绍了驾驶辅助配置。<span class="c">S10</span><br>
+          配图：PIC05 IAA 报道配图 <span class="todo">对外使用须确认</span>
+        </div>
+        <div class="doc">
+          <div class="meta">销售推介 · AI 初稿 · 规则允许列出“待技术确认的问题”</div>
+          <b>可以讲：</b>城市与城间两类产品定位 <span class="c">S10</span>；奉浦快线车辆的驾驶辅助配置 <span class="c">S06</span>；澳洲右舵、气候适配方向 <span class="c">S08</span><br>
+          <b>待技术/项目确认：</b><span class="todo">盲区覆盖范围</span> <span class="todo">澳洲本地服务进展</span> <span class="todo">运营成本测算</span>
+        </div>
+        <div class="doc">
+          <div class="meta">官网文案 · 品牌同事沿用了一版旧稿 DRAFT-01（v0.1），一起提交审核</div>
+          <div class="old">“申沃与享道合作后，RoboBus 已经实现量产和大规模商业运营。iEV12LE 面向城市公交，所有申沃车型都已具备相同的无人驾驶能力。美洲客户来访意味着海外项目正式落地，运营成本可下降 30%。”</div>
+          <p class="hint" style="margin-top:6px">真实工作中，旧稿复用很常见，也最容易出错。第④步会看到它被拦下来。</p>
+        </div>
+
+        <div class="act"><button class="btn brand pulse" onclick="reveal(this,'o2')">✍️ 品牌团队：修改完毕，提交审核</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hide" id="o2">
+    <div class="out"><span>📤 <b>输出 → 交给第④步：</b>选题表 v1.0 + 4 份渠道稿（其中官网文案为旧稿 v0.1）</span></div>
+  </div>
+  <div class="nav"><button onclick="go(1)">← 上一步</button><button class="next" onclick="go(3)">下一步：④ 人工审核与固化 →</button></div>
+</section>
+
+<!-- ================= ④ 人工审核与固化 ================= -->
+<section class="step" id="st3">
+  <div class="step-head">
+    <h2>④ 人工审核与固化<small>2026-10-24</small></h2>
+    <div class="ops">谁来做：<span class="role r-ai">🤖 AI 预检</span>→<span class="role r-rev">✅ 技术·品牌·项目审核员 判定</span>→<span class="role r-brand">✍️ 品牌团队 改稿</span></div>
+  </div>
+  <div class="io"><div class="in">📥 <b>输入（来自第③步）：</b>选题表 v1.0 + 4 份渠道稿</div></div>
+
+  <div class="screen">
+    <div class="screen-bar"><i></i><i></i><i></i><span>内容助手 › 审核台 › 官网文案 DRAFT-01</span></div>
+    <div class="screen-body">
+      <p style="font-size:13px;margin-bottom:8px">AI 预检结果：公众号提纲、展会介绍、销售推介 <span class="st ok">0 处越界</span>　官网文案（旧稿） <span class="st no">5 处越界</span></p>
+      <div class="draft">
+        “申沃与享道合作后，<span class="hl">RoboBus 已经实现量产和大规模商业运营<sup>1</sup></span>。<span class="hl">iEV12LE 面向城市公交<sup>2</sup></span>，<span class="hl">所有申沃车型都已具备相同的无人驾驶能力<sup>3</sup></span>。<span class="hl">美洲客户来访意味着海外项目正式落地<sup>4</sup></span>，<span class="hl">运营成本可下降 30%<sup>5</sup></span>。”
+      </div>
+
+      <table class="t" style="margin-top:10px">
+        <tr><th>#</th><th>AI 预检：为什么有问题</th><th>交给谁判定</th><th>审核结论</th></tr>
+        <tr><td>1</td><td>合作 → 量产：S11 只证明合作方向</td><td><span class="role r-rev">技术审核员</span></td><td class="res" id="r1">⏳ 等待判定</td></tr>
+        <tr><td>2</td><td>城间写成城市：S10 中 iEV12LE 是城间客车</td><td><span class="role r-rev">品牌审核员</span></td><td class="res" id="r2">⏳ 等待判定</td></tr>
+        <tr><td>3</td><td>驾驶辅助写成无人驾驶，还套到所有车型</td><td><span class="role r-rev">技术审核员</span></td><td class="res" id="r3">⏳ 等待判定</td></tr>
+        <tr><td>4</td><td>来访 → 订单：S09 只是交流</td><td><span class="role r-rev">项目审核员</span></td><td class="res" id="r4">⏳ 等待判定</td></tr>
+        <tr><td>5</td><td>30% 没有任何测算出处</td><td><span class="role r-rev">项目审核员</span></td><td class="res" id="r5">⏳ 等待判定</td></tr>
+      </table>
+      <div class="revbtns">
+        <button class="btn rev pulse" onclick="review(this,'tech')">✅ 我是技术审核员：处理 1、3</button>
+        <button class="btn rev pulse" onclick="review(this,'brand')">✅ 我是品牌审核员：处理 2</button>
+        <button class="btn rev pulse" onclick="review(this,'proj')">✅ 我是项目审核员：处理 4、5</button>
+      </div>
+
+      <div class="hide" id="a3">
+        <div class="two" style="margin-top:6px">
+          <div>
+            <p style="font-weight:700;margin-bottom:4px">✍️ 品牌团队按意见改稿 → v0.2（v0.1 存档保留）</p>
+            <div class="fixed">
+              申沃与享道签署合作协议，合作方向涉及车联网、RoboBus 等。<span class="c">S11</span>
+              IAA 展会上，iEV12 定位城市客车，iEV12LE 定位城间客车。<span class="c">S10</span>
+              奉浦快线交付的 BRT 车辆配有驾驶辅助、盲区监测等配置。<span class="c">S06</span>
+              申沃接待美洲公务人员来访，交流智能驾驶与公交运营保障经验。<span class="c">S09</span>
+              <span class="todo">运营成本降幅：暂无测算，待项目补充</span>
+            </div>
+          </div>
+          <div>
+            <p style="font-weight:700;margin-bottom:4px">📚 审核通过的说法，存进口径库（APPROVAL-01）</p>
+            <div class="lib">
+              <div><b>P01</b> 申沃与享道签署合作协议，方向涉及车联网、RoboBus 等；现有资料没有量产或商业运营的证据。<div class="mm">来源 S11 · v1.0 · 2026-10-24 · 依据 REV01</div></div>
+              <div><b>P02</b> IAA 报道区分 iEV12 城市客车与 iEV12LE 城间客车。<div class="mm">来源 S10 · v1.0 · 2026-10-24 · 依据 REV02</div></div>
+              <div><b>P03</b> 奉浦快线交付报道提及驾驶辅助等配置，只适用于该项目车辆。<div class="mm">来源 S06 · v1.0 · 2026-10-24 · 依据 REV03</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hide" id="o3">
+    <div class="out"><span>📤 <b>输出 → 发布，并留给第⑤步：</b>定稿 v0.2 + 口径库 P01–P03（v1.0）+ 审核记录 REV01–REV05</span></div>
+  </div>
+  <div class="nav"><button onclick="go(2)">← 上一步</button><button class="next" onclick="go(4)">下一步：发布后 → ⑤ 复用与下一轮 →</button></div>
+</section>
+
+<!-- ================= ⑤ 复用与下一轮 ================= -->
+<section class="step" id="st4">
+  <div class="gap-note">⏩ <b>11 月第 1 周：</b>品牌团队发布第一轮内容（实际发布不在本次任务范围）。到 11 月 6 日，第一轮反馈回来了。</div>
+  <div class="step-head">
+    <h2>⑤ 复用与下一轮<small>2026-11-06</small></h2>
+    <div class="ops">谁来做：<span class="role r-src">📦 销售/渠道 带回反馈</span>→<span class="role r-ai">🤖 AI 匹配口径、出对照</span>→<span class="role r-brand">✍️ 品牌团队 确认</span></div>
+  </div>
+  <div class="io"><div class="in">📥 <b>输入：</b>第一轮反馈 FB01–FB04 + 第④步的口径库 P01–P03 + 选题表 v1.0</div></div>
+
+  <div class="screen">
+    <div class="screen-bar"><i></i><i></i><i></i><span>内容助手 › 反馈 › 第一轮传播反馈</span></div>
+    <div class="screen-body">
+      <div class="fbs">
+        <div><b>FB01 · 公交运营商</b><span class="num">第 1 周场景文章 · 浏览 820 · 咨询 12</span><br>想看具体盲区辅助与维保出处</div>
+        <div><b>FB02 · 海外客户</b><span class="num">展会介绍提纲 · 浏览 460 · 咨询 9</span><br>追问 iEV12LE 城间定位与当地服务</div>
+        <div><b>FB03 · 行业伙伴</b><span class="num">合作方向介绍 · 浏览 610 · 咨询 7</span><br>有人问 RoboBus 是否已无人商业运营</div>
+        <div><b>FB04 · 公交运营商</b><span class="num">成本话题提议 · 4 条提问</span><br>想要有依据的成本案例，但仍无测算</div>
+      </div>
+      <p class="hint" style="margin-top:4px">提醒：浏览量不等于客户数，咨询不等于订单。</p>
+
+      <div class="act"><button class="btn ai pulse" onclick="reveal(this,'a4')">🤖 AI 先查口径库，再给调整建议</button></div>
+
+      <div class="hide" id="a4">
+        <table class="t chg">
+          <tr><th>周次 · 客群</th><th>调整前（v1.0）</th><th>调整后（v1.1）</th><th>为什么调</th><th>说法从哪来</th></tr>
+          <tr><td>第 2 周 · 运营商</td><td class="before">CQ02 骨干线和接驳线怎么配车</td><td class="after">CQ01 + CQ03 盲区辅助与维保出处</td><td>FB01 追问</td><td><span class="st reuse">♻ 复用 P03</span> + S07（维保仅为展示）</td></tr>
+          <tr><td>第 3 周 · 海外</td><td class="before">CQ06 澳洲右舵与气候适配</td><td class="after">CQ05 + CQ07 iEV12LE 城间定位与当地服务</td><td>FB02 追问</td><td><span class="st reuse">♻ 复用 P02</span> + S08（服务写“建设方向”）</td></tr>
+          <tr><td>第 3 周 · 伙伴</td><td style="color:#9ca3af">（原计划没有）</td><td class="after">CQ10 合作进展阶段说明（官网）</td><td>FB03 追问</td><td><span class="st reuse">♻ 复用 P01</span>，事实不因追问改变</td></tr>
+          <tr><td>第 4 周 · 运营商</td><td class="before">CQ04 运营成本话题</td><td class="after">改为资料征集；CQ02 车型话题顺延到这周</td><td>FB04 仍无测算</td><td>不写任何降幅数字</td></tr>
+        </table>
+
+        <div class="two" style="margin-top:10px">
+          <div>
+            <p style="font-weight:700;margin-bottom:4px">📝 待补资料清单 → 自动发给对应同事</p>
+            <table class="t">
+              <tr><th>缺什么</th><th>发给谁</th><th>来自</th></tr>
+              <tr><td>驾驶辅助的具体盲区覆盖范围</td><td><span class="role r-src">技术</span></td><td>FB01</td></tr>
+              <tr><td>维保与故障响应的公开案例</td><td><span class="role r-src">项目</span></td><td>FB01 · CQ03</td></tr>
+              <tr><td>iEV12LE 当地服务网点进展</td><td><span class="role r-src">项目</span></td><td>FB02 · CQ07</td></tr>
+              <tr><td>RoboBus 最新公开进展</td><td><span class="role r-src">项目</span></td><td>FB03</td></tr>
+              <tr><td>运营成本测算</td><td><span class="role r-src">项目</span></td><td>FB04 · CQ04</td></tr>
+              <tr><td>S08 悉尼车展日期</td><td><span class="role r-brand">品牌</span></td><td>第①步</td></tr>
+            </table>
+          </div>
+          <div>
+            <p style="font-weight:700;margin-bottom:4px">♻ 这一轮和上一轮的区别</p>
+            <table class="t">
+              <tr><th></th><th>第一轮</th><th>第二轮</th></tr>
+              <tr><td>RoboBus 怎么说</td><td>旧稿写成“已量产运营”，被审核拦下</td><td>直接用 P01，不用再审</td></tr>
+              <tr><td>城间 / 城市定位</td><td>旧稿写反</td><td>直接用 P02</td></tr>
+              <tr><td>需要审核的内容</td><td>全部稿件</td><td>只审新增句子</td></tr>
+              <tr><td>没依据的数字</td><td>写进了稿子</td><td>自动进入待补清单</td></tr>
+            </table>
+            <p class="hint" style="margin-top:4px">以上为演示对比，不代表企业实测效果。</p>
+          </div>
+        </div>
+
+        <div class="act"><button class="btn brand pulse" onclick="reveal(this,'o4')">✍️ 品牌团队：确认选题表 v1.1</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hide" id="o4">
+    <div class="out"><span>📤 <b>输出：</b>选题表 v1.1（保留 v1.0 对照）+ 待补资料清单</span></div>
+    <div class="loop">🔁 <b>闭环：</b>同事补来的新资料，会回到第①步入库；新说法经第④步审核后进入口径库。下一次做选题，不用再从零开始。</div>
+  </div>
+  <div class="nav"><button onclick="go(3)">← 上一步</button><button onclick="go(0)">↺ 从第①步重新看</button></div>
+</section>
+
+</main>
+
+<script>
+  var cur = 0;
+  function go(n){
+    cur = n;
+    document.querySelectorAll('.step').forEach(function(s,i){ s.classList.toggle('on', i===n); });
+    document.querySelectorAll('#lane th[data-go]').forEach(function(th){ th.classList.toggle('on', +th.dataset.go===n); });
+    document.querySelectorAll('#lane td[data-c]').forEach(function(td){ td.classList.toggle('col-on', +td.dataset.c===n); });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('#lane th[data-go]').forEach(function(th){
+    th.addEventListener('click', function(){ go(+th.dataset.go); });
+  });
+
+  function reveal(btn, id){
+    btn.disabled = true; btn.classList.remove('pulse');
+    var el = document.getElementById(id);
+    el.classList.remove('hide'); el.classList.add('show');
+    setTimeout(function(){ el.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 60);
+  }
+
+  function tab(i){
+    document.querySelectorAll('#tabs button').forEach(function(b,k){ b.classList.toggle('on', k===i); });
+    document.querySelectorAll('#a2 .doc').forEach(function(d,k){ d.classList.toggle('on', k===i); });
+  }
+
+  var RES = {
+    tech: { r1:'<span class="st no">不通过</span> 保留“合作涉及 RoboBus 等方向”，不补落地状态（REV01）',
+            r3:'<span class="st no">不通过</span> 车型配置不能泛化，驾驶辅助与自动驾驶分开写（REV03）' },
+    brand:{ r2:'<span class="st wait">修改</span> 按 S10 区分 iEV12 城市、iEV12LE 城间（REV02）' },
+    proj: { r4:'<span class="st no">不通过</span> 来访是交流，不写订单或部署（REV04）',
+            r5:'<span class="st wait">待补依据</span> 删除具体降幅，列为待核实（REV05）' }
+  };
+  var done = 0;
+  function review(btn, who){
+    btn.disabled = true; btn.classList.remove('pulse');
+    Object.keys(RES[who]).forEach(function(k){ document.getElementById(k).innerHTML = RES[who][k]; });
+    if(++done === 3){
+      reveal({disabled:false, classList:{remove:function(){}}}, 'a3');
+      document.getElementById('o3').classList.remove('hide');
+      document.getElementById('o3').classList.add('show');
+    }
+  }
+
+  go(0);
+</script>
+</body>
+</html>
